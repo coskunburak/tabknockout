@@ -1,0 +1,19 @@
+{
+  "name": "TapKnockout.Level",
+  "rootNamespace": "TapKnockout.Level",
+  "references": [
+    "TapKnockout.Room",
+    "TapKnockout.Ability",
+    "TapKnockout.Player",
+    "TapKnockout.Combat"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4994922215604e249fe6074061ac136, type: 3}
+  m_Name: WaveConfig_Test_01
+  m_EditorClassIdentifier: TapKnockout.Wave::TapKnockout.Wave.WaveConfig
+  waveId: wave_test_01
+  enemies:
+  - enemyConfig: {fileID: 11400000, guid: 3f3a05bee52ab47cbad01ad9a39c9e03, type: 2}
+    enemyPrefab: {fileID: 1331823196486036144, guid: 451a58f400ff04ce0a8927dd301c969e, type: 3}
+    count: 3
+    spawnDelay: 0.4
+    spawnPointIndex: -1
+  startDelay: 0.5
+  completeWhenAllSpawnedEnemiesDead: 1

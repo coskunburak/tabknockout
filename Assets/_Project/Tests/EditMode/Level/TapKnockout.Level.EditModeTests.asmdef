@@ -1,0 +1,25 @@
+{
+  "name": "TapKnockout.Level.EditModeTests",
+  "rootNamespace": "TapKnockout.Level.Tests",
+  "references": [
+    "TapKnockout.Room",
+    "TapKnockout.Level",
+    "TapKnockout.Ability",
+    "TapKnockout.Player",
+    "TapKnockout.Combat"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

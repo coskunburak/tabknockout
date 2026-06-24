@@ -1,0 +1,24 @@
+{
+  "name": "TapKnockout.UI.EditModeTests",
+  "rootNamespace": "TapKnockout.UI.Tests",
+  "references": [
+    "TapKnockout.UI",
+    "TapKnockout.Level",
+    "TapKnockout.Ability",
+    "UnityEngine.UI"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

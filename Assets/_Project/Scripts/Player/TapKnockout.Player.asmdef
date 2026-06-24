@@ -1,0 +1,20 @@
+{
+  "name": "TapKnockout.Player",
+  "rootNamespace": "TapKnockout.Player",
+  "references": [
+    "TapKnockout.Input",
+    "TapKnockout.Combat",
+    "TapKnockout.Projectile",
+    "TapKnockout.Ability",
+    "Unity.InputSystem"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

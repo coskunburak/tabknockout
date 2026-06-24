@@ -1,0 +1,22 @@
+{
+  "name": "TapKnockout.Enemy.EditModeTests",
+  "rootNamespace": "TapKnockout.Enemy.Tests",
+  "references": [
+    "TapKnockout.Combat",
+    "TapKnockout.Enemy"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

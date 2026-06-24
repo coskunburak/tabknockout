@@ -1,0 +1,16 @@
+{
+  "name": "TapKnockout.Projectile",
+  "rootNamespace": "TapKnockout.Projectile",
+  "references": [
+    "TapKnockout.Combat"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
