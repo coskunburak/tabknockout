@@ -15,6 +15,7 @@ namespace TapKnockout.Combat.Tests
             Assert.That(hitContext.DamageAmount, Is.EqualTo(0f));
             Assert.That(hitContext.DamageType, Is.EqualTo(DamageType.Physical));
             Assert.That(hitContext.CriticalMultiplier, Is.EqualTo(1f));
+            Assert.That(hitContext.WasIgnored, Is.False);
             Assert.That(hitContext.AbilityId, Is.Empty);
             Assert.That(hitContext.Knockback.HasKnockback, Is.False);
         }

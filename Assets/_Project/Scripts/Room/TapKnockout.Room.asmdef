@@ -1,0 +1,16 @@
+{
+  "name": "TapKnockout.Room",
+  "rootNamespace": "TapKnockout.Room",
+  "references": [
+    "TapKnockout.Wave"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

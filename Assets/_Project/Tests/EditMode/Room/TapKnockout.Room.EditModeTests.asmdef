@@ -1,0 +1,22 @@
+{
+  "name": "TapKnockout.Room.EditModeTests",
+  "rootNamespace": "TapKnockout.Room.Tests",
+  "references": [
+    "TapKnockout.Wave",
+    "TapKnockout.Room"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

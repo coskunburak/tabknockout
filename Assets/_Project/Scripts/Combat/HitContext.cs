@@ -20,6 +20,7 @@ namespace TapKnockout.Combat
         public bool IsDashHit { get; set; }
         public bool IsProjectileHit { get; set; }
         public bool IsAbilityHit { get; set; }
+        public bool WasIgnored { get; set; }
         public string AbilityId { get; set; }
         public KnockbackData Knockback { get; set; }
         public Vector3 HitPoint { get; set; }
@@ -29,6 +30,7 @@ namespace TapKnockout.Combat
         {
             DamageType = DamageType.Physical;
             CriticalMultiplier = 1f;
+            WasIgnored = false;
             AbilityId = string.Empty;
             Knockback = KnockbackData.None;
             HitPoint = Vector3.zero;

@@ -1,0 +1,17 @@
+{
+  "name": "TapKnockout.Wave",
+  "rootNamespace": "TapKnockout.Wave",
+  "references": [
+    "TapKnockout.Combat",
+    "TapKnockout.Enemy"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

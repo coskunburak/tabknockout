@@ -1,0 +1,33 @@
+namespace TapKnockout.Ability
+{
+    public enum AbilityEffectType
+    {
+        None,
+        AttackDamageUp,
+        AttackSpeedUp,
+        CriticalChanceUp,
+        ProjectileSpeedUp,
+        ExtraProjectile,
+        Pierce,
+        Ricochet,
+        SideShot,
+        DashCooldownDown,
+        DashDamageUp,
+        DashKnockbackUp,
+        DashShockwave,
+        DashFireTrail,
+        DashChainLightning,
+        MaxHealthUp,
+        MoveSpeedUp,
+        HealOnRoomClear,
+        CoinBonus,
+        ShieldOnRoomStart,
+        BossDamageUp,
+        ProjectileSizeUp,
+        PickupMagnet,
+        ReviveToken,
+        BurningHits,
+        ChainLightning,
+        OrbitingBlade
+    }
+}
