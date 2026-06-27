@@ -1,6 +1,7 @@
 using TapKnockout.Combat;
 using TapKnockout.Projectile;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace TapKnockout.Player
 {
@@ -25,6 +26,7 @@ namespace TapKnockout.Player
         private bool loggedMissingWeapon;
         private bool loggedMissingTargetLayers;
         private bool loggedMissingProjectileController;
+        private readonly List<Vector3> projectileDirections = new List<Vector3>(12);
 
         public bool IsCooldownReady => cooldownRemaining <= 0f;
         public WeaponConfig WeaponConfig => weaponConfig;
@@ -34,6 +36,10 @@ namespace TapKnockout.Player
         public float EffectiveAttackCooldown => weaponConfig != null
             ? Mathf.Max(0.01f, weaponConfig.AttackCooldown * (runtimeStats != null ? runtimeStats.AttackCooldownMultiplier : 1f))
             : 0f;
+        public float EffectiveProjectileSpeed => weaponConfig != null
+            ? Mathf.Max(0f, weaponConfig.ProjectileSpeed * (runtimeStats != null ? runtimeStats.ProjectileSpeedMultiplier : 1f))
+            : 0f;
+        public float EffectiveProjectileSizeMultiplier => runtimeStats != null ? runtimeStats.ProjectileSizeMultiplier : 1f;
 
         private void Reset()
         {
@@ -157,7 +163,7 @@ namespace TapKnockout.Player
             var hasProjectilePrefab = weaponConfig.ProjectilePrefab != null;
             var hitContext = CreateHitContext(target, attackDirection, hasProjectilePrefab);
 
-            if (hasProjectilePrefab && TrySpawnProjectile(hitContext, attackDirection))
+            if (hasProjectilePrefab && TrySpawnProjectiles(hitContext, attackDirection))
             {
                 StartCooldown();
                 return;
@@ -181,34 +187,86 @@ namespace TapKnockout.Player
             };
         }
 
-        private bool TrySpawnProjectile(HitContext hitContext, Vector3 attackDirection)
+        private bool TrySpawnProjectiles(HitContext hitContext, Vector3 attackDirection)
         {
             var spawnTransform = projectileSpawnPoint != null ? projectileSpawnPoint : transform;
-            var rotation = Quaternion.LookRotation(attackDirection, Vector3.up);
-            var projectileObject = Instantiate(weaponConfig.ProjectilePrefab, spawnTransform.position, rotation);
+            var modifierState = CreateProjectileModifierState();
+            ProjectilePatternBuilder.BuildDirections(attackDirection, modifierState, projectileDirections);
 
-            if (!projectileObject.TryGetComponent<ProjectileController>(out var projectileController))
+            var spawnedAny = false;
+            for (var i = 0; i < projectileDirections.Count; i++)
             {
-                if (logSetupWarnings && !loggedMissingProjectileController)
+                var projectileDirection = projectileDirections[i];
+                var rotation = Quaternion.LookRotation(projectileDirection, Vector3.up);
+                var projectileObject = Instantiate(weaponConfig.ProjectilePrefab, spawnTransform.position, rotation);
+
+                if (!projectileObject.TryGetComponent<ProjectileController>(out var projectileController))
                 {
-                    loggedMissingProjectileController = true;
-                    Debug.LogWarning(
-                        $"{weaponConfig.ProjectilePrefab.name} has no {nameof(ProjectileController)}. Direct hit fallback will be used if enabled.",
-                        weaponConfig.ProjectilePrefab);
+                    if (logSetupWarnings && !loggedMissingProjectileController)
+                    {
+                        loggedMissingProjectileController = true;
+                        Debug.LogWarning(
+                            $"{weaponConfig.ProjectilePrefab.name} has no {nameof(ProjectileController)}. Direct hit fallback will be used if enabled.",
+                            weaponConfig.ProjectilePrefab);
+                    }
+
+                    Destroy(projectileObject);
+                    continue;
                 }
 
-                Destroy(projectileObject);
-                return false;
+                if (!Mathf.Approximately(modifierState.ProjectileSizeMultiplier, 1f))
+                {
+                    projectileObject.transform.localScale *= modifierState.ProjectileSizeMultiplier;
+                }
+
+                projectileController.Initialize(
+                    CreateProjectileHitContext(hitContext, projectileDirection),
+                    projectileDirection,
+                    EffectiveProjectileSpeed,
+                    weaponConfig.ProjectileLifetime,
+                    gameObject);
+
+                spawnedAny = true;
             }
 
-            projectileController.Initialize(
-                hitContext,
-                attackDirection,
-                weaponConfig.ProjectileSpeed,
-                weaponConfig.ProjectileLifetime,
-                gameObject);
+            return spawnedAny;
+        }
 
-            return true;
+        private ProjectileModifierState CreateProjectileModifierState()
+        {
+            if (runtimeStats == null)
+            {
+                return ProjectileModifierState.Neutral;
+            }
+
+            return new ProjectileModifierState(
+                runtimeStats.ExtraProjectileCount,
+                runtimeStats.FrontProjectileCount,
+                runtimeStats.DiagonalProjectileCount,
+                runtimeStats.SideProjectileCount,
+                runtimeStats.RearProjectileCount,
+                runtimeStats.ProjectilePierceCount,
+                runtimeStats.ProjectileRicochetCount,
+                runtimeStats.ProjectileWallBounceCount,
+                runtimeStats.ProjectileHomingStrength,
+                runtimeStats.ProjectileSizeMultiplier,
+                runtimeStats.ProjectileSpeedMultiplier);
+        }
+
+        private static HitContext CreateProjectileHitContext(HitContext sourceContext, Vector3 projectileDirection)
+        {
+            return new HitContext(sourceContext.Source, sourceContext.Target, sourceContext.DamageAmount, sourceContext.DamageType)
+            {
+                CriticalChance = sourceContext.CriticalChance,
+                CriticalMultiplier = sourceContext.CriticalMultiplier,
+                IsCritical = sourceContext.IsCritical,
+                IsProjectileHit = true,
+                IsAbilityHit = sourceContext.IsAbilityHit,
+                AbilityId = sourceContext.AbilityId,
+                Knockback = sourceContext.Knockback,
+                HitPoint = sourceContext.HitPoint,
+                HitDirection = projectileDirection
+            };
         }
 
         private bool TryResolveDirectHit(TargetingResult target, HitContext hitContext)

@@ -170,6 +170,11 @@ namespace TapKnockout.Projectile
         {
             CombatEvents.RaiseHitResolved(resolvedHitContext);
 
+            if (resolvedHitContext.WasIgnored)
+            {
+                return;
+            }
+
             var damageEvent = new DamageEvent(
                 resolvedHitContext.Source,
                 resolvedHitContext.Target,

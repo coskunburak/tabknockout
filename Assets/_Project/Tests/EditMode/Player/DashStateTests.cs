@@ -48,5 +48,16 @@ namespace TapKnockout.Player.Tests
             Assert.That(state.CooldownRemaining, Is.EqualTo(0f));
             Assert.That(state.NormalizedCooldown, Is.EqualTo(0f));
         }
+
+        [Test]
+        public void ReduceCooldown_ClampsAtZero()
+        {
+            var state = new DashState();
+            state.TryBegin(0.18f, 4f, false, 0f);
+
+            state.ReduceCooldown(10f);
+
+            Assert.That(state.CooldownRemaining, Is.EqualTo(0f));
+        }
     }
 }

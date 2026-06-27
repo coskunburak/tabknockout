@@ -65,4 +65,47 @@ namespace TapKnockout.Combat
         public GameObject Source { get; }
         public float Duration { get; }
     }
+
+    public readonly struct PerfectDashEventArgs
+    {
+        public PerfectDashEventArgs(
+            GameObject source,
+            GameObject incomingSource,
+            HitContext avoidedHit,
+            Vector3 position,
+            float cooldownRefundSeconds)
+        {
+            Source = source;
+            IncomingSource = incomingSource;
+            AvoidedHit = avoidedHit;
+            Position = position;
+            CooldownRefundSeconds = Mathf.Max(0f, cooldownRefundSeconds);
+        }
+
+        public GameObject Source { get; }
+        public GameObject IncomingSource { get; }
+        public HitContext AvoidedHit { get; }
+        public Vector3 Position { get; }
+        public float CooldownRefundSeconds { get; }
+    }
+
+    public readonly struct ProjectileDodgeEventArgs
+    {
+        public ProjectileDodgeEventArgs(
+            GameObject source,
+            GameObject projectileSource,
+            HitContext avoidedHit,
+            Vector3 position)
+        {
+            Source = source;
+            ProjectileSource = projectileSource;
+            AvoidedHit = avoidedHit;
+            Position = position;
+        }
+
+        public GameObject Source { get; }
+        public GameObject ProjectileSource { get; }
+        public HitContext AvoidedHit { get; }
+        public Vector3 Position { get; }
+    }
 }

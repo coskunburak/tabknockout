@@ -20,9 +20,11 @@ namespace TapKnockout.Player.Tests
 
                 stats.AddDashCooldownReduction(0.5f);
                 stats.AddDashDamageMultiplier(0.5f);
+                stats.AddDashKnockbackMultiplier(0.25f);
 
                 Assert.That(dashController.EffectiveDashCooldown, Is.EqualTo(2f).Within(0.0001f));
                 Assert.That(dashController.EffectiveDashImpactDamage, Is.EqualTo(18f).Within(0.0001f));
+                Assert.That(dashController.EffectiveDashKnockbackForce, Is.EqualTo(10f).Within(0.0001f));
             }
             finally
             {

@@ -1,0 +1,29 @@
+{
+  "name": "TapKnockout.Feedback.EditModeTests",
+  "rootNamespace": "TapKnockout.Feedback.Tests",
+  "references": [
+    "TapKnockout.Feedback",
+    "TapKnockout.Combat",
+    "TapKnockout.VFX",
+    "TapKnockout.Camera",
+    "TapKnockout.UI",
+    "TapKnockout.Room",
+    "TapKnockout.Ability",
+    "TapKnockout.Player",
+    "TapKnockout.Boss"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

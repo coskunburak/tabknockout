@@ -18,10 +18,18 @@ namespace TapKnockout.Enemy
         [SerializeField, Min(0f)] private float fallbackRotationSpeed = 720f;
         [SerializeField, Min(0f)] private float fallbackStoppingDistance = 1.1f;
 
+        [Header("Separation")]
+        [SerializeField] private bool enableSeparation = true;
+        [SerializeField, Min(0f)] private float separationRadius = 0.75f;
+        [SerializeField, Min(0f)] private float separationStrength = 0.9f;
+        [SerializeField] private LayerMask separationLayers = ~0;
+        [SerializeField, Range(2, 16)] private int separationBufferSize = 8;
+
         private Rigidbody cachedRigidbody;
         private EnemyHealth enemyHealth;
         private KnockbackReceiver knockbackReceiver;
         private Vector3 currentHorizontalVelocity;
+        private Collider[] separationBuffer;
 
         public Transform Target => target;
         public bool HasTarget => target != null;
@@ -47,6 +55,7 @@ namespace TapKnockout.Enemy
             cachedRigidbody = GetComponent<Rigidbody>();
             enemyHealth = GetComponent<EnemyHealth>();
             knockbackReceiver = GetComponent<KnockbackReceiver>();
+            EnsureSeparationBuffer();
         }
 
         private void OnValidate()
@@ -55,6 +64,9 @@ namespace TapKnockout.Enemy
             fallbackAcceleration = Mathf.Max(0f, fallbackAcceleration);
             fallbackRotationSpeed = Mathf.Max(0f, fallbackRotationSpeed);
             fallbackStoppingDistance = Mathf.Max(0f, fallbackStoppingDistance);
+            separationRadius = Mathf.Max(0f, separationRadius);
+            separationStrength = Mathf.Max(0f, separationStrength);
+            separationBufferSize = Mathf.Clamp(separationBufferSize, 2, 16);
         }
 
         private void FixedUpdate()
@@ -95,7 +107,19 @@ namespace TapKnockout.Enemy
             }
 
             var direction = toTarget.normalized;
-            var desiredVelocity = direction * MoveSpeed;
+            var separation = ResolveSeparationOffset(currentPosition);
+            var desiredDirection = direction + separation * separationStrength;
+            if (desiredDirection.sqrMagnitude > 1f)
+            {
+                desiredDirection.Normalize();
+            }
+
+            if (desiredDirection.sqrMagnitude <= 0.0001f)
+            {
+                desiredDirection = direction;
+            }
+
+            var desiredVelocity = desiredDirection * MoveSpeed;
             currentHorizontalVelocity = Vector3.MoveTowards(
                 currentHorizontalVelocity,
                 desiredVelocity,
@@ -104,7 +128,51 @@ namespace TapKnockout.Enemy
             var targetPosition = currentPosition + currentHorizontalVelocity * deltaTime;
             targetPosition.y = currentPosition.y;
             cachedRigidbody.MovePosition(targetPosition);
-            RotateToward(direction, deltaTime);
+            RotateToward(desiredDirection, deltaTime);
+        }
+
+        private Vector3 ResolveSeparationOffset(Vector3 currentPosition)
+        {
+            if (!enableSeparation || separationRadius <= 0f || separationStrength <= 0f || separationLayers.value == 0)
+            {
+                return Vector3.zero;
+            }
+
+            EnsureSeparationBuffer();
+            var count = Physics.OverlapSphereNonAlloc(
+                currentPosition,
+                separationRadius,
+                separationBuffer,
+                separationLayers,
+                QueryTriggerInteraction.Ignore);
+
+            var offset = Vector3.zero;
+            for (var i = 0; i < count; i++)
+            {
+                var candidate = separationBuffer[i];
+                if (candidate == null || candidate.transform == transform || candidate.transform.IsChildOf(transform))
+                {
+                    continue;
+                }
+
+                var otherMovement = candidate.GetComponentInParent<EnemyMovement>();
+                if (otherMovement == null || otherMovement == this)
+                {
+                    continue;
+                }
+
+                offset += CalculateSeparationOffset(currentPosition, otherMovement.transform.position, separationRadius);
+            }
+
+            return offset.sqrMagnitude > 1f ? offset.normalized : offset;
+        }
+
+        private void EnsureSeparationBuffer()
+        {
+            if (separationBuffer == null || separationBuffer.Length != separationBufferSize)
+            {
+                separationBuffer = new Collider[separationBufferSize];
+            }
         }
 
         private void RotateToward(Vector3 direction, float deltaTime)
@@ -126,6 +194,26 @@ namespace TapKnockout.Enemy
             var offset = targetPosition - currentPosition;
             offset.y = 0f;
             return offset.sqrMagnitude <= Mathf.Max(0f, stoppingDistance) * Mathf.Max(0f, stoppingDistance);
+        }
+
+        public static Vector3 CalculateSeparationOffset(Vector3 currentPosition, Vector3 neighborPosition, float radius)
+        {
+            var safeRadius = Mathf.Max(0f, radius);
+            if (safeRadius <= 0f)
+            {
+                return Vector3.zero;
+            }
+
+            var offset = currentPosition - neighborPosition;
+            offset.y = 0f;
+            var distance = offset.magnitude;
+            if (distance <= 0.0001f || distance >= safeRadius)
+            {
+                return Vector3.zero;
+            }
+
+            var strength = 1f - distance / safeRadius;
+            return offset.normalized * strength;
         }
     }
 }

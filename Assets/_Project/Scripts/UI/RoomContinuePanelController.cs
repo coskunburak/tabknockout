@@ -5,6 +5,7 @@ using UnityEngine.UI;
 namespace TapKnockout.UI
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(CanvasGroup))]
     public sealed class RoomContinuePanelController : MonoBehaviour
     {
         [Header("References")]
@@ -16,6 +17,7 @@ namespace TapKnockout.UI
 
         [Header("Runtime")]
         [SerializeField] private bool hideOnStart = true;
+        [SerializeField] private bool pollFlowControllerState = true;
 
         [Header("Debug")]
         [SerializeField] private bool logDebug;
@@ -34,6 +36,7 @@ namespace TapKnockout.UI
         private void Awake()
         {
             ResolveLocalReferences();
+            EnsureCanvasGroup();
 
             if (continueLabel != null && string.IsNullOrWhiteSpace(continueLabel.text))
             {
@@ -60,6 +63,14 @@ namespace TapKnockout.UI
             if (hideOnStart)
             {
                 Hide();
+            }
+        }
+
+        private void Update()
+        {
+            if (pollFlowControllerState)
+            {
+                RefreshVisibilityFromFlow();
             }
         }
 
@@ -91,15 +102,27 @@ namespace TapKnockout.UI
             SetVisible(false);
         }
 
-        private void HandleRoomExitUnlocked(ChapterRoomProgressionEventArgs eventArgs)
+        public void RefreshVisibilityFromFlow()
         {
             if (CanShowForContinue())
             {
-                Show();
+                if (!IsVisible)
+                {
+                    Show();
+                }
+
                 return;
             }
 
-            Hide();
+            if (IsVisible)
+            {
+                Hide();
+            }
+        }
+
+        private void HandleRoomExitUnlocked(ChapterRoomProgressionEventArgs eventArgs)
+        {
+            RefreshVisibilityFromFlow();
         }
 
         private void HandleRoomTransitionStarted(ChapterRoomTransitionEventArgs eventArgs)
@@ -129,14 +152,13 @@ namespace TapKnockout.UI
                 return;
             }
 
-            if (!flowController.CanContinueAfterReward)
+            if (flowController.TryContinueAfterReward())
             {
                 Hide();
                 return;
             }
 
-            Hide();
-            flowController.ContinueAfterReward();
+            RefreshVisibilityFromFlow();
         }
 
         private bool CanShowForContinue()
@@ -156,6 +178,8 @@ namespace TapKnockout.UI
                 canvasGroup = root.GetComponent<CanvasGroup>();
             }
 
+            EnsureCanvasGroup();
+
             if (continueButton == null)
             {
                 continueButton = GetComponentInChildren<Button>(true);
@@ -170,6 +194,12 @@ namespace TapKnockout.UI
         private void SetVisible(bool visible)
         {
             IsVisible = visible;
+            EnsureCanvasGroup();
+
+            if (visible && root != null && !root.activeSelf)
+            {
+                root.SetActive(true);
+            }
 
             if (canvasGroup != null)
             {
@@ -177,14 +207,24 @@ namespace TapKnockout.UI
                 canvasGroup.interactable = visible;
                 canvasGroup.blocksRaycasts = visible;
             }
-            else if (root != null && root != gameObject)
-            {
-                root.SetActive(visible);
-            }
 
             if (continueButton != null)
             {
                 continueButton.interactable = visible;
+            }
+        }
+
+        private void EnsureCanvasGroup()
+        {
+            if (canvasGroup != null)
+            {
+                return;
+            }
+
+            var target = root != null ? root : gameObject;
+            if (!target.TryGetComponent(out canvasGroup))
+            {
+                canvasGroup = target.AddComponent<CanvasGroup>();
             }
         }
     }
