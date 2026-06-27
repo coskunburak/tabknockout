@@ -87,5 +87,10 @@ namespace TapKnockout.Player
             IsIFrameActive = false;
             IFrameRemaining = 0f;
         }
+
+        public void ReduceCooldown(float seconds)
+        {
+            CooldownRemaining = Mathf.Max(0f, CooldownRemaining - Mathf.Max(0f, seconds));
+        }
     }
 }

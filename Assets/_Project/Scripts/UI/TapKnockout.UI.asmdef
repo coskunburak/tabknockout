@@ -4,6 +4,8 @@
   "references": [
     "TapKnockout.Ability",
     "TapKnockout.Level",
+    "TapKnockout.Player",
+    "TapKnockout.Combat",
     "UnityEngine.UI"
   ],
   "includePlatforms": [],

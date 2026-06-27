@@ -76,5 +76,31 @@ namespace TapKnockout.Enemy.Tests
                 Object.DestroyImmediate(enemy);
             }
         }
+
+        [Test]
+        public void ReceiveHit_WhenKilled_DisablesCollidersAndResetReEnablesThem()
+        {
+            var enemy = new GameObject("Enemy");
+
+            try
+            {
+                var collider = enemy.AddComponent<CapsuleCollider>();
+                var health = enemy.AddComponent<EnemyHealth>();
+                health.ResetHealth();
+
+                health.ReceiveHit(new HitContext(null, enemy, 999f, DamageType.Impact));
+
+                Assert.That(collider.enabled, Is.False);
+
+                health.ResetHealth();
+
+                Assert.That(collider.enabled, Is.True);
+                Assert.That(health.IsAlive, Is.True);
+            }
+            finally
+            {
+                Object.DestroyImmediate(enemy);
+            }
+        }
     }
 }

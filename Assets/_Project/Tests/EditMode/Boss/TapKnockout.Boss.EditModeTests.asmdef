@@ -1,0 +1,22 @@
+{
+  "name": "TapKnockout.Boss.EditModeTests",
+  "rootNamespace": "TapKnockout.Boss.Tests",
+  "references": [
+    "TapKnockout.Boss",
+    "TapKnockout.Combat"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

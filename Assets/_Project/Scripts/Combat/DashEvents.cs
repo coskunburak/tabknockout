@@ -9,6 +9,8 @@ namespace TapKnockout.Combat
         public static event Action<DashEndedEventArgs> OnDashEnded;
         public static event Action<DashIFrameEventArgs> OnDashIFrameStarted;
         public static event Action<DashIFrameEventArgs> OnDashIFrameEnded;
+        public static event Action<PerfectDashEventArgs> OnPerfectDash;
+        public static event Action<ProjectileDodgeEventArgs> OnProjectileDodged;
 
         public static void RaiseDashStarted(DashStartedEventArgs eventArgs)
         {
@@ -33,6 +35,16 @@ namespace TapKnockout.Combat
         public static void RaiseDashIFrameEnded(DashIFrameEventArgs eventArgs)
         {
             OnDashIFrameEnded?.Invoke(eventArgs);
+        }
+
+        public static void RaisePerfectDash(PerfectDashEventArgs eventArgs)
+        {
+            OnPerfectDash?.Invoke(eventArgs);
+        }
+
+        public static void RaiseProjectileDodged(ProjectileDodgeEventArgs eventArgs)
+        {
+            OnProjectileDodged?.Invoke(eventArgs);
         }
     }
 }

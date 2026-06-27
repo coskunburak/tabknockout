@@ -6,6 +6,7 @@ using UnityEngine;
 namespace TapKnockout.UI
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(CanvasGroup))]
     public sealed class AbilitySelectionPanelController : MonoBehaviour, IAbilitySelectionPanelView
     {
         [Header("References")]
@@ -23,12 +24,14 @@ namespace TapKnockout.UI
         public bool PauseGameWhileOpen => pauseGameWhileOpen;
         public bool IsOpen => isOpen;
 
+        private void Reset()
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+        }
+
         private void Awake()
         {
-            if (canvasGroup == null)
-            {
-                canvasGroup = GetComponent<CanvasGroup>();
-            }
+            EnsureCanvasGroup();
 
             if (hideOnAwake)
             {
@@ -191,15 +194,19 @@ namespace TapKnockout.UI
 
         private void SetVisible(bool visible)
         {
-            if (canvasGroup == null)
-            {
-                gameObject.SetActive(visible);
-                return;
-            }
+            EnsureCanvasGroup();
 
             canvasGroup.alpha = visible ? 1f : 0f;
             canvasGroup.interactable = visible;
             canvasGroup.blocksRaycasts = visible;
+        }
+
+        private void EnsureCanvasGroup()
+        {
+            if (canvasGroup == null && !TryGetComponent(out canvasGroup))
+            {
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
         }
     }
 }

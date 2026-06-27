@@ -1,0 +1,23 @@
+{
+  "name": "TapKnockout.Feedback",
+  "rootNamespace": "TapKnockout.Feedback",
+  "references": [
+    "TapKnockout.Combat",
+    "TapKnockout.VFX",
+    "TapKnockout.Camera",
+    "TapKnockout.UI",
+    "TapKnockout.Room",
+    "TapKnockout.Ability",
+    "TapKnockout.Player",
+    "TapKnockout.Boss"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

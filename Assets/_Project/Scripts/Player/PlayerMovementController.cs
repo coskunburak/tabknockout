@@ -8,6 +8,7 @@ namespace TapKnockout.Player
     {
         [Header("Config")]
         [SerializeField] private PlayerConfig config;
+        [SerializeField] private PlayerRuntimeStats runtimeStats;
 
         [Header("Input")]
         [SerializeField] private MonoBehaviour inputSourceBehaviour;
@@ -32,6 +33,7 @@ namespace TapKnockout.Player
         public Vector3 LastFacingDirection { get; private set; } = Vector3.forward;
 
         private float MoveSpeed => config != null ? config.MoveSpeed : fallbackMoveSpeed;
+        private float EffectiveMoveSpeed => MoveSpeed * (runtimeStats != null ? runtimeStats.MoveSpeedMultiplier : 1f);
         private float Acceleration => config != null ? config.Acceleration : fallbackAcceleration;
         private float RotationSpeed => config != null ? config.RotationSpeed : fallbackRotationSpeed;
         private float MovementDeadZone => config != null ? config.MovementDeadZone : fallbackMovementDeadZone;
@@ -48,11 +50,18 @@ namespace TapKnockout.Player
                 cachedRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
                 cachedRigidbody.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             }
+
+            runtimeStats = GetComponent<PlayerRuntimeStats>();
         }
 
         private void Awake()
         {
             cachedRigidbody = GetComponent<Rigidbody>();
+            if (runtimeStats == null)
+            {
+                runtimeStats = GetComponent<PlayerRuntimeStats>();
+            }
+
             ResolveInputSource();
             InitializeFacingDirection();
         }
@@ -149,7 +158,7 @@ namespace TapKnockout.Player
 
         private void MoveRigidbody(Vector3 targetDirection)
         {
-            var targetHorizontalVelocity = targetDirection * MoveSpeed;
+            var targetHorizontalVelocity = targetDirection * EffectiveMoveSpeed;
             var currentVelocity = cachedRigidbody.linearVelocity;
             var currentHorizontalVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
             var newHorizontalVelocity = Vector3.MoveTowards(

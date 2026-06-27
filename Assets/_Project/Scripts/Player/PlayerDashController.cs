@@ -15,6 +15,7 @@ namespace TapKnockout.Player
         [SerializeField] private PlayerConfig config;
         [SerializeField] private PlayerMovementController movementController;
         [SerializeField] private PlayerRuntimeStats runtimeStats;
+        [SerializeField] private PlayerHealth playerHealth;
         [SerializeField] private Transform hitQueryOrigin;
 
         [Header("Editor / Development Input")]
@@ -32,6 +33,16 @@ namespace TapKnockout.Player
         [SerializeField] private LayerMask fallbackDashHitLayers;
         [SerializeField] private bool fallbackDashHasIFrames = true;
         [SerializeField, Min(0f)] private float fallbackDashIFrameDuration = 0.12f;
+
+        [Header("Impact Scaling")]
+        [SerializeField, Min(0.01f)] private float fallbackDashImpactReferenceSpeed = 19.44f;
+        [SerializeField, Range(0f, 1f)] private float fallbackDashImpactSpeedDamageScale = 0.15f;
+        [SerializeField, Min(0f)] private float fallbackDashImpactMinSpeedMultiplier = 0.85f;
+        [SerializeField, Min(0f)] private float fallbackDashImpactMaxSpeedMultiplier = 1.35f;
+        [SerializeField, Range(0.01f, 1f)] private float fallbackLowHealthDashDamageThreshold = 0.35f;
+
+        [Header("Perfect Dash Reward")]
+        [SerializeField, Min(0f)] private float fallbackPerfectDashCooldownRefundSeconds = 0.35f;
 
         [Header("Hit Query")]
         [SerializeField, Range(4, 64)] private int hitBufferSize = 24;
@@ -53,24 +64,27 @@ namespace TapKnockout.Player
         public float CooldownRemaining => dashState.CooldownRemaining;
         public float NormalizedCooldown => dashState.NormalizedCooldown;
         public float EffectiveDashCooldown => DashCooldown;
-        public float EffectiveDashImpactDamage => DashImpactDamage;
+        public float EffectiveDashImpactDamage => ResolveDashImpactDamage(false);
+        public float EffectiveDashKnockbackForce => DashKnockbackForce;
+        public float PerfectDashCooldownRefundSeconds => fallbackPerfectDashCooldownRefundSeconds;
 
         private float DashDistance => config != null ? config.DashDistance : fallbackDashDistance;
         private float DashDuration => config != null ? config.DashDuration : fallbackDashDuration;
         private float DashCooldown => Mathf.Max(0.01f, (config != null ? config.DashCooldown : fallbackDashCooldown) * (runtimeStats != null ? runtimeStats.DashCooldownMultiplier : 1f));
-        private float DashImpactDamage => Mathf.Max(0f, (config != null ? config.DashImpactDamage : fallbackDashImpactDamage) * (runtimeStats != null ? runtimeStats.DashDamageMultiplier : 1f));
-        private float DashKnockbackForce => config != null ? config.DashKnockbackForce : fallbackDashKnockbackForce;
+        private float DashImpactDamage => ResolveDashImpactDamage(true);
+        private float DashKnockbackForce => Mathf.Max(0f, (config != null ? config.DashKnockbackForce : fallbackDashKnockbackForce) * (runtimeStats != null ? runtimeStats.DashKnockbackMultiplier : 1f));
         private float DashKnockbackDuration => config != null ? config.DashKnockbackDuration : fallbackDashKnockbackDuration;
         private float DashHitRadius => config != null ? config.DashHitRadius : fallbackDashHitRadius;
         private LayerMask DashHitLayers => config != null ? config.DashHitLayers : fallbackDashHitLayers;
         private bool DashHasIFrames => config != null ? config.DashHasIFrames : fallbackDashHasIFrames;
-        private float DashIFrameDuration => config != null ? config.DashIFrameDuration : fallbackDashIFrameDuration;
+        private float DashIFrameDuration => Mathf.Max(0f, (config != null ? config.DashIFrameDuration : fallbackDashIFrameDuration) + (runtimeStats != null ? runtimeStats.DashIFrameBonus : 0f));
 
         private void Reset()
         {
             cachedRigidbody = GetComponent<Rigidbody>();
             movementController = GetComponent<PlayerMovementController>();
             runtimeStats = GetComponent<PlayerRuntimeStats>();
+            playerHealth = GetComponent<PlayerHealth>();
             hitQueryOrigin = transform;
         }
 
@@ -79,6 +93,7 @@ namespace TapKnockout.Player
             cachedRigidbody = GetComponent<Rigidbody>();
             movementController = movementController != null ? movementController : GetComponent<PlayerMovementController>();
             runtimeStats = runtimeStats != null ? runtimeStats : GetComponent<PlayerRuntimeStats>();
+            playerHealth = playerHealth != null ? playerHealth : GetComponent<PlayerHealth>();
 
             if (hitQueryOrigin == null)
             {
@@ -98,6 +113,9 @@ namespace TapKnockout.Player
             fallbackDashKnockbackDuration = Mathf.Max(0f, fallbackDashKnockbackDuration);
             fallbackDashHitRadius = Mathf.Max(0.05f, fallbackDashHitRadius);
             fallbackDashIFrameDuration = Mathf.Max(0f, fallbackDashIFrameDuration);
+            fallbackDashImpactReferenceSpeed = Mathf.Max(0.01f, fallbackDashImpactReferenceSpeed);
+            fallbackDashImpactMaxSpeedMultiplier = Mathf.Max(fallbackDashImpactMinSpeedMultiplier, fallbackDashImpactMaxSpeedMultiplier);
+            fallbackPerfectDashCooldownRefundSeconds = Mathf.Max(0f, fallbackPerfectDashCooldownRefundSeconds);
             hitBufferSize = Mathf.Clamp(hitBufferSize, 4, 64);
         }
 
@@ -107,6 +125,12 @@ namespace TapKnockout.Player
             {
                 TryDash();
             }
+        }
+
+        private void OnEnable()
+        {
+            CombatEvents.OnEntityKilled -= HandleEntityKilled;
+            CombatEvents.OnEntityKilled += HandleEntityKilled;
         }
 
         private void FixedUpdate()
@@ -132,6 +156,8 @@ namespace TapKnockout.Player
 
         private void OnDisable()
         {
+            CombatEvents.OnEntityKilled -= HandleEntityKilled;
+
             if (movementController != null)
             {
                 movementController.SetMovementLocked(false);
@@ -198,6 +224,11 @@ namespace TapKnockout.Player
             if (runtimeStats == null)
             {
                 runtimeStats = GetComponent<PlayerRuntimeStats>();
+            }
+
+            if (playerHealth == null)
+            {
+                playerHealth = GetComponent<PlayerHealth>();
             }
 
             if (hitQueryOrigin == null)
@@ -282,6 +313,7 @@ namespace TapKnockout.Player
             };
 
             damageable.ReceiveHit(hitContext);
+            ApplyDashStatusEffectHooks(candidateCollider, targetGameObject, damageable);
             RaiseDashHitEvents(hitContext);
         }
 
@@ -290,6 +322,27 @@ namespace TapKnockout.Player
             movementController.SetMovementLocked(false);
             hitRegistry.Clear();
             DashEvents.RaiseDashEnded(new DashEndedEventArgs(gameObject, dashDirection, completed, dashState.CooldownRemaining));
+        }
+
+        public void RefundCooldown(float seconds)
+        {
+            dashState.ReduceCooldown(seconds);
+        }
+
+        private void HandleEntityKilled(EntityKilledEvent entityKilledEvent)
+        {
+            ResolveReferences();
+
+            if (runtimeStats == null ||
+                runtimeStats.DashCooldownRefundOnKill <= 0f ||
+                entityKilledEvent.Killer != gameObject ||
+                entityKilledEvent.KillingHit == null ||
+                !entityKilledEvent.KillingHit.IsDashHit)
+            {
+                return;
+            }
+
+            RefundCooldown(DashCooldown * runtimeStats.DashCooldownRefundOnKill);
         }
 
         private void EnsureHitBuffer()
@@ -328,6 +381,70 @@ namespace TapKnockout.Player
             }
 
             return dashDirection;
+        }
+
+        private float ResolveDashImpactDamage(bool includeCurrentDashSpeed)
+        {
+            var baseDamage = config != null ? config.DashImpactDamage : fallbackDashImpactDamage;
+            var damageMultiplier = runtimeStats != null ? runtimeStats.DashDamageMultiplier : 1f;
+            var referenceSpeed = ResolveDashImpactReferenceSpeed();
+            var currentSpeed = includeCurrentDashSpeed && dashSpeed > 0f ? dashSpeed : referenceSpeed;
+            var conditionalMultiplier = ResolveConditionalDashDamageMultiplier();
+
+            return DashImpactDamageCalculator.CalculateDamage(
+                baseDamage,
+                damageMultiplier,
+                currentSpeed,
+                referenceSpeed,
+                fallbackDashImpactSpeedDamageScale,
+                fallbackDashImpactMinSpeedMultiplier,
+                fallbackDashImpactMaxSpeedMultiplier,
+                conditionalMultiplier);
+        }
+
+        private float ResolveDashImpactReferenceSpeed()
+        {
+            if (fallbackDashImpactReferenceSpeed > 0f)
+            {
+                return fallbackDashImpactReferenceSpeed;
+            }
+
+            return DashDistance / Mathf.Max(0.01f, DashDuration);
+        }
+
+        private float ResolveConditionalDashDamageMultiplier()
+        {
+            if (runtimeStats == null || playerHealth == null || playerHealth.MaxHealth <= 0f)
+            {
+                return 1f;
+            }
+
+            var normalizedHealth = playerHealth.CurrentHealth / playerHealth.MaxHealth;
+            return normalizedHealth <= fallbackLowHealthDashDamageThreshold
+                ? runtimeStats.DashLowHealthDamageMultiplier
+                : 1f;
+        }
+
+        private void ApplyDashStatusEffectHooks(Collider candidateCollider, GameObject targetGameObject, IDamageable damageable)
+        {
+            if (runtimeStats == null || runtimeStats.DashStunDuration <= 0f || damageable == null || !damageable.IsAlive)
+            {
+                return;
+            }
+
+            var receiver = targetGameObject != null
+                ? targetGameObject.GetComponentInChildren<IStatusEffectReceiver>()
+                : null;
+
+            if (receiver == null && candidateCollider != null)
+            {
+                receiver = candidateCollider.GetComponentInParent<IStatusEffectReceiver>();
+            }
+
+            receiver?.TryApplyStatusEffect(new StatusEffectRequest(
+                StatusEffectType.Stun,
+                gameObject,
+                runtimeStats.DashStunDuration));
         }
 
         private static Transform ResolveTargetTransform(Collider candidateCollider, IDamageable damageable, ITargetable targetable)

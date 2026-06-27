@@ -17,6 +17,7 @@ namespace TapKnockout.Enemy
 
         [Header("Death")]
         [SerializeField] private bool deactivateOnDeath;
+        [SerializeField] private bool disableCollidersOnDeath = true;
 
         [Header("Debug")]
         [SerializeField] private bool logHits;
@@ -65,6 +66,7 @@ namespace TapKnockout.Enemy
         {
             hasDied = false;
             CurrentHealth = MaxHealth;
+            SetCollidersEnabled(true);
 
             if (deathCoroutine != null)
             {
@@ -133,10 +135,28 @@ namespace TapKnockout.Enemy
 
             OnDied?.Invoke(killingHit);
             CombatEvents.RaiseEntityKilled(new EntityKilledEvent(gameObject, killingHit.Source, killingHit));
+            DisableRuntimeBlockingIfNeeded();
 
             if (deactivateOnDeath)
             {
                 deathCoroutine = StartCoroutine(DeactivateAfterDelay());
+            }
+        }
+
+        private void DisableRuntimeBlockingIfNeeded()
+        {
+            if (disableCollidersOnDeath)
+            {
+                SetCollidersEnabled(false);
+            }
+        }
+
+        private void SetCollidersEnabled(bool enabled)
+        {
+            var colliders = GetComponentsInChildren<Collider>(true);
+            for (var i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].enabled = enabled;
             }
         }
 

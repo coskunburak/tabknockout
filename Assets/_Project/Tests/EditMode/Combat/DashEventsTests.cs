@@ -39,5 +39,29 @@ namespace TapKnockout.Combat.Tests
             Assert.That(Vector3.Distance(eventArgs.DashDirection, new Vector3(0.6f, 0f, 0.8f)), Is.LessThan(0.0001f));
             Assert.That(eventArgs.HitContext, Is.SameAs(hitContext));
         }
+
+        [Test]
+        public void RaisePerfectDash_NotifiesSubscribers()
+        {
+            var received = false;
+
+            void Handler(PerfectDashEventArgs eventArgs)
+            {
+                received = true;
+            }
+
+            DashEvents.OnPerfectDash += Handler;
+
+            try
+            {
+                DashEvents.RaisePerfectDash(new PerfectDashEventArgs(null, null, null, Vector3.zero, 0.25f));
+            }
+            finally
+            {
+                DashEvents.OnPerfectDash -= Handler;
+            }
+
+            Assert.That(received, Is.True);
+        }
     }
 }
