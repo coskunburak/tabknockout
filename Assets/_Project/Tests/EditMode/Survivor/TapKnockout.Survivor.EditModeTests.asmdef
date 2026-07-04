@@ -1,0 +1,27 @@
+{
+  "name": "TapKnockout.Survivor.EditModeTests",
+  "rootNamespace": "TapKnockout.Survivor.Tests",
+  "references": [
+    "TapKnockout.Ability",
+    "TapKnockout.Combat",
+    "TapKnockout.Enemy",
+    "TapKnockout.Input",
+    "TapKnockout.Pickups",
+    "TapKnockout.Player",
+    "TapKnockout.Survivor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

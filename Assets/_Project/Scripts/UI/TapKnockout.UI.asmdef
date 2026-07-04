@@ -3,9 +3,14 @@
   "rootNamespace": "TapKnockout.UI",
   "references": [
     "TapKnockout.Ability",
+    "TapKnockout.Boss",
     "TapKnockout.Level",
+    "TapKnockout.Enemy",
     "TapKnockout.Player",
+    "TapKnockout.Pickups",
+    "TapKnockout.Survivor",
     "TapKnockout.Combat",
+    "Unity.InputSystem",
     "UnityEngine.UI"
   ],
   "includePlatforms": [],

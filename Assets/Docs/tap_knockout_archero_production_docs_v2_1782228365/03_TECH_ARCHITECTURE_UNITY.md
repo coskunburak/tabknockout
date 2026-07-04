@@ -1,191 +1,167 @@
 # Unity Technical Architecture
 
-## Engine
+## Architecture Target
 
-- Unity 6 / current LTS
-- Template: Universal 3D / URP
-- Platform: Android first, iOS later
-- Orientation: Portrait
-- Target FPS: 60
-- Art style: stylized 3D / low-poly / mobile-friendly
+The target architecture is a desktop-first Unity 6 3D arena survivor prototype. Systems should be data-driven, pooled, testable where practical, and independent from live Unity scene object names.
 
-## Folder Structure
+## Folder Policy
+
+Production work should live under:
 
 ```text
-Assets/
-  _Project/
-    Art/
-    Audio/
-    Prefabs/
-    Scenes/
-      Boot.unity
-      Home.unity
-      Gameplay.unity
-    Scripts/
-      Core/
-      Bootstrap/
-      Input/
-      Player/
-      Combat/
-      Enemy/
-      Ability/
-      Projectile/
-      Level/
-      Room/
-      Wave/
-      Economy/
-      Meta/
-      UI/
-      Camera/
-      Audio/
-      Analytics/
-      Ads/
-      IAP/
-      Save/
-      Config/
-      Utilities/
-    ScriptableObjects/
-      Player/
-      Weapons/
-      Enemies/
-      Abilities/
-      Chapters/
-      Rooms/
-      Economy/
-      Monetization/
-      Balance/
-    Editor/
-      Tools/
-    Tests/
-      EditMode/
-      PlayMode/
-    Docs/
-  ThirdParty/
-    Kenney/
-    KayKit/
-    Quaternius/
-    Mixamo/
-    VFX/
+Assets/_Project/
 ```
 
-## Scenes
+Recommended structure:
 
-### Boot
+```text
+Assets/_Project/
+  Art/
+  Audio/
+  Editor/Tools/
+  Materials/
+  Prefabs/
+  Scenes/
+  ScriptableObjects/
+    Abilities/
+    Arenas/
+    Bosses/
+    Enemies/
+    Runs/
+    Waves/
+  Scripts/
+    Ability/
+    Analytics/
+    Audio/
+    Boss/
+    Camera/
+    Combat/
+    Config/
+    Enemy/
+    Input/
+    Pickup/
+    Player/
+    Pooling/
+    Projectile/
+    Run/
+    Save/
+    UI/
+    VFX/
+    Wave/
+  Tests/
+  UI/
+  VFX/
+```
 
-- Initialize services
-- Load configs
-- Load save
-- Load home/gameplay
+Approved third-party assets should move only after approval to:
 
-### Home
+```text
+Assets/ThirdParty/
+```
 
-- Chapter select
-- Gear
-- Talents
-- Shop
-- Daily rewards
-- Missions
+## Core Runtime Systems
 
-### Gameplay
+### Input
 
-- Runtime chapter
-- Player/enemies
-- Room/wave manager
-- HUD
-- Ability selection
-- Run result
+- `DesktopInputController`: reads keyboard/mouse input.
+- `MouseAimController`: converts mouse screen position into world aim direction.
+- Optional abstraction layer for future controller support.
+- Mobile touch/joystick input is deprecated for the prototype.
+
+### Camera
+
+- `SurvivorCameraRig`: isometric/top-down follow camera.
+- Supports arena bounds, target offset, zoom tuning, and screen shake hooks.
+- Must preserve combat readability under enemy density.
+
+### Run and Wave
+
+- `ArenaRunDirector`: owns run state, timer, milestones, level-up pause/resume, result flow.
+- `SpawnDirector`: selects spawn groups by timeline, player position, budgets, and spawn safety rules.
+- `WaveDirector`: evaluates timed waves, intensity curves, elite windows, and boss milestones.
+- Legacy room/chapter managers should be migrated or left isolated.
+
+### Combat
+
+- Shared damage and health contracts.
+- `AbilityRuntimeController` for active skills, passives, modifiers, cooldowns, stacks, and tags.
+- Projectile, area damage, knockback, status, and dash impact use shared hit data.
+- Data should come from ScriptableObject configs, not hardcoded scene state.
+
+### Enemy Crowd
+
+- Lightweight chaser, swarm, ranged, charger, tank, elite, and boss behaviors.
+- Avoid expensive per-enemy pathfinding for large groups unless profiling proves it safe.
+- Prefer simple steering, separation, and pooled controllers for MVP.
+
+### Pickups and XP
+
+- `XPOrb` and pickup components should be pooled.
+- Pickup attraction/magnet behavior should be configurable.
+- XP collection feeds run level progression and level-up selection.
+
+### UI
+
+- HUD for HP, XP, timer, active skill cooldowns, boss HP, warnings, and pause.
+- `LevelUpSelectionController` for weighted choices and application.
+- Result screen receives run summary from `ArenaRunDirector`.
+
+### Boss
+
+- `BossEncounterDirector` handles warnings, spawn, health bar binding, phase events, death, and run completion.
+- Boss attacks should use reusable telegraph and damage systems.
+
+## Object Pooling Requirements
+
+Pooling is required before survivor-scale combat is considered valid:
+
+- Enemies.
+- Projectiles.
+- XP orbs.
+- Pickups.
+- VFX bursts.
+- Damage number UI if used.
+- Telegraph decals if spawned frequently.
+
+Runtime systems should not instantiate/destroy repeatedly during combat waves except for debug-only cases.
 
 ## Services
 
-Use abstractions:
+Use interfaces:
 
-```text
-IAnalyticsService
-IRemoteConfigService
-IAdService
-IIapService
-ISaveService
-IAudioService
-```
+- `IAnalyticsService`
+- `IRemoteConfigService`
+- `ISaveService`
+- `IAudioService`
+- Optional future `IAdService`
+- Optional future `IIapService`
 
-Initial implementations:
+Initial implementations should be local/no-op/console. No real SDKs are approved by default.
 
-```text
-ConsoleAnalyticsService
-LocalRemoteConfigService
-FakeAdService
-FakeIapService
-JsonSaveService
-AudioService
-```
+## Scene Policy
 
-## Core Components
+- Do not directly edit `.unity` YAML.
+- Use manual Unity setup or approved Editor tools.
+- The first target scene is `DesktopSurvivorPrototype`.
+- Existing sample scenes are not canonical gameplay scenes.
 
-Player:
+## Preserved Systems
 
-- PlayerMovementController
-- PlayerAttackController
-- PlayerDashController
-- PlayerHealth
-- PlayerStats
-- PlayerAnimationController
+The following concepts remain useful from earlier planning:
 
-Combat:
+- ScriptableObject config IDs.
+- Damage/health/projectile contracts.
+- Ability definitions and modifiers.
+- Enemy and boss configs.
+- Wave/spawn logic.
+- Pooling.
+- QA/performance discipline.
+- Content and license pipeline.
 
-- IDamageable
-- HitContext
-- DamageSystem
-- ProjectileController
-- ProjectilePool
-- KnockbackReceiver
-- StatusEffectController
+## Deprecated Systems
 
-Enemy:
-
-- EnemyController
-- EnemyMovement
-- EnemyAttack
-- EnemyHealth
-- EnemySpawner
-
-Level:
-
-- ChapterRunner
-- RoomManager
-- WaveManager
-- RoomRewardController
-- BossController
-
-UI:
-
-- HudController
-- AbilityChoicePanel
-- RunResultPanel
-- HomeController
-- GearScreenController
-- ShopScreenController
-
-## ScriptableObject Configs
-
-- PlayerConfig
-- WeaponConfig
-- EnemyConfig
-- AbilityConfig
-- ChapterConfig
-- RoomTemplateConfig
-- WaveConfig
-- RewardTableConfig
-- EconomyConfig
-- MonetizationConfig
-
-## Performance
-
-Use pooling for:
-
-- Projectiles
-- Enemies
-- Hit VFX
-- Damage text
-- Pickups
-
-Avoid runtime Instantiate/Destroy during combat where possible.
+- Touch-first player input.
+- Portrait safe-area-first UI.
+- Room-first clear conditions as the main loop.
+- Android-first release path.
+- Ad/IAP-first economy architecture.

@@ -1,10 +1,11 @@
+using TapKnockout.Combat;
 using UnityEngine;
 
 namespace TapKnockout.Enemy
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody))]
-    public sealed class EnemyMovement : MonoBehaviour
+    public sealed class EnemyMovement : MonoBehaviour, IPoolLifecycle
     {
         [Header("Config")]
         [SerializeField] private EnemyConfig config;
@@ -28,19 +29,30 @@ namespace TapKnockout.Enemy
         private Rigidbody cachedRigidbody;
         private EnemyHealth enemyHealth;
         private KnockbackReceiver knockbackReceiver;
+        private StatusEffectController statusEffectController;
         private Vector3 currentHorizontalVelocity;
         private Collider[] separationBuffer;
 
         public Transform Target => target;
-        public bool HasTarget => target != null;
+        public bool HasTarget => HasUsableTarget;
         public bool CanMove => enabled &&
             (enemyHealth == null || enemyHealth.IsAlive) &&
-            (knockbackReceiver == null || !knockbackReceiver.IsKnockbackActive);
+            (knockbackReceiver == null || !knockbackReceiver.IsKnockbackActive) &&
+            (statusEffectController == null || !statusEffectController.IsStunned);
+        public Vector3 CurrentHorizontalVelocity => currentHorizontalVelocity;
+        public float CurrentMoveSpeed => currentHorizontalVelocity.magnitude;
+        public float NormalizedMoveSpeed => CalculateNormalizedMoveSpeed(CurrentMoveSpeed, MoveSpeed);
+        public bool IsMoving => CanMove && CurrentMoveSpeed > 0.05f;
+        public bool IsWithinStoppingDistanceToTarget =>
+            target != null && IsWithinStoppingDistance(transform.position, target.position, StoppingDistance);
+        private bool HasUsableTarget => target != null && target.gameObject.activeInHierarchy;
 
         private float MoveSpeed => config != null ? config.MoveSpeed : fallbackMoveSpeed;
         private float Acceleration => config != null ? config.Acceleration : fallbackAcceleration;
         private float RotationSpeed => config != null ? config.RotationSpeed : fallbackRotationSpeed;
         private float StoppingDistance => config != null ? config.StoppingDistance : fallbackStoppingDistance;
+        private float StatusMoveSpeedMultiplier => statusEffectController != null ? statusEffectController.MoveSpeedMultiplier : 1f;
+        private float EffectiveMoveSpeed => MoveSpeed * Mathf.Clamp01(StatusMoveSpeedMultiplier);
 
         private void Reset()
         {
@@ -55,6 +67,7 @@ namespace TapKnockout.Enemy
             cachedRigidbody = GetComponent<Rigidbody>();
             enemyHealth = GetComponent<EnemyHealth>();
             knockbackReceiver = GetComponent<KnockbackReceiver>();
+            statusEffectController = GetComponent<StatusEffectController>();
             EnsureSeparationBuffer();
         }
 
@@ -71,9 +84,9 @@ namespace TapKnockout.Enemy
 
         private void FixedUpdate()
         {
-            if (!CanMove || target == null)
+            if (!CanMove || !HasUsableTarget)
             {
-                currentHorizontalVelocity = Vector3.zero;
+                SettleAfterExternalDisplacement();
                 return;
             }
 
@@ -89,6 +102,63 @@ namespace TapKnockout.Enemy
         public void SetTarget(Transform movementTarget)
         {
             target = movementTarget;
+        }
+
+        public void ResetRuntimeState(bool clearTarget = true)
+        {
+            currentHorizontalVelocity = Vector3.zero;
+            if (clearTarget)
+            {
+                target = null;
+            }
+
+            if (cachedRigidbody == null)
+            {
+                cachedRigidbody = GetComponent<Rigidbody>();
+            }
+
+            if (cachedRigidbody != null)
+            {
+                cachedRigidbody.linearVelocity = Vector3.zero;
+                cachedRigidbody.angularVelocity = Vector3.zero;
+            }
+        }
+
+        public void SettleAfterExternalDisplacement()
+        {
+            currentHorizontalVelocity = Vector3.zero;
+
+            if (cachedRigidbody == null)
+            {
+                cachedRigidbody = GetComponent<Rigidbody>();
+            }
+
+            if (cachedRigidbody == null)
+            {
+                return;
+            }
+
+            cachedRigidbody.linearVelocity = Vector3.zero;
+            cachedRigidbody.angularVelocity = Vector3.zero;
+        }
+
+        public void OnBeforeSpawnFromPool()
+        {
+            ResetRuntimeState();
+        }
+
+        public void OnSpawnedFromPool()
+        {
+        }
+
+        public void OnBeforeDespawnToPool()
+        {
+            ResetRuntimeState();
+        }
+
+        public void ResetForPool()
+        {
+            ResetRuntimeState();
         }
 
         private void MoveTowardTarget(float deltaTime)
@@ -108,18 +178,9 @@ namespace TapKnockout.Enemy
 
             var direction = toTarget.normalized;
             var separation = ResolveSeparationOffset(currentPosition);
-            var desiredDirection = direction + separation * separationStrength;
-            if (desiredDirection.sqrMagnitude > 1f)
-            {
-                desiredDirection.Normalize();
-            }
+            var desiredDirection = CalculateDesiredDirection(direction, separation, separationStrength);
 
-            if (desiredDirection.sqrMagnitude <= 0.0001f)
-            {
-                desiredDirection = direction;
-            }
-
-            var desiredVelocity = desiredDirection * MoveSpeed;
+            var desiredVelocity = desiredDirection * EffectiveMoveSpeed;
             currentHorizontalVelocity = Vector3.MoveTowards(
                 currentHorizontalVelocity,
                 desiredVelocity,
@@ -214,6 +275,50 @@ namespace TapKnockout.Enemy
 
             var strength = 1f - distance / safeRadius;
             return offset.normalized * strength;
+        }
+
+        public static Vector3 CalculateDesiredDirection(Vector3 targetDirection, Vector3 separationOffset, float separationWeight)
+        {
+            targetDirection.y = 0f;
+            if (targetDirection.sqrMagnitude <= 0.0001f)
+            {
+                return Vector3.zero;
+            }
+
+            var forward = targetDirection.normalized;
+            separationOffset.y = 0f;
+            if (separationOffset.sqrMagnitude > 1f)
+            {
+                separationOffset.Normalize();
+            }
+
+            if (separationOffset.sqrMagnitude > 0.0001f)
+            {
+                var backwardAmount = Vector3.Dot(separationOffset, -forward);
+                if (backwardAmount > 0f)
+                {
+                    separationOffset += forward * backwardAmount;
+                }
+            }
+
+            var desiredDirection = forward + separationOffset * Mathf.Max(0f, separationWeight);
+            if (desiredDirection.sqrMagnitude <= 0.0001f || Vector3.Dot(desiredDirection, forward) <= 0f)
+            {
+                return forward;
+            }
+
+            return desiredDirection.normalized;
+        }
+
+        public static float CalculateNormalizedMoveSpeed(float currentSpeed, float maxSpeed)
+        {
+            var safeMaxSpeed = Mathf.Max(0f, maxSpeed);
+            if (safeMaxSpeed <= 0f)
+            {
+                return 0f;
+            }
+
+            return Mathf.Clamp01(Mathf.Max(0f, currentSpeed) / safeMaxSpeed);
         }
     }
 }

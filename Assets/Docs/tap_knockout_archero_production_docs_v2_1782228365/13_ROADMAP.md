@@ -1,76 +1,105 @@
-# Production Roadmap
+# Roadmap
 
-## Milestone 0 — Foundation
+## Phase 0 - Documentation Pivot and Repo Audit
 
-- Unity Universal 3D project
-- Git init
-- Docs imported
-- Folder structure
-- AGENTS.md
-- Basic scenes
+Goal: Make the documentation coherent around desktop 3D survivor gameplay.
 
-## Milestone 1 — Core Combat
+Deliverables:
 
-- Movement
-- Auto-attack
-- Dash
-- Damage
-- Projectile pool
-- Enemy health
-- One combat room
+- Updated docs 00-30.
+- New pivot plan doc.
+- Deprecated mobile/room assumptions marked.
+- Preserved systems identified.
+- First implementation sprint defined.
 
-## Milestone 2 — Room/Wave Loop
+## Phase 1 - Desktop Survivor Prototype Scene
 
-- RoomManager
-- WaveManager
-- EnemySpawner
-- Room clear
-- Ability selection
-- Boss placeholder
+Goal: Define and then create a safe prototype scene path without hand-editing scene YAML.
 
-## Milestone 3 — Vertical Slice
+Deliverables:
 
-- 15-room Chapter 1
-- 3 enemy types
-- 1 boss
-- 25 abilities
-- Basic HUD
-- Run result
-- Basic gear/talents
-- Android build
+- `DesktopSurvivorPrototype` scene plan.
+- Player spawn and arena root contract.
+- Survivor camera rig contract.
+- Manual setup or approved Editor builder.
 
-## Milestone 4 — Commercial Systems
+## Phase 2 - Core Arena Loop
 
-- Economy
-- Shop stub
-- Daily rewards
-- Missions
-- Analytics stubs
-- Rewarded ad stubs
-- IAP stubs
+Goal: Make a playable arena loop.
 
-## Milestone 5 — Soft Launch Candidate
+Deliverables:
 
-- 5+ chapters
-- Real analytics
-- Ads test mode
-- IAP sandbox
-- Privacy policy
-- Remote config
-- Store assets draft
+- WASD movement.
+- Mouse aim.
+- Primary attack policy.
+- Dash/evade.
+- Run timer.
+- Spawn director.
+- First enemy waves.
+- Run result path.
 
-## Milestone 6 — Soft Launch
+## Phase 3 - Ability Level-Up System
 
-- Limited geography
-- KPI dashboard
-- A/B tests
-- Crash reporting
-- Balance updates
+Goal: Add survivor build crafting.
 
-## Milestone 7 — Global Launch
+Deliverables:
 
-- 10+ chapters
-- Events
-- Battle pass
-- Localization
-- Store polish
+- XP orbs/pickups.
+- Level progression.
+- Weighted ability offers.
+- Active skills.
+- Passive upgrades.
+- Projectile/dash/area modifiers.
+- Ability UI.
+
+## Phase 4 - Enemy, Elite, and Boss Integration
+
+Goal: Add enough enemy variety and milestone pressure.
+
+Deliverables:
+
+- At least 5 enemy archetypes.
+- Elite variant.
+- Boss encounter.
+- Boss warning and HP bar.
+- Enemy budget and performance stress tests.
+
+## Phase 5 - Content Pass and Balance Tools
+
+Goal: Tune the run and make content iteration practical.
+
+Deliverables:
+
+- Wave timeline editor/report.
+- Ability weight report.
+- Difficulty curve tuning.
+- XP curve tuning.
+- Boss milestone tuning.
+- Debug overlay/run simulator plan.
+
+## Phase 6 - Vertical Slice
+
+Goal: Ship an internal playable MVP slice.
+
+Deliverables:
+
+- One arena.
+- One player.
+- 10-minute run.
+- 12+ ability choices.
+- 5+ enemies, 1 elite, 1 boss.
+- Win/loss result screen.
+- QA pass and performance report.
+
+## Phase 7 - Steam-Facing Polish and Demo Preparation
+
+Goal: Prepare for external playtest/demo.
+
+Deliverables:
+
+- Settings and keybind polish.
+- Performance options.
+- Steam demo checklist.
+- Store page assets plan.
+- Known issues list.
+- Playtest telemetry plan.

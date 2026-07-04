@@ -1,4 +1,6 @@
+using TapKnockout.Ability;
 using TapKnockout.Combat;
+using TapKnockout.Input;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -17,10 +19,13 @@ namespace TapKnockout.Player
         [SerializeField] private PlayerRuntimeStats runtimeStats;
         [SerializeField] private PlayerHealth playerHealth;
         [SerializeField] private Transform hitQueryOrigin;
+        [SerializeField] private MouseAimController mouseAimController;
 
         [Header("Editor / Development Input")]
-        [SerializeField] private bool enableKeyboardTestDash = true;
+        [SerializeField] private bool enableKeyboardTestDash;
+#if ENABLE_LEGACY_INPUT_MANAGER
         [SerializeField] private KeyCode legacyKeyboardDashKey = KeyCode.Space;
+#endif
 
         [Header("Fallback Dash Values")]
         [SerializeField, Min(0.1f)] private float fallbackDashDistance = 3.5f;
@@ -50,14 +55,19 @@ namespace TapKnockout.Player
         [Header("Debug")]
         [SerializeField] private bool logSetupWarnings = true;
 
+        private const float CooldownEventEpsilon = 0.001f;
         private readonly DashState dashState = new DashState();
         private readonly DashHitRegistry hitRegistry = new DashHitRegistry();
         private Rigidbody cachedRigidbody;
         private Collider[] hitBuffer;
         private Vector3 dashDirection = Vector3.forward;
         private float dashSpeed;
+        private float lastPublishedCooldownRemaining = -1f;
+        private float lastPublishedNormalizedCooldown = -1f;
+        private bool wasCooldownActive;
         private bool loggedMissingConfig;
         private bool loggedMissingHitLayers;
+        private bool dashShieldGrantedThisDash;
 
         public bool IsDashing => dashState.IsDashing;
         public bool IsDashInvulnerable => dashState.IsIFrameActive;
@@ -85,6 +95,7 @@ namespace TapKnockout.Player
             movementController = GetComponent<PlayerMovementController>();
             runtimeStats = GetComponent<PlayerRuntimeStats>();
             playerHealth = GetComponent<PlayerHealth>();
+            mouseAimController = GetComponent<MouseAimController>();
             hitQueryOrigin = transform;
         }
 
@@ -94,6 +105,7 @@ namespace TapKnockout.Player
             movementController = movementController != null ? movementController : GetComponent<PlayerMovementController>();
             runtimeStats = runtimeStats != null ? runtimeStats : GetComponent<PlayerRuntimeStats>();
             playerHealth = playerHealth != null ? playerHealth : GetComponent<PlayerHealth>();
+            mouseAimController = mouseAimController != null ? mouseAimController : GetComponent<MouseAimController>();
 
             if (hitQueryOrigin == null)
             {
@@ -152,6 +164,8 @@ namespace TapKnockout.Player
             {
                 EndDash(true);
             }
+
+            PublishCooldownStateIfChanged();
         }
 
         private void OnDisable()
@@ -169,6 +183,10 @@ namespace TapKnockout.Player
             }
 
             hitRegistry.Clear();
+            wasCooldownActive = false;
+            lastPublishedCooldownRemaining = -1f;
+            lastPublishedNormalizedCooldown = -1f;
+            dashShieldGrantedThisDash = false;
         }
 
         public bool TryDash()
@@ -186,9 +204,10 @@ namespace TapKnockout.Player
                 Debug.LogWarning($"{nameof(PlayerDashController)} on {name} has no PlayerConfig assigned. Fallback dash values are being used.", this);
             }
 
-            dashDirection = DashDirectionResolver.Resolve(movementController, transform);
+            dashDirection = DashDirectionResolver.Resolve(movementController, transform, mouseAimController);
             dashSpeed = DashDistance / Mathf.Max(0.01f, DashDuration);
             hitRegistry.Clear();
+            dashShieldGrantedThisDash = false;
 
             if (!dashState.TryBegin(DashDuration, DashCooldown, DashHasIFrames, DashIFrameDuration))
             {
@@ -199,6 +218,7 @@ namespace TapKnockout.Player
             FaceDashDirection();
 
             DashEvents.RaiseDashStarted(new DashStartedEventArgs(gameObject, dashDirection, DashDistance, DashDuration, DashCooldown));
+            PublishCooldownStarted();
 
             if (dashState.IsIFrameActive)
             {
@@ -234,6 +254,10 @@ namespace TapKnockout.Player
             if (hitQueryOrigin == null)
             {
                 hitQueryOrigin = transform;
+            }
+            if (mouseAimController == null)
+            {
+                mouseAimController = GetComponent<MouseAimController>();
             }
         }
 
@@ -283,7 +307,9 @@ namespace TapKnockout.Player
 
         private void TryResolveDashHit(Collider candidateCollider, Vector3 queryOrigin)
         {
-            if (candidateCollider == null || IsSelf(candidateCollider.transform))
+            if (candidateCollider == null ||
+                !candidateCollider.gameObject.activeInHierarchy ||
+                IsSelf(candidateCollider.transform))
             {
                 return;
             }
@@ -297,6 +323,11 @@ namespace TapKnockout.Player
             var targetable = candidateCollider.GetComponentInParent<ITargetable>();
             var targetTransform = ResolveTargetTransform(candidateCollider, damageable, targetable);
             var targetGameObject = ResolveTargetGameObject(candidateCollider, damageable, targetable, targetTransform);
+
+            if (targetGameObject == null || !targetGameObject.activeInHierarchy)
+            {
+                return;
+            }
 
             if (!hitRegistry.TryRegister(targetGameObject))
             {
@@ -312,8 +343,11 @@ namespace TapKnockout.Player
                 Knockback = new KnockbackData(knockbackDirection, DashKnockbackForce, DashKnockbackDuration)
             };
 
+            CombatHitModifierUtility.ApplySourceModifiers(hitContext);
             damageable.ReceiveHit(hitContext);
             ApplyDashStatusEffectHooks(candidateCollider, targetGameObject, damageable);
+            TryGrantDashShieldAfterHit();
+            TryResolveDashShockwave(hitContext, targetGameObject);
             RaiseDashHitEvents(hitContext);
         }
 
@@ -321,12 +355,59 @@ namespace TapKnockout.Player
         {
             movementController.SetMovementLocked(false);
             hitRegistry.Clear();
+            dashShieldGrantedThisDash = false;
             DashEvents.RaiseDashEnded(new DashEndedEventArgs(gameObject, dashDirection, completed, dashState.CooldownRemaining));
         }
 
         public void RefundCooldown(float seconds)
         {
             dashState.ReduceCooldown(seconds);
+            PublishCooldownStateIfChanged();
+        }
+
+        private void PublishCooldownStarted()
+        {
+            var eventArgs = CreateCooldownEventArgs();
+            wasCooldownActive = eventArgs.CooldownRemaining > 0f;
+            lastPublishedCooldownRemaining = eventArgs.CooldownRemaining;
+            lastPublishedNormalizedCooldown = eventArgs.NormalizedCooldown;
+
+            if (wasCooldownActive)
+            {
+                DashEvents.RaiseDashCooldownStarted(eventArgs);
+            }
+
+            DashEvents.RaiseDashCooldownChanged(eventArgs);
+        }
+
+        private void PublishCooldownStateIfChanged()
+        {
+            var eventArgs = CreateCooldownEventArgs();
+            var cooldownActive = eventArgs.CooldownRemaining > 0f;
+            var wasActive = wasCooldownActive;
+            var changed =
+                Mathf.Abs(eventArgs.CooldownRemaining - lastPublishedCooldownRemaining) > CooldownEventEpsilon ||
+                Mathf.Abs(eventArgs.NormalizedCooldown - lastPublishedNormalizedCooldown) > CooldownEventEpsilon ||
+                cooldownActive != wasCooldownActive;
+
+            if (changed)
+            {
+                DashEvents.RaiseDashCooldownChanged(eventArgs);
+            }
+
+            if (wasActive && !cooldownActive)
+            {
+                DashEvents.RaiseDashCooldownReady(eventArgs);
+            }
+
+            wasCooldownActive = cooldownActive;
+            lastPublishedCooldownRemaining = eventArgs.CooldownRemaining;
+            lastPublishedNormalizedCooldown = eventArgs.NormalizedCooldown;
+        }
+
+        private DashCooldownEventArgs CreateCooldownEventArgs()
+        {
+            return new DashCooldownEventArgs(gameObject, dashState.CooldownRemaining, dashState.DashCooldown);
         }
 
         private void HandleEntityKilled(EntityKilledEvent entityKilledEvent)
@@ -445,6 +526,89 @@ namespace TapKnockout.Player
                 StatusEffectType.Stun,
                 gameObject,
                 runtimeStats.DashStunDuration));
+        }
+
+        private void TryGrantDashShieldAfterHit()
+        {
+            if (runtimeStats == null || !runtimeStats.DashShieldAfterHit || dashShieldGrantedThisDash)
+            {
+                return;
+            }
+
+            runtimeStats.AddShieldCharge(1);
+            dashShieldGrantedThisDash = true;
+        }
+
+        private void TryResolveDashShockwave(HitContext sourceHit, GameObject primaryTarget)
+        {
+            if (runtimeStats == null || runtimeStats.DashShockwaveRadius <= 0f || DashHitLayers.value == 0)
+            {
+                return;
+            }
+
+            EnsureHitBuffer();
+            var origin = sourceHit.HitPoint != Vector3.zero
+                ? sourceHit.HitPoint
+                : primaryTarget != null
+                    ? primaryTarget.transform.position
+                    : hitQueryOrigin.position;
+            var radius = runtimeStats.DashShockwaveRadius;
+            var hitCount = Physics.OverlapSphereNonAlloc(
+                origin,
+                radius,
+                hitBuffer,
+                DashHitLayers,
+                QueryTriggerInteraction.Collide);
+
+            for (var i = 0; i < hitCount; i++)
+            {
+                var candidateCollider = hitBuffer[i];
+                if (candidateCollider == null ||
+                    !candidateCollider.gameObject.activeInHierarchy ||
+                    IsSelf(candidateCollider.transform))
+                {
+                    continue;
+                }
+
+                var damageable = candidateCollider.GetComponentInParent<IDamageable>();
+                if (damageable == null || !damageable.IsAlive)
+                {
+                    continue;
+                }
+
+                var targetable = candidateCollider.GetComponentInParent<ITargetable>();
+                var targetTransform = ResolveTargetTransform(candidateCollider, damageable, targetable);
+                var targetGameObject = ResolveTargetGameObject(candidateCollider, damageable, targetable, targetTransform);
+                if (targetGameObject == null ||
+                    targetGameObject == primaryTarget ||
+                    IsSelf(targetGameObject.transform) ||
+                    !hitRegistry.TryRegister(targetGameObject))
+                {
+                    continue;
+                }
+
+                var hitDirection = targetTransform != null
+                    ? targetTransform.position - origin
+                    : candidateCollider.transform.position - origin;
+                hitDirection.y = 0f;
+                hitDirection = hitDirection.sqrMagnitude > 0.0001f ? hitDirection.normalized : dashDirection;
+
+                var shockwaveHit = new HitContext(gameObject, targetGameObject, DashImpactDamage * 0.45f, DamageType.Impact)
+                {
+                    IsDashHit = true,
+                    IsAbilityHit = true,
+                    AbilityId = AbilityEffectType.DashShockwave.ToString(),
+                    HitDirection = hitDirection,
+                    HitPoint = targetTransform != null ? targetTransform.position : candidateCollider.ClosestPoint(origin),
+                    Knockback = DashKnockbackForce > 0f && DashKnockbackDuration > 0f
+                        ? new KnockbackData(hitDirection, DashKnockbackForce * 0.55f, DashKnockbackDuration)
+                        : KnockbackData.None
+                };
+
+                CombatHitModifierUtility.ApplySourceModifiers(shockwaveHit);
+                damageable.ReceiveHit(shockwaveHit);
+                RaiseDashHitEvents(shockwaveHit);
+            }
         }
 
         private static Transform ResolveTargetTransform(Collider candidateCollider, IDamageable damageable, ITargetable targetable)

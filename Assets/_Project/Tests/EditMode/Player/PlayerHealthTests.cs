@@ -129,5 +129,75 @@ namespace TapKnockout.Player.Tests
                 Object.DestroyImmediate(player);
             }
         }
+
+        [Test]
+        public void ReceiveHit_AppliesDamageReductionFromRuntimeStats()
+        {
+            var player = new GameObject("Player");
+
+            try
+            {
+                var stats = player.AddComponent<PlayerRuntimeStats>();
+                var health = player.AddComponent<PlayerHealth>();
+                health.SetRuntimeStats(stats);
+                health.ResetHealth();
+                stats.AddDamageReduction(0.5f);
+
+                health.ReceiveHit(new HitContext(null, player, 20f, DamageType.Physical));
+
+                Assert.That(health.CurrentHealth, Is.EqualTo(90f).Within(0.0001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(player);
+            }
+        }
+
+        [Test]
+        public void ReceiveHit_ConsumesShieldChargeBeforeHealthDamage()
+        {
+            var player = new GameObject("Player");
+
+            try
+            {
+                var stats = player.AddComponent<PlayerRuntimeStats>();
+                var health = player.AddComponent<PlayerHealth>();
+                health.SetRuntimeStats(stats);
+                health.ResetHealth();
+                stats.AddShieldCharge(1);
+                var hit = new HitContext(null, player, 20f, DamageType.Physical);
+
+                health.ReceiveHit(hit);
+
+                Assert.That(hit.WasIgnored, Is.True);
+                Assert.That(health.CurrentHealth, Is.EqualTo(health.MaxHealth));
+                Assert.That(stats.ShieldChargeCount, Is.EqualTo(0));
+            }
+            finally
+            {
+                Object.DestroyImmediate(player);
+            }
+        }
+
+        [Test]
+        public void Heal_RestoresHealthWithoutExceedingMax()
+        {
+            var player = new GameObject("Player");
+
+            try
+            {
+                var health = player.AddComponent<PlayerHealth>();
+                health.ResetHealth();
+                health.ReceiveHit(new HitContext(null, player, 30f, DamageType.Physical));
+
+                Assert.That(health.Heal(15f), Is.True);
+
+                Assert.That(health.CurrentHealth, Is.EqualTo(85f).Within(0.0001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(player);
+            }
+        }
     }
 }

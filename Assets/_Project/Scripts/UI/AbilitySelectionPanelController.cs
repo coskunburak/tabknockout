@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using TapKnockout.Ability;
 using TapKnockout.Level;
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace TapKnockout.UI
 {
@@ -20,6 +23,7 @@ namespace TapKnockout.UI
 
         private float previousTimeScale = 1f;
         private bool isOpen;
+        private bool panelOwnsPause;
 
         public bool PauseGameWhileOpen => pauseGameWhileOpen;
         public bool IsOpen => isOpen;
@@ -59,6 +63,19 @@ namespace TapKnockout.UI
             }
 
             ResumeIfPaused();
+        }
+
+        private void Update()
+        {
+            if (!isOpen)
+            {
+                return;
+            }
+
+            if (TryReadChoiceHotkey(out var choiceIndex))
+            {
+                SelectChoice(choiceIndex);
+            }
         }
 
         public void SetAbilitySelectionController(AbilitySelectionController controller)
@@ -137,10 +154,11 @@ namespace TapKnockout.UI
                 return;
             }
 
-            if (!isOpen && pauseGameWhileOpen)
+            if (!isOpen && pauseGameWhileOpen && Time.timeScale > 0f)
             {
                 previousTimeScale = Time.timeScale;
                 Time.timeScale = 0f;
+                panelOwnsPause = true;
             }
 
             isOpen = true;
@@ -186,10 +204,12 @@ namespace TapKnockout.UI
 
         private void ResumeIfPaused()
         {
-            if (isOpen && pauseGameWhileOpen)
+            if (isOpen && pauseGameWhileOpen && panelOwnsPause)
             {
                 Time.timeScale = previousTimeScale;
             }
+
+            panelOwnsPause = false;
         }
 
         private void SetVisible(bool visible)
@@ -207,6 +227,56 @@ namespace TapKnockout.UI
             {
                 canvasGroup = gameObject.AddComponent<CanvasGroup>();
             }
+        }
+
+        private static bool TryReadChoiceHotkey(out int choiceIndex)
+        {
+            choiceIndex = -1;
+
+#if ENABLE_INPUT_SYSTEM
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.digit1Key.wasPressedThisFrame || Keyboard.current.numpad1Key.wasPressedThisFrame)
+                {
+                    choiceIndex = 0;
+                    return true;
+                }
+
+                if (Keyboard.current.digit2Key.wasPressedThisFrame || Keyboard.current.numpad2Key.wasPressedThisFrame)
+                {
+                    choiceIndex = 1;
+                    return true;
+                }
+
+                if (Keyboard.current.digit3Key.wasPressedThisFrame || Keyboard.current.numpad3Key.wasPressedThisFrame)
+                {
+                    choiceIndex = 2;
+                    return true;
+                }
+            }
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1) || UnityEngine.Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                choiceIndex = 0;
+                return true;
+            }
+
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2) || UnityEngine.Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                choiceIndex = 1;
+                return true;
+            }
+
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3) || UnityEngine.Input.GetKeyDown(KeyCode.Keypad3))
+            {
+                choiceIndex = 2;
+                return true;
+            }
+#endif
+
+            return false;
         }
     }
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf944abd76904ed9aec37b5ddc69402, type: 3}
+  m_Name: SpawnGroup_Cute_Bee
+  m_EditorClassIdentifier: TapKnockout.Survivor::TapKnockout.Survivor.SpawnGroupConfig
+  groupId: cute_bee_group
+  enemyConfig: {fileID: 11400000, guid: d94046625193b45b589708e6691d4dd9, type: 2}
+  enemyPrefab: {fileID: 4041173305005405333, guid: 013eda7ba000a46bdb05951405f897d0, type: 3}
+  elite: 0
+  weight: 1.1
+  minCount: 2
+  maxCount: 3
+  spawnBurstCount: 2
+  budgetCost: 1

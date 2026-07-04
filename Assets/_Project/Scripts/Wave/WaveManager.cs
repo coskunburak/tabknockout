@@ -66,7 +66,14 @@ namespace TapKnockout.Wave
 
         private void OnDisable()
         {
+            SplitterEnemyController.OnAnySplitChildSpawned -= HandleSplitChildSpawned;
             StopCurrentWave(false);
+        }
+
+        private void OnEnable()
+        {
+            SplitterEnemyController.OnAnySplitChildSpawned -= HandleSplitChildSpawned;
+            SplitterEnemyController.OnAnySplitChildSpawned += HandleSplitChildSpawned;
         }
 
         public void RunWave(WaveConfig waveConfig, int waveIndex = 0)
@@ -106,6 +113,7 @@ namespace TapKnockout.Wave
             if (!markComplete)
             {
                 IsRunning = false;
+                enemySpawner?.ClearSpawnedEnemies();
                 return;
             }
 
@@ -122,6 +130,7 @@ namespace TapKnockout.Wave
 
             UnsubscribeTrackedHealth();
             spawnedEnemies.Clear();
+            enemySpawner?.ClearSpawnedEnemies();
             hasSpawnedAllEnemies = false;
             currentWaveIndex = 0;
             IsRunning = false;
@@ -195,6 +204,11 @@ namespace TapKnockout.Wave
                 return;
             }
 
+            if (spawnedEnemies.Contains(spawned))
+            {
+                return;
+            }
+
             spawnedEnemies.Add(spawned);
             var enemyHealth = spawned.GetComponentInChildren<EnemyHealth>(true);
             if (enemyHealth == null)
@@ -208,6 +222,17 @@ namespace TapKnockout.Wave
 
         private void HandleTrackedEnemyDied(TapKnockout.Combat.HitContext hitContext)
         {
+            EvaluateCompletion();
+        }
+
+        private void HandleSplitChildSpawned(GameObject spawnedChild)
+        {
+            if (!IsRunning || spawnedChild == null)
+            {
+                return;
+            }
+
+            TrackSpawnedEnemy(spawnedChild);
             EvaluateCompletion();
         }
 
@@ -262,7 +287,18 @@ namespace TapKnockout.Wave
 
         private static bool IsEnemyBlockingClear(GameObject enemy)
         {
-            if (enemy == null || !enemy.activeInHierarchy)
+            if (enemy == null)
+            {
+                return false;
+            }
+
+            var intro = enemy.GetComponentInChildren<EnemySpawnIntroController>(true);
+            if (intro != null && intro.IsIntroRunning)
+            {
+                return true;
+            }
+
+            if (!enemy.activeInHierarchy)
             {
                 return false;
             }

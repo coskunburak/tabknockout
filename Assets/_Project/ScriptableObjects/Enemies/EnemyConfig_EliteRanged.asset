@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d14ebcd843cb426aba24a163d04efb2, type: 3}
+  m_Name: EnemyConfig_EliteRanged
+  m_EditorClassIdentifier: TapKnockout.Enemy::TapKnockout.Enemy.EnemyConfig
+  enemyId: enemy_elite_ranged
+  displayName: Elite Ranged
+  archetype: 7
+  rank: 1
+  maxHealth: 78
+  deathDelay: 0.3
+  moveSpeed: 1.95
+  acceleration: 18
+  rotationSpeed: 720
+  stoppingDistance: 4.5
+  contactDamage: 9
+  attackRange: 8
+  attackCooldown: 1.65
+  attackWindup: 0.45
+  projectileSpeed: 9.5
+  projectileCount: 3
+  explosionRadius: 1.25
+  stunResistance: 0.25
+  knockbackResistance: 0.25
+  canBeKnockedBack: 1
+  canBeInterrupted: 1
+  attackPattern: {fileID: 0}
+  telegraphConfig: {fileID: 0}
+  projectilePrefab: {fileID: 4972280502460944787, guid: 5103a5d10def24cef8b4d2d9cbd3be37, type: 3}
+  splitSpawnPrefab: {fileID: 0}
+  splitSpawnCount: 0
+  shieldBlockAngle: 0
+  shieldDamageReduction: 0
+  chargeSpeedMultiplier: 2.8
+  chargeDuration: 0.35
+  chargeRecoveryDuration: 0.4
+  coinReward: 1
+  xpReward: 1
+  spawnVfx: 24
+  attackVfx: 25
+  deathVfx: 8

@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2c94263632a4785940b2507b8ea7c4, type: 3}
+  m_Name: BossPattern_DashCounterBrute_Phase3
+  m_EditorClassIdentifier: TapKnockout.Boss::TapKnockout.Boss.BossPatternConfig
+  initialDelay: 0
+  loop: 1
+  steps:
+  - attackType: 9
+    windupDuration: 0.35
+    activeDuration: 0.2
+    cooldownDuration: 0.35
+    damageMultiplier: 1
+    damage: 0
+    range: 0
+    radius: 0
+    chargeSpeed: 0
+    addCount: 0
+    telegraphType: 6
+    vfxEventType: 26
+  - attackType: 8
+    windupDuration: 0.45
+    activeDuration: 0.5
+    cooldownDuration: 0.52
+    damageMultiplier: 1
+    damage: 20
+    range: 0
+    radius: 0
+    chargeSpeed: 9.75
+    addCount: 0
+    telegraphType: 5
+    vfxEventType: 13
+  - attackType: 7
+    windupDuration: 0.5
+    activeDuration: 0.08
+    cooldownDuration: 0.5
+    damageMultiplier: 1
+    damage: 22
+    range: 0
+    radius: 2.6
+    chargeSpeed: 0
+    addCount: 0
+    telegraphType: 6
+    vfxEventType: 26
+  - attackType: 5
+    windupDuration: 0.35
+    activeDuration: 0.1
+    cooldownDuration: 0.75
+    damageMultiplier: 1
+    damage: 0
+    range: 0
+    radius: 0
+    chargeSpeed: 0
+    addCount: 2
+    telegraphType: 1
+    vfxEventType: 13
+  - attackType: 8
+    windupDuration: 0.42
+    activeDuration: 0.5
+    cooldownDuration: 0.52
+    damageMultiplier: 1
+    damage: 20
+    range: 0
+    radius: 0
+    chargeSpeed: 10
+    addCount: 0
+    telegraphType: 5
+    vfxEventType: 13
+  - attackType: 7
+    windupDuration: 0.48
+    activeDuration: 0.08
+    cooldownDuration: 0.55
+    damageMultiplier: 1
+    damage: 23
+    range: 0
+    radius: 2.7
+    chargeSpeed: 0
+    addCount: 0
+    telegraphType: 6
+    vfxEventType: 26

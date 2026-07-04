@@ -1,0 +1,27 @@
+{
+  "name": "TapKnockout.Characters.EditModeTests",
+  "rootNamespace": "TapKnockout.Characters.Tests",
+  "references": [
+    "TapKnockout.Characters",
+    "TapKnockout.Enemy",
+    "TapKnockout.Player",
+    "TapKnockout.Combat",
+    "TapKnockout.Input",
+    "TapKnockout.Projectile",
+    "TapKnockout.Ability"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

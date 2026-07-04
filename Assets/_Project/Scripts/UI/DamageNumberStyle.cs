@@ -8,6 +8,10 @@ namespace TapKnockout.UI
         WallSlam = 3,
         ChainKnockback = 4,
         Critical = 5,
-        Ignored = 6
+        Ignored = 6,
+        Skill = 7,
+        HeavyProjectile = 8,
+        Boss = 9,
+        PlayerDamage = 10
     }
 }

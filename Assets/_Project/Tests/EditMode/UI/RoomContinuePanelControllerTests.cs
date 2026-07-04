@@ -73,6 +73,38 @@ namespace TapKnockout.UI.Tests
             }
         }
 
+        [Test]
+        public void RefreshVisibilityFromFlow_ShowsPanelWhenFlowIsWaitingForContinue()
+        {
+            var fixture = CreateFixture();
+            var runnerObject = new GameObject("Runner");
+            var flowObject = new GameObject("Flow");
+
+            try
+            {
+                var runner = runnerObject.AddComponent<ChapterRunner>();
+                var flowController = flowObject.AddComponent<ChapterRoomRewardFlowController>();
+                flowController.SetReferences(runner, null, null, null, null);
+                runner.RunState.MarkWaitingForContinue();
+                runner.SetFlowState(ChapterFlowState.WaitingForContinue);
+
+                fixture.Controller.SetFlowController(flowController);
+                fixture.Controller.Hide();
+
+                fixture.Controller.RefreshVisibilityFromFlow();
+
+                Assert.That(fixture.Controller.IsVisible, Is.True);
+                Assert.That(fixture.CanvasGroup.alpha, Is.EqualTo(1f));
+                Assert.That(fixture.Button.interactable, Is.True);
+            }
+            finally
+            {
+                Object.DestroyImmediate(flowObject);
+                Object.DestroyImmediate(runnerObject);
+                fixture.Destroy();
+            }
+        }
+
         private static ContinuePanelFixture CreateFixture()
         {
             var root = new GameObject("RoomContinuePanel", typeof(CanvasGroup));

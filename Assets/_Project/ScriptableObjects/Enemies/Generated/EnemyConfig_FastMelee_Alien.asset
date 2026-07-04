@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d14ebcd843cb426aba24a163d04efb2, type: 3}
+  m_Name: EnemyConfig_FastMelee_Alien
+  m_EditorClassIdentifier: TapKnockout.Enemy::TapKnockout.Enemy.EnemyConfig
+  enemyId: enemy_fast_melee_alien
+  maxHealth: 32
+  deathDelay: 0.3
+  moveSpeed: 3.15
+  acceleration: 26
+  rotationSpeed: 800
+  stoppingDistance: 0.95
+  contactDamage: 6
+  attackRange: 1.05
+  attackCooldown: 0.72
+  knockbackResistance: 0.1
+  canBeKnockedBack: 1
+  canBeInterrupted: 1
+  coinReward: 1
+  xpReward: 1

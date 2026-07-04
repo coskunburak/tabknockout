@@ -1,0 +1,21 @@
+{
+  "name": "TapKnockout.VFX.EditModeTests",
+  "rootNamespace": "TapKnockout.VFX.Tests",
+  "references": [
+    "TapKnockout.VFX"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

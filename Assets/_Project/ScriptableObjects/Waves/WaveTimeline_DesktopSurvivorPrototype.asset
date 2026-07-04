@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcde7aea0f3b341788585367e296ff96, type: 3}
+  m_Name: WaveTimeline_DesktopSurvivorPrototype
+  m_EditorClassIdentifier: TapKnockout.Survivor::TapKnockout.Survivor.WaveTimelineConfig
+  timelineId: wave_timeline_prototype_01
+  entries:
+  - startTime: 0
+    endTime: 75
+    spawnInterval: 1.65
+    liveEnemyCap: 20
+    intensityMultiplier: 1
+    spawnGroups:
+    - {fileID: 11400000, guid: 00c4dd50c99ce4eb4a6080112ff6d956, type: 2}
+    - {fileID: 11400000, guid: b3bd03359a48442aeb1deb620a081001, type: 2}
+    - {fileID: 11400000, guid: e5166564cf8b74d0494d59f09b5f2005, type: 2}
+    - {fileID: 11400000, guid: dea836f47c08d493dbff12fcdfdbd725, type: 2}
+    - {fileID: 11400000, guid: 1f2b33feff1d74609a2ad4dc8b150796, type: 2}
+    - {fileID: 11400000, guid: 69eaf08b3931646c993d7f22f0ef71bb, type: 2}
+  - startTime: 75
+    endTime: 180
+    spawnInterval: 1.45
+    liveEnemyCap: 30
+    intensityMultiplier: 1.12
+    spawnGroups:
+    - {fileID: 11400000, guid: 00c4dd50c99ce4eb4a6080112ff6d956, type: 2}
+    - {fileID: 11400000, guid: b3bd03359a48442aeb1deb620a081001, type: 2}
+    - {fileID: 11400000, guid: e5166564cf8b74d0494d59f09b5f2005, type: 2}
+    - {fileID: 11400000, guid: dea836f47c08d493dbff12fcdfdbd725, type: 2}
+    - {fileID: 11400000, guid: 1f2b33feff1d74609a2ad4dc8b150796, type: 2}
+    - {fileID: 11400000, guid: 69eaf08b3931646c993d7f22f0ef71bb, type: 2}
+    - {fileID: 11400000, guid: 5918963206a2249bea8380ae7a9b8c18, type: 2}
+  - startTime: 180
+    endTime: 330
+    spawnInterval: 1.35
+    liveEnemyCap: 42
+    intensityMultiplier: 1.25
+    spawnGroups:
+    - {fileID: 11400000, guid: b3bd03359a48442aeb1deb620a081001, type: 2}
+    - {fileID: 11400000, guid: dea836f47c08d493dbff12fcdfdbd725, type: 2}
+    - {fileID: 11400000, guid: 1f2b33feff1d74609a2ad4dc8b150796, type: 2}
+    - {fileID: 11400000, guid: 5918963206a2249bea8380ae7a9b8c18, type: 2}
+    - {fileID: 11400000, guid: 5e596dd1588124bdfbb6fdf8801fa198, type: 2}
+    - {fileID: 11400000, guid: d8392cebeab2c4890974259bd1bd7eac, type: 2}
+  - startTime: 330
+    endTime: 510
+    spawnInterval: 1.15
+    liveEnemyCap: 58
+    intensityMultiplier: 1.4
+    spawnGroups:
+    - {fileID: 11400000, guid: 1f2b33feff1d74609a2ad4dc8b150796, type: 2}
+    - {fileID: 11400000, guid: 69eaf08b3931646c993d7f22f0ef71bb, type: 2}
+    - {fileID: 11400000, guid: 5918963206a2249bea8380ae7a9b8c18, type: 2}
+    - {fileID: 11400000, guid: 5e596dd1588124bdfbb6fdf8801fa198, type: 2}
+    - {fileID: 11400000, guid: 0d25f450f8d744b7099bdd29c80a5cb0, type: 2}
+    - {fileID: 11400000, guid: d8392cebeab2c4890974259bd1bd7eac, type: 2}
+  - startTime: 510
+    endTime: 600
+    spawnInterval: 1.35
+    liveEnemyCap: 42
+    intensityMultiplier: 1.25
+    spawnGroups:
+    - {fileID: 11400000, guid: b3bd03359a48442aeb1deb620a081001, type: 2}
+    - {fileID: 11400000, guid: 69eaf08b3931646c993d7f22f0ef71bb, type: 2}
+    - {fileID: 11400000, guid: 0d25f450f8d744b7099bdd29c80a5cb0, type: 2}
+  bossWarningTimeSeconds: 510

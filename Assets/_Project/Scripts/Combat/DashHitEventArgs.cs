@@ -66,6 +66,24 @@ namespace TapKnockout.Combat
         public float Duration { get; }
     }
 
+    public readonly struct DashCooldownEventArgs
+    {
+        public DashCooldownEventArgs(GameObject source, float cooldownRemaining, float cooldownDuration)
+        {
+            Source = source;
+            CooldownRemaining = Mathf.Max(0f, cooldownRemaining);
+            CooldownDuration = Mathf.Max(0f, cooldownDuration);
+            NormalizedCooldown = CooldownDuration <= 0f ? 0f : Mathf.Clamp01(CooldownRemaining / CooldownDuration);
+            IsReady = CooldownRemaining <= 0f;
+        }
+
+        public GameObject Source { get; }
+        public float CooldownRemaining { get; }
+        public float CooldownDuration { get; }
+        public float NormalizedCooldown { get; }
+        public bool IsReady { get; }
+    }
+
     public readonly struct PerfectDashEventArgs
     {
         public PerfectDashEventArgs(

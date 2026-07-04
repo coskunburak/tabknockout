@@ -1,97 +1,113 @@
-# Level, Room, and Wave System
+# Arena, Run, and Wave Design
 
-## Chapter Structure
+## Canonical Structure
 
-A chapter is a sequence of rooms ending in a boss.
+The game is arena-first and wave/timer-driven. The main gameplay unit is a run inside an arena. Rooms are legacy or optional future content modules.
 
-Example Chapter 1:
+## Run Timer
 
-```text
-Room 1: Tutorial melee
-Room 2: Melee wave
-Room 3: Ranged intro
-Room 4: Mixed
-Room 5: Ability reward
-Room 6: Charger intro
-Room 7: Mixed
-Room 8: Elite
-Room 9: Heal/reward
-Room 10: Mixed
-Room 11: Mini-boss
-Room 12-14: Hard mixed
-Room 15: Boss
-```
+The MVP run target is 10 minutes. A future full run may extend to 15 minutes.
 
-## Room Types
+The run timer drives:
 
-- CombatRoom
-- EliteRoom
-- RewardRoom
-- HealRoom
-- ShopRoom
-- BossRoom
-- EventRoom later
+- Spawn intensity.
+- Enemy type unlocks.
+- Elite milestones.
+- Boss warning and spawn.
+- Drop pacing.
+- Difficulty multipliers.
+- Result conditions.
 
-## RoomTemplate
+## Wave Timeline
 
-Fields:
+`WaveTimelineConfig` should describe timed segments:
 
-```text
-id
-roomType
-arenaPrefab
-spawnPoints
-hazards
-waves
-rewardDefinition
-difficultyRating
-cameraSettings
-```
+| Segment | Example Time | Purpose |
+|---|---|---|
+| Intro | 0:00-1:00 | Basic enemies, low pressure, teach movement. |
+| Pressure 1 | 1:00-3:00 | Add swarm and ranged enemies. |
+| Elite 1 | 3:00 | Spawn first elite or elite pack. |
+| Pressure 2 | 3:00-6:00 | Add charger/tank mix and higher counts. |
+| Elite 2 | 6:00 | Stronger elite milestone. |
+| Boss Warning | 8:30-9:00 | UI/audio/VFX warning, pressure adjustment. |
+| Boss | 9:00-10:00 | Boss encounter with adds or hazards. |
 
-## WaveDefinition
+The exact times are tuning targets, not verified implementation.
 
-Fields:
+## Spawn Director
 
-```text
-enemyGroups
-spawnDelay
-spawnInterval
-maxAlive
-clearCondition
-```
+The spawn system should support:
 
-EnemyGroup:
+- Spawn rings around the player.
+- Arena edge spawn zones.
+- Anti-spawn safety radius near the player.
+- Line-of-sight or camera-aware constraints if needed.
+- Max alive budget.
+- Spawn budget by enemy cost.
+- Burst spawns and trickle spawns.
+- Elite and boss overrides.
 
-```text
-enemyConfig
-count
-spawnPattern
-delay
-```
+## Enemy Budget
 
-## Spawn Patterns
+Each enemy archetype should have a budget cost:
 
-- Edges
-- Corners
-- Circle
-- RandomPoints
-- Line
-- BossAdds
+- Swarm: low cost.
+- Basic melee: low/medium cost.
+- Ranged: medium cost.
+- Charger: medium/high cost.
+- Tank: high cost.
+- Elite: milestone budget.
+- Boss: encounter budget.
 
-## Clear Conditions
+The director should limit total live enemy cost, not only raw count.
 
-- AllEnemiesDefeated
-- SurviveDuration
-- DefeatBoss
-- Objective later
+## Intensity Scaling
 
-## Vertical Slice Implementation
+Difficulty can scale through:
 
-1. RoomManager
-2. WaveManager
-3. EnemySpawner
-4. Room clear detection
-5. ChapterRunner
-6. Boss placeholder
+- Spawn rate.
+- Max alive budget.
+- Enemy health multiplier.
+- Enemy damage multiplier.
+- Enemy speed multiplier.
+- Ranged enemy ratio.
+- Elite frequency.
+- Boss add frequency.
 
-Do not implement procedural generation first.
+Scaling must be capped by performance and readability gates.
+
+## Rewards and Drops
+
+Drop pacing should prioritize run feel:
+
+- XP orbs from enemy deaths.
+- Pickup magnet upgrades.
+- Health pickups sparingly.
+- Gold/material drops only if meta progression is enabled.
+- Boss reward bundle at run completion.
+
+XP curves should be tuned so early levels arrive quickly, mid-run levels slow slightly, and the final boss window still offers meaningful decisions.
+
+## Elite Milestones
+
+Elite milestones should create short spikes without derailing the run:
+
+- Warning cue.
+- Distinct silhouette or color grade.
+- Higher HP and a clear modifier.
+- Better XP/drop reward.
+- Analytics event on spawn and kill.
+
+## Boss Milestone
+
+The boss is the major run climax:
+
+- Spawn after warning.
+- Bind boss health bar.
+- Reduce or reshape regular spawns if needed.
+- Use clear telegraphs.
+- End run on boss defeat for MVP.
+
+## Legacy Room Handling
+
+Room templates and room managers may remain in code as legacy or future challenge-mode infrastructure. They should not drive the MVP desktop survivor loop unless explicitly migrated into arena modules.

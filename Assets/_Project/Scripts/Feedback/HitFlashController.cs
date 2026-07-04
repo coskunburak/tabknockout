@@ -1,9 +1,10 @@
+using TapKnockout.Combat;
 using UnityEngine;
 
 namespace TapKnockout.Feedback
 {
     [DisallowMultipleComponent]
-    public sealed class HitFlashController : MonoBehaviour
+    public sealed class HitFlashController : MonoBehaviour, IPoolLifecycle
     {
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int ColorId = Shader.PropertyToID("_Color");
@@ -24,6 +25,12 @@ namespace TapKnockout.Feedback
         private void Awake()
         {
             CacheRenderers();
+        }
+
+        private void OnEnable()
+        {
+            CacheRenderersIfNeeded();
+            RestoreOriginalBlocks();
         }
 
         private void OnValidate()
@@ -91,6 +98,25 @@ namespace TapKnockout.Feedback
             }
 
             hasCapturedOriginalBlocks = false;
+        }
+
+        public void OnBeforeSpawnFromPool()
+        {
+            RestoreOriginalBlocks();
+        }
+
+        public void OnSpawnedFromPool()
+        {
+        }
+
+        public void OnBeforeDespawnToPool()
+        {
+            RestoreOriginalBlocks();
+        }
+
+        public void ResetForPool()
+        {
+            RestoreOriginalBlocks();
         }
 
         private void CacheRenderersIfNeeded()

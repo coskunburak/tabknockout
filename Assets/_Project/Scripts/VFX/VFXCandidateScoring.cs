@@ -31,6 +31,29 @@ namespace TapKnockout.VFX
                 VFXEventType.Pickup => ScorePickup(text),
                 VFXEventType.Heal => ScoreHeal(text),
                 VFXEventType.GenericBurst => ScoreGenericBurst(text),
+                VFXEventType.PrimaryFireMuzzle => ScoreMuzzle(text),
+                VFXEventType.PrimaryProjectileTrail => ScoreProjectileTrail(text),
+                VFXEventType.PrimaryProjectileImpact => ScoreProjectileHit(text),
+                VFXEventType.PrimaryCriticalImpact => ScoreBossHit(text),
+                VFXEventType.ForwardCleaveCast => ScoreSlash(text) + ScoreKeyword(text, "weapon", "trail"),
+                VFXEventType.ForwardCleaveHit => ScoreSlash(text) + ScoreEnemyHit(text),
+                VFXEventType.GroundImpactCast => ScoreKeyword(text, "ground", "circle", "shockwave"),
+                VFXEventType.GroundImpactArea => ScoreGroundArea(text),
+                VFXEventType.GroundImpactHit => ScoreDashImpact(text),
+                VFXEventType.DashEnd => ScoreDashImpact(text) + ScoreKeyword(text, "flash", "poof"),
+                VFXEventType.SpawnTelegraph => ScoreBossWarning(text) + ScoreKeyword(text, "orange", "red", "circle"),
+                VFXEventType.EnemyDeathLarge => ScoreBossDeath(text),
+                VFXEventType.EnemySpawn => ScoreKeyword(text, "poof", "smoke", "spawn", "magic"),
+                VFXEventType.EliteSpawn => ScoreBossWarning(text) + ScoreKeyword(text, "magic", "circle"),
+                VFXEventType.EliteDeath => ScoreBossDeath(text),
+                VFXEventType.BossSpawnWarning => ScoreBossWarning(text),
+                VFXEventType.BossPhaseTransition => ScoreBossHit(text) + ScoreKeyword(text, "pillar", "light", "aura"),
+                VFXEventType.BossHeavyAttackTelegraph => ScoreBossWarning(text) + ScoreKeyword(text, "red", "purple", "warning"),
+                VFXEventType.BossHeavyAttackImpact => ScoreBossHit(text),
+                VFXEventType.XPOrbIdle => ScorePickup(text) + ScoreKeyword(text, "shiny", "glow", "loop"),
+                VFXEventType.XPOrbCollect => ScorePickup(text),
+                VFXEventType.LevelUpBurst => ScoreAbility(text) + ScoreKeyword(text, "pillar", "light", "green"),
+                VFXEventType.ReticleFirePulse => ScoreMuzzle(text) + ScoreKeyword(text, "spark", "flash", "hit"),
                 VFXEventType.AbilityAttackBuff => ScoreAbilityAttack(text),
                 VFXEventType.AbilityAttackSpeedBuff => ScoreAbilitySpeed(text),
                 VFXEventType.AbilityDefenseBuff => ScoreAbilityShield(text),
@@ -251,6 +274,70 @@ namespace TapKnockout.VFX
             if (ContainsAny(text, "hit", "burst", "magic", "impact"))
             {
                 score += 8;
+            }
+
+            return score;
+        }
+
+        private static int ScoreMuzzle(string text)
+        {
+            var score = 0;
+            if (ContainsAny(text, "muzzle", "flash", "spark", "fireball", "projectile"))
+            {
+                score += 11;
+            }
+
+            if (ContainsAny(text, "impact", "hit"))
+            {
+                score += 3;
+            }
+
+            return score;
+        }
+
+        private static int ScoreProjectileTrail(string text)
+        {
+            var score = 0;
+            if (ContainsAny(text, "trail", "projectile", "fireball", "wind", "speed"))
+            {
+                score += 11;
+            }
+
+            if (ContainsAny(text, "loop", "rain"))
+            {
+                score -= 4;
+            }
+
+            return score;
+        }
+
+        private static int ScoreSlash(string text)
+        {
+            var score = 0;
+            if (ContainsAny(text, "slash", "sword", "blade", "arc", "cross"))
+            {
+                score += 12;
+            }
+
+            if (ContainsAny(text, "trail"))
+            {
+                score += 4;
+            }
+
+            return score;
+        }
+
+        private static int ScoreGroundArea(string text)
+        {
+            var score = 0;
+            if (ContainsAny(text, "ground", "shockwave", "ring", "aura", "runic", "circle"))
+            {
+                score += 12;
+            }
+
+            if (ContainsAny(text, "loop", "rain", "firewall"))
+            {
+                score -= 5;
             }
 
             return score;

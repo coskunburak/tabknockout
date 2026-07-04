@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f3666b4fa2749009b9bfa43225748b9, type: 3}
+  m_Name: Ability_27_SharpInstinct
+  m_EditorClassIdentifier: TapKnockout.Ability::TapKnockout.Ability.AbilityDefinition
+  abilityId: sharp_instinct
+  displayName: Sharp Instinct
+  description: Increase critical hit chance.
+  icon: {fileID: 0}
+  rarity: 1
+  category: 0
+  effectType: 3
+  tags:
+  - attack
+  abilityTags: 00000000
+  maxStacks: 4
+  weight: 55
+  allowDuplicateInOffer: 0
+  isEnabled: 1
+  requiredTags: 
+  blockedTags: 
+  prerequisiteAbilityIds: []
+  upgradeGroupId: 
+  mutuallyExclusiveGroupId: 
+  isPlaceholder: 0
+  implementationStatus: 0
+  value: 0.08
+  secondaryValue: 0
+  duration: 0
+  cooldown: 0
+  procChance: 0
+  castVfxPrefab: {fileID: 0}
+  impactVfxPrefab: {fileID: 0}
+  telegraphVfxPrefab: {fileID: 0}
+  vfxLifetime: 1.5
+  castSfx: {fileID: 0}
+  impactSfx: {fileID: 0}
+  loopSfx: {fileID: 0}
+  loopSfxDuration: 0
+  sfxVolumeScale: 1
+  cameraShakeIntensity: 0
+  cameraShakeDuration: 0

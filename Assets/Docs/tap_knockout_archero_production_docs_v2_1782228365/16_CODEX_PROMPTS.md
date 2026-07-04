@@ -1,413 +1,170 @@
 # Codex Task Prompts
 
-These prompts are designed for future implementation phases. They assume Unity MCP is unavailable unless the user explicitly says otherwise.
+These prompts are for future work after the desktop survivor documentation pivot. They assume Unity MCP is unavailable unless the user explicitly says otherwise.
 
-## Prompt 1 - Inspect Current Project and Docs
+## Prompt 1 - Inspect Project After Pivot
 
 ```text
-You are working on Tap Knockout, a production Unity 3D portrait mobile action roguelite with an original dash-impact combat identity.
+Read AGENTS.md, 00_README_INDEX.md, 12_CODEX_AGENT_GUIDE.md, 18_REPOSITORY_DISCOVERY_AND_DOCUMENTATION_AUDIT.md, 22_PRODUCTION_SPRINT_PLAN.md, and 31_DESKTOP_SURVIVOR_PIVOT_PLAN.md.
 
-Do not use Unity MCP. Work only through repository/filesystem inspection.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/00_README_INDEX.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/12_CODEX_AGENT_GUIDE.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/18_REPOSITORY_DISCOVERY_AND_DOCUMENTATION_AUDIT.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/22_PRODUCTION_SPRINT_PLAN.md
-
-Inspect:
-- Root folder
-- Assets, but do not scan Library/Temp/Logs/build outputs
-- Packages/manifest.json
-- ProjectSettings/ProjectVersion.txt
-- ProjectSettings/EditorBuildSettings.asset
-- Existing docs
-
-Scope:
-- Discovery only.
-- Do not modify files.
-
-Out of scope:
-- Gameplay code
-- Scene edits
-- Package installs
-- Asset imports
-- Real SDK work
+Inspect the repository through the filesystem only. Do not use Unity MCP. Do not modify files.
 
 Return:
 1. Current project structure
-2. Existing scenes/scripts/packages
-3. Missing production folders
-4. Current documentation status
-5. Immediate implementation risks
-6. Proposed first safe branch/task
-7. Files you would create/change next
-8. Manual Unity checks required
+2. Existing Assets/_Project systems
+3. Remaining mobile/room legacy references in code or docs
+4. Existing scene/prefab/config assets relevant to desktop survivor
+5. Immediate risks before implementation
+6. Recommended first safe implementation branch
 ```
 
-## Prompt 2 - Create Production Folder Structure
+## Prompt 2 - Desktop Survivor Prototype Foundation
 
 ```text
-You are preparing Tap Knockout for production implementation.
+Implement only the foundation requested by 22_PRODUCTION_SPRINT_PLAN.md.
 
-Do not use Unity MCP. Do not modify scenes. Do not implement gameplay code.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/03_TECH_ARCHITECTURE_UNITY.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/12_CODEX_AGENT_GUIDE.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/22_PRODUCTION_SPRINT_PLAN.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/25_PREFAB_AND_SCENE_CONTRACTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/28_CONTENT_PIPELINE_BALANCING_EDITOR_TOOLS.md
-
-Inspect:
-- Assets/
-- Existing Assets/Docs/
-- Existing staged asset pack folders only at shallow depth
+Read AGENTS.md, 03_TECH_ARCHITECTURE_UNITY.md, 21_VERTICAL_SLICE_SPEC.md, 22_PRODUCTION_SPRINT_PLAN.md, 24_DATA_CONFIG_SCHEMA.md, 25_PREFAB_AND_SCENE_CONTRACTS.md, and 31_DESKTOP_SURVIVOR_PIVOT_PLAN.md.
 
 Scope:
-- Create Assets/_Project production folders.
-- Create Assets/ThirdParty folder structure.
-- Add short README.md files in key folders if useful.
-- Do not move existing asset packs unless explicitly approved.
+- Define or implement safe foundations for DesktopInputController, MouseAimController, SurvivorCameraRig, ArenaRunDirector, SpawnDirector/WaveDirector, XP/level-up contracts as requested by the sprint.
+- Keep code under Assets/_Project.
+- Do not directly edit .unity YAML.
+- Do not add packages or SDKs.
 
-Out of scope:
-- Gameplay scripts
-- Scene YAML edits
-- Asset import/migration
-- Package changes
-- SDK work
-
-Return:
-- Changed files/folders
-- Manual Unity project setting checklist for portrait Android
-- Validation steps
+Return changed files, tests, manual Unity setup, and validation.
 ```
 
-## Prompt 3 - Create Core Combat Interfaces and Data Models
+## Prompt 3 - WASD Movement and Mouse Aim
 
 ```text
-Implement core combat contracts for Tap Knockout.
+Implement desktop player input and aim.
 
-Do not use Unity MCP. Do not modify scenes.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/03_TECH_ARCHITECTURE_UNITY.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/04_COMBAT_AND_ABILITIES.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/12_CODEX_AGENT_GUIDE.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/23_TECHNICAL_DECISIONS_ADR.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/24_DATA_CONFIG_SCHEMA.md
-
-Inspect:
-- Assets/_Project/Scripts if it exists
-- Any existing combat/core scripts
+Read 02_GDD_PRODUCTION.md, 03_TECH_ARCHITECTURE_UNITY.md, 08_UI_UX_CONTROLS.md, 24_DATA_CONFIG_SCHEMA.md, and 25_PREFAB_AND_SCENE_CONTRACTS.md.
 
 Scope:
-- Create IDamageable.
-- Create HitContext.
-- Create DamageType.
-- Create KnockbackData or equivalent.
-- Create lightweight combat event contracts.
-- Use namespace TapKnockout.*.
-- Add focused EditMode tests if test structure exists or can be created safely.
+- WASD movement input.
+- Mouse world aim direction.
+- Dash input binding.
+- No mobile joystick work.
+- No scene YAML edits.
 
-Out of scope:
-- Player movement
-- Player attack behavior
-- Enemy behavior
-- Dash implementation
-- Scene/prefab edits
-
-Return:
-- Changed files
-- Test results or reason tests could not run
-- Manual Unity validation steps
+Return changed files, tests, and manual prefab setup.
 ```
 
-## Prompt 4 - Create Player Movement Foundation
+## Prompt 4 - Arena Run and Spawn Director
 
 ```text
-Implement the player movement foundation for Tap Knockout.
+Implement the arena run director and spawn director foundation.
 
-Do not use Unity MCP. Do not directly edit .unity scene YAML.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/02_GDD_PRODUCTION.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/03_TECH_ARCHITECTURE_UNITY.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/08_UI_UX_CONTROLS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/24_DATA_CONFIG_SCHEMA.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/25_PREFAB_AND_SCENE_CONTRACTS.md
-
-Inspect:
-- Assets/_Project/Scripts/Input
-- Assets/_Project/Scripts/Player
-- Packages/manifest.json for input package
+Read 05_LEVEL_ROOM_WAVE.md, 21_VERTICAL_SLICE_SPEC.md, 24_DATA_CONFIG_SCHEMA.md, 25_PREFAB_AND_SCENE_CONTRACTS.md, and 30_ABILITY_AND_ENEMY_DESIGN_CATALOG.md.
 
 Scope:
-- Implement drag/virtual-joystick-ready movement input abstraction.
-- Implement PlayerMovementController.
-- Track last movement/facing direction.
-- Expose movement threshold needed by stop-to-attack.
-- Create PlayerConfig fields required for movement if not already present.
+- Run timer.
+- Wave timeline evaluation.
+- Spawn group selection.
+- Spawn safety radius.
+- Enemy live budget.
+- Elite and boss milestone hooks.
 
 Out of scope:
-- Attacking
-- Dash
-- Enemies
-- Ability system
-- Scene edits
-
-Return:
-- Changed files
-- Manual Unity setup for a player prefab
-- Editor/mobile validation steps
+- Full boss implementation.
+- Final balance.
+- Scene YAML edits.
 ```
 
-## Prompt 5 - Create Auto-Attack and Targeting Foundation
+## Prompt 5 - XP, Pickups, and Level-Up Choices
 
 ```text
-Implement stop-to-attack and targeting foundation for Tap Knockout.
+Implement survivor XP and level-up foundation.
 
-Do not use Unity MCP. Do not directly edit .unity scene YAML.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/02_GDD_PRODUCTION.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/04_COMBAT_AND_ABILITIES.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/24_DATA_CONFIG_SCHEMA.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/25_PREFAB_AND_SCENE_CONTRACTS.md
-
-Inspect:
-- Assets/_Project/Scripts/Player
-- Assets/_Project/Scripts/Combat
-- Assets/_Project/Scripts/Projectile
-- Assets/_Project/ScriptableObjects/Weapons
+Read 04_COMBAT_AND_ABILITIES.md, 08_UI_UX_CONTROLS.md, 10_ANALYTICS_REMOTE_CONFIG.md, 21_VERTICAL_SLICE_SPEC.md, and 24_DATA_CONFIG_SCHEMA.md.
 
 Scope:
-- Implement target provider for nearest valid enemy/damageable.
-- Implement PlayerAttackController using stop-to-attack threshold.
-- Create WeaponConfig for one initial weapon.
-- Create projectile/melee hit foundation if core contracts exist.
-- Document projectile prefab contract/manual setup.
-
-Out of scope:
-- Dash
-- Ability modifiers
-- Full enemy AI
-- Final VFX/audio
-- Scene edits
-
-Return:
-- Changed files
-- Tests/validation
-- Manual Unity setup for weapon config, projectile prefab, and dummy target
+- XP orb pickup contract.
+- XP curve.
+- Level-up trigger.
+- Weighted 3-choice ability offer.
+- Apply selected ability to run state.
+- Use local/no-op analytics only.
 ```
 
-## Prompt 6 - Create Dash-Impact System
+## Prompt 6 - Active Skill Runtime
 
 ```text
-Implement the dash-impact foundation for Tap Knockout.
+Implement active skill runtime foundation.
 
-Do not use Unity MCP. Do not directly edit .unity scene YAML.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/02_GDD_PRODUCTION.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/04_COMBAT_AND_ABILITIES.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/21_VERTICAL_SLICE_SPEC.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/24_DATA_CONFIG_SCHEMA.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/30_ABILITY_AND_ENEMY_DESIGN_CATALOG.md
-
-Inspect:
-- Assets/_Project/Scripts/Player
-- Assets/_Project/Scripts/Combat
-- Assets/_Project/Scripts/Ability
+Read 04_COMBAT_AND_ABILITIES.md, 08_UI_UX_CONTROLS.md, 24_DATA_CONFIG_SCHEMA.md, and 30_ABILITY_AND_ENEMY_DESIGN_CATALOG.md.
 
 Scope:
-- Implement PlayerDashController.
-- Add cooldown, duration, distance, direction resolver.
-- Add i-frame hook without building final damage immunity system if not ready.
-- Add dash impact hit detection.
-- Add knockback and duplicate-hit prevention per dash.
-- Emit dash start, dash hit, dash end events for future VFX/SFX/analytics/abilities.
-- Keep values config-driven.
-
-Out of scope:
-- Full ability selection
-- Final VFX/SFX
-- Scene edits
-- Real analytics SDK
-
-Return:
-- Changed files
-- Tests/validation
-- Manual Unity setup for dash hit volume or overlap query
-- Known tuning risks
+- Active skill slots.
+- Cooldowns.
+- Duration.
+- Hotkey input.
+- Runtime ability state.
+- Hooks for VFX/audio without final assets.
 ```
 
-## Prompt 7 - Create Enemy Base System
+## Prompt 7 - Enemy Archetypes for Survivor MVP
 
 ```text
-Implement the enemy base system for Tap Knockout.
+Implement the first survivor enemy archetypes.
 
-Do not use Unity MCP. Do not directly edit .unity scene YAML.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/03_TECH_ARCHITECTURE_UNITY.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/04_COMBAT_AND_ABILITIES.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/05_LEVEL_ROOM_WAVE.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/24_DATA_CONFIG_SCHEMA.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/25_PREFAB_AND_SCENE_CONTRACTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/30_ABILITY_AND_ENEMY_DESIGN_CATALOG.md
-
-Inspect:
-- Assets/_Project/Scripts/Enemy
-- Assets/_Project/Scripts/Combat
-- Assets/_Project/ScriptableObjects/Enemies
+Read 03_TECH_ARCHITECTURE_UNITY.md, 05_LEVEL_ROOM_WAVE.md, 21_VERTICAL_SLICE_SPEC.md, 24_DATA_CONFIG_SCHEMA.md, 25_PREFAB_AND_SCENE_CONTRACTS.md, and 30_ABILITY_AND_ENEMY_DESIGN_CATALOG.md.
 
 Scope:
-- Implement EnemyConfig.
-- Implement EnemyController.
-- Implement EnemyHealth using shared damage flow.
-- Implement movement/attack hooks.
-- Implement first melee chaser foundation.
-- Document enemy prefab manual setup.
-
-Out of scope:
-- Full wave/room manager
-- Boss
-- Final animations/art
-- Scene edits
-
-Return:
-- Changed files
-- Tests/validation
-- Manual Unity setup for enemy prefab and dummy combat test
+- Basic melee chaser.
+- Swarm enemy.
+- Ranged shooter.
+- Charger.
+- Tank.
+- Shared health/damage flow.
+- Pool-friendly lifecycle.
 ```
 
-## Prompt 8 - Create Wave and Room System
+## Prompt 8 - Elite and Boss Milestone
 
 ```text
-Implement wave and room foundation for Tap Knockout.
+Implement elite and boss milestone foundation.
 
-Do not use Unity MCP. Do not directly edit .unity scene YAML.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/05_LEVEL_ROOM_WAVE.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/21_VERTICAL_SLICE_SPEC.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/24_DATA_CONFIG_SCHEMA.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/25_PREFAB_AND_SCENE_CONTRACTS.md
-
-Inspect:
-- Assets/_Project/Scripts/Level
-- Assets/_Project/Scripts/Room
-- Assets/_Project/Scripts/Wave
-- Assets/_Project/Scripts/Enemy
-- Assets/_Project/ScriptableObjects/Chapters
-- Assets/_Project/ScriptableObjects/Rooms
+Read 05_LEVEL_ROOM_WAVE.md, 08_UI_UX_CONTROLS.md, 21_VERTICAL_SLICE_SPEC.md, 24_DATA_CONFIG_SCHEMA.md, 25_PREFAB_AND_SCENE_CONTRACTS.md, and 30_ABILITY_AND_ENEMY_DESIGN_CATALOG.md.
 
 Scope:
-- Implement RoomTemplateConfig and WaveConfig if not present.
-- Implement EnemySpawner.
-- Implement WaveManager.
-- Implement RoomManager clear condition for all enemies defeated.
-- Add ChapterRunner skeleton for configured room sequence.
-- Emit room start and room complete events.
-
-Out of scope:
-- Procedural generation
-- Final scene art
-- Boss implementation unless needed as a placeholder interface
-- Scene YAML edits
-
-Return:
-- Changed files
-- Tests/validation
-- Manual Unity setup for room root and spawn points
+- Elite spawn warning.
+- Boss warning.
+- Boss health bar binding.
+- Boss defeat event.
+- Run completion hook.
 ```
 
-## Prompt 9 - Create Ability Definition and Selection System
+## Prompt 9 - Desktop HUD and Level-Up UI
 
 ```text
-Implement the roguelite ability definition and selection foundation for Tap Knockout.
+Implement the MVP desktop gameplay UI.
 
-Do not use Unity MCP. Do not directly edit .unity scene YAML.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/04_COMBAT_AND_ABILITIES.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/08_UI_UX_CONTROLS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/21_VERTICAL_SLICE_SPEC.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/24_DATA_CONFIG_SCHEMA.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/30_ABILITY_AND_ENEMY_DESIGN_CATALOG.md
-
-Inspect:
-- Assets/_Project/Scripts/Ability
-- Assets/_Project/Scripts/UI
-- Assets/_Project/ScriptableObjects/Abilities
+Read 08_UI_UX_CONTROLS.md, 21_VERTICAL_SLICE_SPEC.md, and 25_PREFAB_AND_SCENE_CONTRACTS.md.
 
 Scope:
-- Implement AbilityDefinition.
-- Implement run ability state.
-- Implement weighted 3-choice provider.
-- Avoid duplicates and respect max stacks.
-- Add hooks for ability selected event.
-- Create sample ability definitions or instructions for creating them manually.
-
-Out of scope:
-- Full UI art
-- Monetized reroll
-- Full set of ability effects
-- Scene edits
-
-Return:
-- Changed files
-- Tests/validation
-- Manual Unity setup for ability assets and ability selection panel
+- Health bar.
+- XP bar.
+- Run timer.
+- Active skill cooldown slots.
+- Boss bar.
+- Wave/boss warning.
+- Level-up modal.
+- Run result screen.
 ```
 
-## Prompt 10 - Create Editor Scene Builder for Placeholder Vertical Slice
+## Prompt 10 - Prototype Scene Builder
 
 ```text
-Create an Editor tool to build a placeholder vertical slice scene for Tap Knockout.
+Create an approved Editor tool for DesktopSurvivorPrototype scene setup.
 
-Do not use Unity MCP. Do not hand-edit .unity YAML. The Editor tool should be the safe path for generating a placeholder scene.
-
-Read:
-- AGENTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/03_TECH_ARCHITECTURE_UNITY.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/21_VERTICAL_SLICE_SPEC.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/25_PREFAB_AND_SCENE_CONTRACTS.md
-- Assets/Docs/tap_knockout_archero_production_docs_v2_1782228365/28_CONTENT_PIPELINE_BALANCING_EDITOR_TOOLS.md
-
-Inspect:
-- Assets/_Project/Editor/Tools
-- Assets/_Project/Scenes
-- Assets/_Project/Prefabs
-- Existing SampleScene only for awareness, not modification
+Read 03_TECH_ARCHITECTURE_UNITY.md, 21_VERTICAL_SLICE_SPEC.md, 25_PREFAB_AND_SCENE_CONTRACTS.md, and 28_CONTENT_PIPELINE_BALANCING_EDITOR_TOOLS.md.
 
 Scope:
-- Create an Editor script under Assets/_Project/Editor/Tools.
-- Add menu item Tools/Tap Knockout/Create Vertical Slice Placeholder Scene.
-- The tool should create or save a new placeholder scene only after clear user action in Unity.
-- Include GameplayRoot, Managers, RoomRoot, simple arena, PlayerSpawn, EnemySpawnPoints, camera, light, and HUD placeholders.
-- The tool should not overwrite existing production scenes silently.
-
-Out of scope:
-- Final art
-- Final UI
-- Gameplay balancing
-- Real SDKs
-- Direct scene YAML editing
-
-Return:
-- Changed files
-- Manual Unity steps to run the menu item
-- Validation steps for generated hierarchy
-- Known limitations
+- Editor menu action.
+- Creates scene hierarchy only after user action.
+- Does not silently overwrite scenes.
+- Creates arena root, player spawn, camera rig, managers, HUD placeholder, and spawn anchors or spawn ring helper.
+- No direct .unity YAML edits.
 ```

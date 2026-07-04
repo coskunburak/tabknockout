@@ -1,10 +1,11 @@
 using System;
+using TapKnockout.Combat;
 using UnityEngine;
 
 namespace TapKnockout.Player
 {
     [DisallowMultipleComponent]
-    public sealed class PlayerRuntimeStats : MonoBehaviour
+    public sealed class PlayerRuntimeStats : MonoBehaviour, IHitModifierProvider
     {
         private const float MinCooldownMultiplier = 0.15f;
         private const float MaxDamageReduction = 0.8f;
@@ -15,6 +16,10 @@ namespace TapKnockout.Player
         private const int MaxWallBounceCount = 3;
         private const int MaxOrbitalCount = 6;
         private const int MaxDroneCount = 4;
+        private const int MaxShieldCharges = 3;
+        private const float DefaultLowHealthThreshold = 0.4f;
+        private const float DefaultLongRangeDamageThreshold = 6f;
+        private const float DefaultInvulnerabilityAfterHitDuration = 0.75f;
 
         private float attackDamageBonus;
         private float attackCooldownReduction;
@@ -49,6 +54,8 @@ namespace TapKnockout.Player
         private float rewardLuckBonus;
         private float coinDropBonus;
         private float potionDropBonus;
+        private float dodgeChanceBonus;
+        private float invulnerabilityAfterHitDuration;
         private int extraProjectileCount;
         private int frontProjectileCount;
         private int diagonalProjectileCount;
@@ -60,20 +67,22 @@ namespace TapKnockout.Player
         private int orbitalCount;
         private int droneCount;
         private int bladeStrikeCountBonus;
+        private int shieldCharges;
         private bool dashShieldAfterHit;
         private bool shieldPerRoom;
         private bool reviveOnce;
         private bool invulnerabilityAfterHit;
+        private PlayerHealth cachedHealth;
 
         public event Action<PlayerRuntimeStats> OnStatsChanged;
 
         public float AttackDamageMultiplier => Mathf.Max(0f, 1f + attackDamageBonus);
-        public float AttackCooldownMultiplier => Mathf.Clamp(1f - attackCooldownReduction, MinCooldownMultiplier, 10f);
+        public float AttackCooldownMultiplier => Mathf.Clamp(1f - attackCooldownReduction - ResolveLowHealthAttackSpeedReduction(), MinCooldownMultiplier, 10f);
         public float DashCooldownMultiplier => Mathf.Clamp(1f - dashCooldownReduction, MinCooldownMultiplier, 10f);
         public float DashDamageMultiplier => Mathf.Max(0f, 1f + dashDamageBonus);
         public float DashKnockbackMultiplier => Mathf.Max(0f, 1f + dashKnockbackBonus);
         public float MaxHealthBonus => Mathf.Max(0f, maxHealthBonus);
-        public float MoveSpeedMultiplier => Mathf.Max(0f, 1f + moveSpeedBonus);
+        public float MoveSpeedMultiplier => Mathf.Max(0f, 1f + moveSpeedBonus + ResolveLowHealthMoveSpeedBonus());
         public float ProjectileSpeedMultiplier => Mathf.Max(0f, 1f + projectileSpeedBonus);
         public float DamageReductionMultiplier => Mathf.Clamp(1f - damageReductionBonus, 1f - MaxDamageReduction, 1f);
         public float CritChanceBonus => Mathf.Clamp01(critChanceBonus);
@@ -115,6 +124,10 @@ namespace TapKnockout.Player
         public float RewardLuckMultiplier => Mathf.Max(1f, 1f + rewardLuckBonus);
         public float CoinDropMultiplier => Mathf.Max(1f, 1f + coinDropBonus);
         public float PotionDropMultiplier => Mathf.Max(1f, 1f + potionDropBonus);
+        public float DodgeChance => ClampProcChance(dodgeChanceBonus);
+        public float InvulnerabilityAfterHitDuration => invulnerabilityAfterHit ? Mathf.Max(0f, invulnerabilityAfterHitDuration) : 0f;
+        public int ShieldChargeCount => Mathf.Clamp(shieldCharges, 0, MaxShieldCharges);
+        public bool HasShieldCharge => ShieldChargeCount > 0;
 
         public void ResetRunModifiers()
         {
@@ -151,6 +164,8 @@ namespace TapKnockout.Player
             rewardLuckBonus = 0f;
             coinDropBonus = 0f;
             potionDropBonus = 0f;
+            dodgeChanceBonus = 0f;
+            invulnerabilityAfterHitDuration = 0f;
             extraProjectileCount = 0;
             frontProjectileCount = 0;
             diagonalProjectileCount = 0;
@@ -162,6 +177,7 @@ namespace TapKnockout.Player
             orbitalCount = 0;
             droneCount = 0;
             bladeStrikeCountBonus = 0;
+            shieldCharges = 0;
             dashShieldAfterHit = false;
             shieldPerRoom = false;
             reviveOnce = false;
@@ -394,7 +410,25 @@ namespace TapKnockout.Player
         public void EnableShieldPerRoom()
         {
             shieldPerRoom = true;
+            AddShieldCharge(1);
+        }
+
+        public void AddShieldCharge(int value)
+        {
+            shieldCharges = Mathf.Clamp(shieldCharges + Mathf.Max(0, value), 0, MaxShieldCharges);
             RaiseStatsChanged();
+        }
+
+        public bool TryConsumeShieldCharge()
+        {
+            if (shieldCharges <= 0)
+            {
+                return false;
+            }
+
+            shieldCharges--;
+            RaiseStatsChanged();
+            return true;
         }
 
         public void EnableReviveOnce()
@@ -405,7 +439,13 @@ namespace TapKnockout.Player
 
         public void EnableInvulnerabilityAfterHit()
         {
+            EnableInvulnerabilityAfterHit(DefaultInvulnerabilityAfterHitDuration);
+        }
+
+        public void EnableInvulnerabilityAfterHit(float duration)
+        {
             invulnerabilityAfterHit = true;
+            invulnerabilityAfterHitDuration = Mathf.Max(invulnerabilityAfterHitDuration, duration > 0f ? duration : DefaultInvulnerabilityAfterHitDuration);
             RaiseStatsChanged();
         }
 
@@ -457,9 +497,119 @@ namespace TapKnockout.Player
             RaiseStatsChanged();
         }
 
+        public void AddDodgeChance(float value)
+        {
+            dodgeChanceBonus = ClampProcChance(dodgeChanceBonus + Mathf.Max(0f, value));
+            RaiseStatsChanged();
+        }
+
+        public void ModifyHit(HitContext hitContext)
+        {
+            if (hitContext == null || hitContext.DamageAmount <= 0f)
+            {
+                return;
+            }
+
+            var damage = hitContext.DamageAmount;
+            if (IsBossTarget(hitContext.Target))
+            {
+                damage *= BossDamageMultiplier;
+            }
+
+            if (ShouldApplyLongRangeDamage(hitContext))
+            {
+                damage *= LongRangeDamageMultiplier;
+            }
+
+            if (IsLowHealthDamageActive())
+            {
+                damage *= LowHealthDamageMultiplier;
+            }
+
+            hitContext.DamageAmount = Mathf.Max(0f, damage);
+            TryResolveCritical(hitContext);
+        }
+
         private void RaiseStatsChanged()
         {
             OnStatsChanged?.Invoke(this);
+        }
+
+        private bool IsLowHealthDamageActive()
+        {
+            return IsLowHealthActive() && LowHealthDamageMultiplier > 1.001f;
+        }
+
+        private float ResolveLowHealthAttackSpeedReduction()
+        {
+            return IsLowHealthActive() ? lowHealthAttackSpeedBonus : 0f;
+        }
+
+        private float ResolveLowHealthMoveSpeedBonus()
+        {
+            return IsLowHealthActive() ? lowHealthMoveSpeedBonus : 0f;
+        }
+
+        private bool IsLowHealthActive()
+        {
+            cachedHealth ??= GetComponent<PlayerHealth>();
+            return cachedHealth != null &&
+                cachedHealth.MaxHealth > 0f &&
+                cachedHealth.CurrentHealth / cachedHealth.MaxHealth <= DefaultLowHealthThreshold;
+        }
+
+        private static bool IsBossTarget(GameObject target)
+        {
+            if (target == null)
+            {
+                return false;
+            }
+
+            var traits = target.GetComponentInParent<ICombatTargetTraits>();
+            return traits != null && traits.IsBossTarget;
+        }
+
+        private bool ShouldApplyLongRangeDamage(HitContext hitContext)
+        {
+            if (LongRangeDamageMultiplier <= 1.001f || hitContext.Source == null)
+            {
+                return false;
+            }
+
+            var hitPosition = hitContext.HitPoint != Vector3.zero
+                ? hitContext.HitPoint
+                : hitContext.Target != null
+                    ? hitContext.Target.transform.position
+                    : Vector3.zero;
+
+            if (hitPosition == Vector3.zero)
+            {
+                return false;
+            }
+
+            var offset = hitPosition - hitContext.Source.transform.position;
+            offset.y = 0f;
+            return offset.magnitude >= DefaultLongRangeDamageThreshold;
+        }
+
+        private void TryResolveCritical(HitContext hitContext)
+        {
+            if (hitContext.IsCritical)
+            {
+                return;
+            }
+
+            var chance = ClampProcChance(hitContext.CriticalChance + CritChanceBonus);
+            if (chance <= 0f || UnityEngine.Random.value > chance)
+            {
+                return;
+            }
+
+            var baseCriticalMultiplier = Mathf.Max(1f, hitContext.CriticalMultiplier);
+            var bonusCriticalMultiplier = Mathf.Max(0f, CritDamageMultiplier - 1f);
+            hitContext.CriticalMultiplier = baseCriticalMultiplier + bonusCriticalMultiplier;
+            hitContext.IsCritical = true;
+            hitContext.DamageAmount *= hitContext.CriticalMultiplier;
         }
 
         private static float ClampProcChance(float value)

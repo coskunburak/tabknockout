@@ -1,80 +1,88 @@
 # Monetization and LiveOps
 
-## Philosophy
+## Current Position
 
-Commercial but ethical.
+Monetization and LiveOps are future optional topics. The immediate target is a PC/Steam-facing survivor prototype and vertical slice.
 
-- Rewarded ads optional.
-- IAP accelerates/customizes.
-- No forced ads in FTUE.
-- No real SDKs before privacy/compliance setup.
+For MVP, prioritize:
 
-## Rewarded Ads
+- Fun run loop.
+- Reliable desktop controls.
+- Performance under enemy density.
+- Readable UI and VFX.
+- Balance telemetry.
+- Steam demo readiness.
 
-Initial placements:
+## Preferred Commercial Framing
 
-- Revive once per run
-- Double run rewards
-- Free chest
-- Extra ability reroll
-- Daily bonus
+For desktop, the cleanest starting model is:
 
-## Interstitial Ads
+- Free demo or playtest build.
+- Premium full game later.
+- Optional DLC/cosmetic expansion only after core validation.
 
-Use later and cautiously:
+Do not design the MVP around rewarded ads, interstitial ads, mobile daily shops, or IAP bundles.
 
-- After failed run
-- After N runs
-- Never during combat
-- Not before retention validation
+## Future Monetization Options
 
-## IAP Products
+Possible later options:
 
-Possible:
+- Premium Steam release.
+- Demo-to-full purchase.
+- Cosmetic DLC.
+- Soundtrack or supporter pack.
+- Expansion content.
 
-- Starter Pack
-- No Ads
-- Gem Pack
-- Growth Fund
-- Battle Pass
-- Event Bundle
+Mobile monetization can be reconsidered only after the PC direction is validated.
 
-Vertical slice:
+## LiveOps Scope
 
-- Stubs/configs only.
+MVP liveops means operational tuning and playtest learning, not a mobile event calendar.
 
-## Shop
+Useful future liveops:
 
-Sections:
-
-- Daily Deals
-- Chests
-- Gems
-- Bundles
-- No Ads
-- Event
-
-## Daily Systems
-
-- Daily login reward
-- Daily missions
-- Free chest
-- Weekly missions later
-
-## Events
-
-- Boss Rush
-- Double Coin Weekend
-- Dash Challenge
-- Limited Dungeon
-- Seasonal skins
+- Balance patches.
+- Limited-time challenge arena.
+- New enemy/boss variants.
+- New active skills.
+- Steam playtest feedback cycles.
+- Telemetry-driven difficulty tuning.
 
 ## Remote Config
 
-- rewarded_revive_enabled
-- reward_multiplier
-- free_chest_cooldown
-- starter_pack_enabled
-- interstitial_frequency
-- daily_reward_amounts
-- ability_reroll_ad_enabled
+Remote/local config should support safe tuning:
+
+- Spawn rates.
+- Wave timing.
+- XP curve.
+- Ability weights.
+- Boss timing.
+- Enemy health/damage multipliers.
+- Active skill cooldown multipliers.
+
+No remote config provider SDK is approved by default. Local config defaults must work offline.
+
+## SDK Policy
+
+No real Ads, IAP, Analytics, crash, or remote config SDKs may be added without explicit approval.
+
+If future monetization SDKs are considered, the project must first define:
+
+- Privacy policy.
+- Data collection disclosure.
+- Store/platform requirements.
+- Restore/purchase behavior.
+- Rollback plan.
+- Test mode plan.
+
+## Deprecated Mobile Concepts
+
+- Rewarded revive as a core loop pillar.
+- Double reward ads.
+- Free chest timers.
+- Interstitial pacing.
+- Starter pack funnels.
+- Daily login reward economy.
+- Mobile event monetization.
+
+These remain only as historical ideas.

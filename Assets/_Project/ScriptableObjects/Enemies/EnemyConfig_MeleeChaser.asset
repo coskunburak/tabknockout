@@ -13,17 +13,38 @@ MonoBehaviour:
   m_Name: EnemyConfig_MeleeChaser
   m_EditorClassIdentifier: TapKnockout.Enemy::TapKnockout.Enemy.EnemyConfig
   enemyId: melee_chaser_basic
-  maxHealth: 40
-  deathDelay: 0.3
-  moveSpeed: 2.2
+  displayName: Melee Chaser
+  archetype: 0
+  rank: 0
+  maxHealth: 42
+  deathDelay: 0.25
+  moveSpeed: 2.25
   acceleration: 18
   rotationSpeed: 720
-  stoppingDistance: 1.1
-  contactDamage: 8
-  attackRange: 1.2
-  attackCooldown: 1
+  stoppingDistance: 1.08
+  contactDamage: 4
+  attackRange: 1.25
+  attackCooldown: 0.95
+  attackWindup: 0.25
+  projectileSpeed: 8
+  projectileCount: 1
+  explosionRadius: 1.5
+  stunResistance: 0
   knockbackResistance: 0.2
   canBeKnockedBack: 1
   canBeInterrupted: 1
+  attackPattern: {fileID: 0}
+  telegraphConfig: {fileID: 0}
+  projectilePrefab: {fileID: 0}
+  splitSpawnPrefab: {fileID: 0}
+  splitSpawnCount: 0
+  shieldBlockAngle: 120
+  shieldDamageReduction: 0.65
+  chargeSpeedMultiplier: 2.8
+  chargeDuration: 0.45
+  chargeRecoveryDuration: 0.55
   coinReward: 1
   xpReward: 1
+  spawnVfx: 24
+  attackVfx: 25
+  deathVfx: 8

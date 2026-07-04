@@ -101,12 +101,23 @@ namespace TapKnockout.Level
         [ContextMenu("Continue After Reward")]
         public void ContinueAfterReward()
         {
+            TryContinueAfterReward();
+        }
+
+        public bool TryContinueAfterReward()
+        {
             if (!CanContinueAfterRewardNow())
             {
-                return;
+                if (logDebug)
+                {
+                    Debug.LogWarning($"{nameof(ChapterRoomRewardFlowController)} cannot continue after reward: {BuildContinueBlockReason()}", this);
+                }
+
+                return false;
             }
 
             ProceedToNextRoom();
+            return true;
         }
 
         [ContextMenu("Request Ability Offer")]
@@ -263,7 +274,6 @@ namespace TapKnockout.Level
 
             if (pendingDecision.ShouldCompleteChapter)
             {
-                UnlockRoomExit(pendingDecision.RewardType);
                 chapterRunner.CompleteChapter();
                 return;
             }
@@ -393,7 +403,52 @@ namespace TapKnockout.Level
             if (didStartNextRoom)
             {
                 ChapterProgressionEvents.RaiseRoomTransitionCompleted(transitionArgs);
+                return;
             }
+
+            if (chapterRunner.IsChapterCompleted || chapterRunner.IsChapterFailed)
+            {
+                return;
+            }
+
+            chapterRunner.RunState.MarkWaitingForContinue();
+            chapterRunner.SetFlowState(ChapterFlowState.WaitingForContinue);
+            UnlockRoomExit(pendingDecision.RewardType);
+
+            Debug.LogWarning(
+                $"{nameof(ChapterRoomRewardFlowController)} requested next room from index {fromRoomIndex}, but {nameof(ChapterRunner)} did not start room {toRoomIndex}. " +
+                $"State was restored to {nameof(ChapterFlowState.WaitingForContinue)}. Check ChapterRunner config and RoomManager references.",
+                this);
+        }
+
+        private bool TryRepairContinueState()
+        {
+            if (chapterRunner == null
+                || !chapterRunner.RunState.IsRewardPending
+                || chapterRunner.RunState.IsAbilitySelectionPending
+                || isWaitingForAbilitySelection
+                || chapterRunner.RunState.IsWaitingForContinue
+                || chapterRunner.RunState.IsTransitioning
+                || chapterRunner.FlowState == ChapterFlowState.TransitioningToNextRoom)
+            {
+                return false;
+            }
+
+            if (abilitySelectionController != null && abilitySelectionController.HasCurrentOffer)
+            {
+                return false;
+            }
+
+            chapterRunner.RunState.MarkWaitingForContinue();
+            chapterRunner.SetFlowState(ChapterFlowState.WaitingForContinue);
+            UnlockRoomExit(pendingDecision.RewardType);
+
+            if (logDebug)
+            {
+                Debug.LogWarning($"{nameof(ChapterRoomRewardFlowController)} repaired stale reward state to {nameof(ChapterFlowState.WaitingForContinue)}.", this);
+            }
+
+            return true;
         }
 
         private void CleanupBeforeNextRoom()
@@ -426,6 +481,8 @@ namespace TapKnockout.Level
                 chapterRunner.CurrentRoomConfig,
                 chapterRunner.CurrentRoomIndex,
                 rewardType);
+            var room = subscribedRoomManager != null ? subscribedRoomManager : chapterRunner.ActiveRoomManager;
+            room?.UnlockRoomExits(rewardType);
             ChapterProgressionEvents.RaiseRoomExitUnlocked(args);
         }
 
@@ -485,7 +542,42 @@ namespace TapKnockout.Level
                 return false;
             }
 
+            if (TryRepairContinueState())
+            {
+                return true;
+            }
+
             return chapterRunner.RunState.IsWaitingForContinue && chapterRunner.FlowState == ChapterFlowState.WaitingForContinue;
+        }
+
+        private string BuildContinueBlockReason()
+        {
+            if (chapterRunner == null)
+            {
+                return "ChapterRunner reference is missing.";
+            }
+
+            if (chapterRunner.IsChapterCompleted)
+            {
+                return "chapter is already completed.";
+            }
+
+            if (chapterRunner.IsChapterFailed)
+            {
+                return "chapter is failed.";
+            }
+
+            if (isWaitingForAbilitySelection || chapterRunner.RunState.IsAbilitySelectionPending)
+            {
+                return "ability selection is still pending.";
+            }
+
+            if (chapterRunner.RunState.IsTransitioning || chapterRunner.FlowState == ChapterFlowState.TransitioningToNextRoom)
+            {
+                return "room transition is already in progress.";
+            }
+
+            return $"RunState waiting={chapterRunner.RunState.IsWaitingForContinue}, reward={chapterRunner.RunState.IsRewardPending}, flow={chapterRunner.FlowState}.";
         }
     }
 }

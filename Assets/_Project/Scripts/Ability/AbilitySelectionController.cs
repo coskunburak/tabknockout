@@ -13,6 +13,7 @@ namespace TapKnockout.Ability
         [Header("Runtime")]
         [SerializeField] private bool generateOfferOnStart;
         [SerializeField] private bool clearOfferAfterSelection = true;
+        [SerializeField] private bool allowPlaceholderAbilitiesInOffers;
 
         [Header("Future Hooks")]
         [Tooltip("Optional MonoBehaviour implementing IAbilityEffectApplier. Full gameplay effects are intentionally out of scope for this foundation.")]
@@ -34,7 +35,9 @@ namespace TapKnockout.Ability
         public RunAbilityState RunState => runAbilityState;
         public int ChoiceCount => choiceCount;
         public bool HasCurrentOffer => currentOffer.Count > 0;
+        public bool AllowPlaceholderAbilitiesInOffers => allowPlaceholderAbilitiesInOffers;
         public IAbilityEffectApplier AbilityEffectApplier => ResolveEffectApplier(false);
+        public bool HasOfferPresentationListeners => OnAbilityOfferGenerated != null || AbilityEvents.HasOfferGeneratedListeners;
 
         private void Awake()
         {
@@ -58,6 +61,7 @@ namespace TapKnockout.Ability
         public void SetRandomSeed(int seed)
         {
             choiceProvider = new AbilityChoiceProvider(seed);
+            choiceProvider.AllowPlaceholderAbilitiesInOffers = allowPlaceholderAbilitiesInOffers;
         }
 
         public void SetAbilityPool(IReadOnlyList<AbilityDefinition> definitions)
@@ -85,6 +89,7 @@ namespace TapKnockout.Ability
         public IReadOnlyList<AbilityDefinition> GenerateOffer()
         {
             EnsureChoiceProvider();
+            choiceProvider.AllowPlaceholderAbilitiesInOffers = allowPlaceholderAbilitiesInOffers;
 
             currentOffer.Clear();
             var generatedChoices = choiceProvider.GenerateChoices(abilityPool, runAbilityState, choiceCount);
@@ -153,7 +158,7 @@ namespace TapKnockout.Ability
 
         private bool SelectAbility(AbilityDefinition definition, int selectedIndex)
         {
-            if (!runAbilityState.AddSelectedAbility(definition))
+            if (!runAbilityState.AddSelectedAbility(definition, allowPlaceholderAbilitiesInOffers))
             {
                 return false;
             }
@@ -181,10 +186,16 @@ namespace TapKnockout.Ability
         private void EnsureChoiceProvider()
         {
             choiceProvider ??= new AbilityChoiceProvider();
+            choiceProvider.AllowPlaceholderAbilitiesInOffers = allowPlaceholderAbilitiesInOffers;
         }
 
         private IAbilityEffectApplier ResolveEffectApplier(bool logWarning)
         {
+            if (abilityEffectApplier == null)
+            {
+                abilityEffectApplier = FindFirstAbilityEffectApplier();
+            }
+
             if (abilityEffectApplier == null)
             {
                 return null;
@@ -197,6 +208,20 @@ namespace TapKnockout.Ability
             }
 
             return applier;
+        }
+
+        private static MonoBehaviour FindFirstAbilityEffectApplier()
+        {
+            var behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var i = 0; i < behaviours.Length; i++)
+            {
+                if (behaviours[i] is IAbilityEffectApplier)
+                {
+                    return behaviours[i];
+                }
+            }
+
+            return null;
         }
     }
 }

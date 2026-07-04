@@ -56,5 +56,34 @@ namespace TapKnockout.Wave.Tests
                 Object.DestroyImmediate(enemy);
             }
         }
+
+        [Test]
+        public void EnemySpawner_ClearSpawnedEnemies_DestroysTrackedSpawnedObjects()
+        {
+            var spawnerObject = new GameObject("Spawner");
+            var prefab = new GameObject("EnemyPrefab");
+
+            try
+            {
+                prefab.AddComponent<EnemyHealth>();
+                var spawner = spawnerObject.AddComponent<EnemySpawner>();
+                var entry = new WaveEnemyEntry(null, prefab, 1, 0f);
+
+                var spawned = spawner.Spawn(entry, 0);
+
+                Assert.That(spawned, Is.Not.Null);
+                Assert.That(spawner.SpawnedEnemies.Count, Is.EqualTo(1));
+
+                spawner.ClearSpawnedEnemies();
+
+                Assert.That(spawned == null, Is.True);
+                Assert.That(spawner.SpawnedEnemies.Count, Is.EqualTo(0));
+            }
+            finally
+            {
+                Object.DestroyImmediate(prefab);
+                Object.DestroyImmediate(spawnerObject);
+            }
+        }
     }
 }

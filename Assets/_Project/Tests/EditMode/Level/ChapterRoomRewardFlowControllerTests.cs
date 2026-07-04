@@ -137,6 +137,36 @@ namespace TapKnockout.Level.Tests
         }
 
         [Test]
+        public void TryContinueAfterReward_WhenRewardPendingWithoutOffer_RepairsStateAndStartsNextRoom()
+        {
+            var previousTimeScale = Time.timeScale;
+            var fixture = CreateFixture(RoomRewardType.Ability, RoomRewardType.None);
+
+            try
+            {
+                fixture.Runner.StartChapter();
+                fixture.RoomManager.ForceCompleteRoom();
+                fixture.SelectionController.SelectOffer(0);
+
+                fixture.Runner.RunState.ClearRewardState();
+                fixture.Runner.RunState.MarkRewardPending();
+                fixture.Runner.SetFlowState(ChapterFlowState.RewardPending);
+
+                Assert.That(fixture.FlowController.CanContinueAfterReward, Is.True);
+                Assert.That(fixture.Runner.FlowState, Is.EqualTo(ChapterFlowState.WaitingForContinue));
+
+                Assert.That(fixture.FlowController.TryContinueAfterReward(), Is.True);
+                Assert.That(fixture.Runner.CurrentRoomIndex, Is.EqualTo(1));
+                Assert.That(fixture.Runner.FlowState, Is.EqualTo(ChapterFlowState.CombatRunning));
+            }
+            finally
+            {
+                Time.timeScale = previousTimeScale;
+                fixture.Destroy();
+            }
+        }
+
+        [Test]
         public void ContinueAfterReward_BeforeRewardResolved_DoesNotAdvance()
         {
             var fixture = CreateFixture(RoomRewardType.Ability, RoomRewardType.None);
@@ -307,6 +337,86 @@ namespace TapKnockout.Level.Tests
             void HandleTransitionCompleted(ChapterRoomTransitionEventArgs eventArgs)
             {
                 transitionCompletedCount++;
+            }
+        }
+
+        [Test]
+        public void AbilityRoomThenManualNoRewardRoom_AllowsContinueToThirdRoom()
+        {
+            var previousTimeScale = Time.timeScale;
+            var fixture = CreateFixture(new[] { RoomRewardType.Ability, RoomRewardType.None, RoomRewardType.None }, false);
+
+            try
+            {
+                SetAutoAdvanceAfterClear(fixture.Room2, false);
+
+                fixture.Runner.StartChapter();
+                fixture.RoomManager.ForceCompleteRoom();
+                fixture.SelectionController.SelectOffer(0);
+                fixture.FlowController.ContinueAfterReward();
+
+                Assert.That(fixture.Runner.CurrentRoomIndex, Is.EqualTo(1));
+                Assert.That(fixture.Runner.CurrentRoomConfig, Is.EqualTo(fixture.Room2));
+
+                fixture.RoomManager.ForceCompleteRoom();
+
+                Assert.That(fixture.FlowController.CanContinueAfterReward, Is.True);
+                Assert.That(fixture.Runner.CurrentRoomIndex, Is.EqualTo(1));
+                Assert.That(fixture.Runner.FlowState, Is.EqualTo(ChapterFlowState.WaitingForContinue));
+
+                fixture.FlowController.ContinueAfterReward();
+
+                Assert.That(fixture.Runner.CurrentRoomIndex, Is.EqualTo(2));
+                Assert.That(fixture.Runner.FlowState, Is.EqualTo(ChapterFlowState.CombatRunning));
+            }
+            finally
+            {
+                Time.timeScale = previousTimeScale;
+                fixture.Destroy();
+            }
+        }
+
+        [Test]
+        public void AbilityCombatAbilitySequence_AllowsContinueToFourthRoom()
+        {
+            var previousTimeScale = Time.timeScale;
+            var fixture = CreateFixture(new[] { RoomRewardType.Ability, RoomRewardType.None, RoomRewardType.Ability, RoomRewardType.None }, false);
+
+            try
+            {
+                fixture.Runner.StartChapter();
+                fixture.RoomManager.ForceCompleteRoom();
+                fixture.SelectionController.SelectOffer(0);
+                fixture.FlowController.ContinueAfterReward();
+
+                Assert.That(fixture.Runner.CurrentRoomIndex, Is.EqualTo(1));
+
+                fixture.RoomManager.ForceCompleteRoom();
+
+                Assert.That(fixture.Runner.CurrentRoomIndex, Is.EqualTo(2));
+                Assert.That(fixture.Runner.FlowState, Is.EqualTo(ChapterFlowState.CombatRunning));
+
+                fixture.RoomManager.ForceCompleteRoom();
+
+                Assert.That(fixture.FlowController.IsWaitingForAbilitySelection, Is.True);
+                Assert.That(fixture.Runner.FlowState, Is.EqualTo(ChapterFlowState.AbilitySelectionPending));
+
+                fixture.SelectionController.SelectOffer(0);
+
+                Assert.That(fixture.FlowController.CanContinueAfterReward, Is.True);
+                Assert.That(fixture.Runner.CurrentRoomIndex, Is.EqualTo(2));
+                Assert.That(fixture.Runner.FlowState, Is.EqualTo(ChapterFlowState.WaitingForContinue));
+
+                fixture.FlowController.ContinueAfterReward();
+
+                Assert.That(fixture.Runner.CurrentRoomIndex, Is.EqualTo(3));
+                Assert.That(fixture.Runner.CurrentRoomConfig, Is.EqualTo(fixture.Rooms[3]));
+                Assert.That(fixture.Runner.FlowState, Is.EqualTo(ChapterFlowState.CombatRunning));
+            }
+            finally
+            {
+                Time.timeScale = previousTimeScale;
+                fixture.Destroy();
             }
         }
 
@@ -492,6 +602,13 @@ namespace TapKnockout.Level.Tests
         {
             var serializedObject = new SerializedObject(controller);
             serializedObject.FindProperty("autoContinueAfterAbilitySelection").boolValue = value;
+            serializedObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetAutoAdvanceAfterClear(RoomTemplateConfig room, bool value)
+        {
+            var serializedObject = new SerializedObject(room);
+            serializedObject.FindProperty("autoAdvanceAfterClear").boolValue = value;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
 

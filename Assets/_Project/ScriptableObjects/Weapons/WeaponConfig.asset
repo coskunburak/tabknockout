@@ -19,7 +19,7 @@ MonoBehaviour:
   damageType: 0
   criticalChance: 0
   criticalMultiplier: 1.5
-  projectilePrefab: {fileID: 4874093982404486928, guid: 1547e05e3aa7f43d3bd009db9b4795da, type: 3}
+  projectilePrefab: {fileID: 4874093982404486928, guid: a6d7da308682e4069818983a492d573b, type: 3}
   projectileSpeed: 12
   projectileLifetime: 3
   targetLayers:

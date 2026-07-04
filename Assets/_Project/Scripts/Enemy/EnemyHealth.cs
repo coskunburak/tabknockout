@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TapKnockout.Enemy
 {
     [DisallowMultipleComponent]
-    public sealed class EnemyHealth : MonoBehaviour, IDamageable, ITargetable
+    public sealed class EnemyHealth : MonoBehaviour, IDamageable, ITargetable, ICombatTargetTraits, IPoolLifecycle
     {
         [Header("Config")]
         [SerializeField] private EnemyConfig config;
@@ -24,23 +24,28 @@ namespace TapKnockout.Enemy
         [SerializeField] private bool logDeath = true;
 
         private KnockbackReceiver knockbackReceiver;
+        private ShieldDamageFilter shieldDamageFilter;
         private Coroutine deathCoroutine;
         private bool hasDied;
+        private bool isPoolInactive;
 
         public event Action<HitContext> OnDamaged;
         public event Action<HitContext> OnDied;
 
-        public bool IsAlive => !hasDied && CurrentHealth > 0f;
-        public bool IsTargetable => targetableWhenAlive && IsAlive;
+        public bool IsAlive => !isPoolInactive && !hasDied && CurrentHealth > 0f;
+        public bool IsTargetable => !isPoolInactive && targetableWhenAlive && IsAlive;
         public GameObject GameObject => gameObject;
         public Transform TargetTransform => targetTransform != null ? targetTransform : transform;
         public float CurrentHealth { get; private set; }
         public float MaxHealth => config != null ? config.MaxHealth : 40f;
         public EnemyConfig Config => config;
+        public bool IsBossTarget => config != null && (config.Rank == EnemyRank.Boss || config.Rank == EnemyRank.MiniBoss);
+        public bool IsEliteTarget => config != null && (config.Rank == EnemyRank.Elite || config.Rank == EnemyRank.MiniBoss || config.Rank == EnemyRank.Boss);
 
         private void Awake()
         {
             knockbackReceiver = GetComponent<KnockbackReceiver>();
+            shieldDamageFilter = GetComponent<ShieldDamageFilter>();
             ResetHealth();
         }
 
@@ -64,6 +69,7 @@ namespace TapKnockout.Enemy
 
         public void ResetHealth()
         {
+            isPoolInactive = false;
             hasDied = false;
             CurrentHealth = MaxHealth;
             SetCollidersEnabled(true);
@@ -75,12 +81,39 @@ namespace TapKnockout.Enemy
             }
         }
 
+        public void OnBeforeSpawnFromPool()
+        {
+            ResetHealth();
+        }
+
+        public void OnSpawnedFromPool()
+        {
+            ResetHealth();
+        }
+
+        public void OnBeforeDespawnToPool()
+        {
+            MarkInactiveForPool();
+        }
+
+        public void ResetForPool()
+        {
+            MarkInactiveForPool();
+        }
+
         public void ReceiveHit(HitContext hitContext)
         {
             if (hitContext == null || !IsAlive)
             {
                 return;
             }
+
+            if (shieldDamageFilter == null)
+            {
+                TryGetComponent(out shieldDamageFilter);
+            }
+
+            shieldDamageFilter?.ApplyToHit(hitContext);
 
             var damageAmount = Mathf.Max(0f, hitContext.DamageAmount);
             CurrentHealth = Mathf.Max(0f, CurrentHealth - damageAmount);
@@ -170,6 +203,20 @@ namespace TapKnockout.Enemy
 
             gameObject.SetActive(false);
             deathCoroutine = null;
+        }
+
+        private void MarkInactiveForPool()
+        {
+            isPoolInactive = true;
+            hasDied = true;
+            CurrentHealth = 0f;
+            SetCollidersEnabled(false);
+
+            if (deathCoroutine != null)
+            {
+                StopCoroutine(deathCoroutine);
+                deathCoroutine = null;
+            }
         }
     }
 }

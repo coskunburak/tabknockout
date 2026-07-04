@@ -2,7 +2,11 @@
   "name": "TapKnockout.Boss",
   "rootNamespace": "TapKnockout.Boss",
   "references": [
-    "TapKnockout.Combat"
+    "TapKnockout.Combat",
+    "TapKnockout.Enemy",
+    "TapKnockout.Room",
+    "TapKnockout.VFX",
+    "TapKnockout.Wave"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

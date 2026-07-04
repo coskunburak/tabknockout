@@ -1,90 +1,171 @@
 # Data and Config Schema
 
-## Global Config Rules
+## Global Rules
 
 - Every gameplay/config asset has a stable `id`.
-- IDs use lowercase snake_case, for example `dash_shockwave`, `enemy_melee_chaser`, `chapter_001`.
-- Display names are not IDs and may be localized later.
-- Configs should have validation paths through tests, editor validation, or manual checklist.
+- IDs use lowercase snake_case, for example `arena_ruins_01`, `wave_intro_01`, `skill_arc_blast`.
+- Display names are not IDs.
 - Runtime code should not depend on scene object names for gameplay identity.
+- Configs should have validation through tests, Editor tools, or manual checklist.
+- Use `planned` or `target` for fields not verified in code.
 
 ## Common Fields
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | Yes | Stable analytics/save/config key. |
-| `displayName` | string | Yes for player-facing content | Can be replaced by localization key later. |
-| `description` | string | Optional | Player-facing short text or designer note. |
-| `tags` | string/list enum | Optional | Use for ability filters, enemy roles, reward tables. |
-| `version` | int | Optional | Required for save, economy, and remote config payloads. |
+| `displayName` | string | Player-facing content | Can be localized later. |
+| `description` | string | Optional | Short player-facing text or designer note. |
+| `tags` | list | Optional | Used for ability filters, enemy roles, reward tables. |
+| `version` | int | Optional | Useful for saves and config migration. |
 
-## PlayerConfig
-
-Required fields:
-
-- `maxHp`
-- `moveSpeed`
-- `rotationSpeed`
-- `targetingRadius`
-- `stopToAttackMoveThreshold`
-- `baseAttackDamage`
-- `baseAttackCooldown`
-- `dashCooldown`
-- `dashDuration`
-- `dashDistance`
-- `dashIFrameSeconds`
-- `dashImpactDamage`
-- `dashKnockbackForce`
-
-Validation:
-
-- Numeric values must be positive unless documented.
-- Dash duration must be shorter than dash cooldown.
-- Targeting radius must be large enough for room combat.
-
-## WeaponConfig
+## ArenaConfig
 
 Required fields:
 
 - `id`
-- `displayName`
-- `weaponType`
-- `damageMultiplier`
-- `attackCooldown`
-- `range`
-- `projectileSpeed`
-- `projectilePrefab`
-- `maxProjectiles`
-- `canPierce`
-- `basePierceCount`
+- `arenaPrefab`
+- `bounds`
+- `cameraBounds`
+- `playerSpawn`
+- `spawnMode`
+- `spawnRingMinRadius`
+- `spawnRingMaxRadius`
+- `antiSpawnSafetyRadius`
+- `pickupBounds`
+- `lightingProfile`
 
 Validation:
 
-- Projectile prefab must match projectile prefab contract.
-- Attack cooldown must be nonzero.
-- Vertical slice starts with one weapon.
+- Spawn ring must not place enemies inside safety radius.
+- Camera bounds must contain playable bounds.
+- Arena must support boss spawn and 100+ enemy stress test target.
 
-## EnemyConfig
+## RunConfig
 
 Required fields:
 
 - `id`
-- `displayName`
+- `arenaConfig`
+- `durationSeconds`
+- `startingPlayerLevel`
+- `xpCurve`
+- `waveTimeline`
+- `bossEncounter`
+- `resultRules`
+- `startingAbilityPool`
+
+Validation:
+
+- MVP target duration is 600 seconds.
+- Boss timing must fit inside run duration.
+- Result rules must define win and loss.
+
+## WaveTimelineConfig
+
+Required fields:
+
+- `id`
+- `segments`
+- `eliteMilestones`
+- `bossWarningTime`
+- `difficultyCurve`
+
+Segment fields:
+
+- `startTime`
+- `endTime`
+- `spawnGroups`
+- `maxAliveBudget`
+- `spawnInterval`
+- `intensityMultiplier`
+
+Validation:
+
+- Segments must not overlap incorrectly.
+- Spawn budget must respect performance targets.
+
+## SpawnGroupConfig
+
+Required fields:
+
+- `id`
+- `enemyArchetype`
+- `count`
+- `spawnPattern`
+- `spawnInterval`
+- `budgetCost`
+- `weight`
+- `minRunTime`
+- `maxRunTime`
+
+Validation:
+
+- Enemy references must be valid.
+- Count and budget cannot exceed timeline limits.
+
+## EnemyArchetypeConfig
+
+Required fields:
+
+- `id`
 - `role`
+- `prefab`
 - `maxHp`
 - `contactDamage`
 - `moveSpeed`
 - `attackRange`
 - `attackCooldown`
-- `projectileConfig` for ranged enemies
-- `chargeConfig` for charger enemies
 - `xpReward`
-- `coinReward`
+- `budgetCost`
+- `behaviorType`
+
+Roles:
+
+- `swarm`
+- `melee`
+- `ranged`
+- `charger`
+- `tank`
+- `elite`
+- `boss_add`
+
+## EliteConfig
+
+Required fields:
+
+- `id`
+- `baseEnemyArchetype`
+- `hpMultiplier`
+- `damageMultiplier`
+- `speedMultiplier`
+- `modifierTags`
+- `warningText`
+- `xpRewardMultiplier`
+- `dropTable`
 
 Validation:
 
-- Role must be one of `melee`, `ranged`, `charger`, `elite`, `boss`, or future documented role.
-- Boss configs must provide boss health bar and attack pattern references.
+- Elite must be visually distinguishable.
+- Elite spawn must emit analytics.
+
+## BossEncounterConfig
+
+Required fields:
+
+- `id`
+- `bossPrefab`
+- `spawnTime`
+- `warningLeadTime`
+- `healthBarName`
+- `phaseDefinitions`
+- `addSpawnGroups`
+- `defeatResult`
+
+Validation:
+
+- Boss has warning, health bar, telegraphs, defeat event.
+- Boss cannot spawn before required systems are initialized.
 
 ## AbilityConfig
 
@@ -93,154 +174,88 @@ Required fields:
 - `id`
 - `displayName`
 - `description`
+- `category`
 - `rarity`
 - `tags`
 - `maxStacks`
 - `weight`
+- `exclusionGroup`
 - `effectType`
 - `effectValues`
-- `exclusionGroup`
+- `cooldown`
+- `duration`
 - `icon`
 
-Validation:
+Categories:
 
-- `maxStacks` must be at least 1.
-- `weight` must be nonnegative.
-- Ability tags should include at least one of `attack`, `projectile`, `dash`, `defense`, `utility`, `status`, `economy`, `summon`.
-- Dash abilities must be testable through dash events.
+- `active`
+- `passive`
+- `weapon_modifier`
+- `projectile_modifier`
+- `dash_modifier`
+- `area_damage`
+- `defense`
+- `pickup`
 
-## ChapterConfig
-
-Required fields:
-
-- `id`
-- `displayName`
-- `chapterIndex`
-- `roomSequence`
-- `recommendedPower`
-- `entryCost` optional and not used in vertical slice
-- `completionRewards`
-
-Validation:
-
-- Vertical slice Chapter 1 should contain 12-15 rooms.
-- Last room should be boss room.
-
-## RoomTemplateConfig
+## AbilityUpgradeConfig
 
 Required fields:
 
 - `id`
-- `roomType`
-- `arenaPrefab`
-- `spawnPoints`
-- `waves`
-- `clearCondition`
-- `rewardDefinition`
-- `difficultyRating`
-- `cameraSettings`
+- `abilityId`
+- `stackIndex`
+- `modifiedValues`
+- `descriptionOverride`
 
 Validation:
 
-- Combat rooms require at least one wave.
-- Boss rooms require exactly one boss definition or boss wave.
-- Reward/heal rooms do not require enemy waves.
+- Stack index cannot exceed `AbilityConfig.maxStacks`.
+- Upgrade values must be reportable by balance tools.
 
-## WaveConfig
+## XPDropConfig
 
 Required fields:
 
 - `id`
-- `enemyGroups`
-- `spawnDelay`
-- `spawnInterval`
-- `maxAlive`
-- `clearCondition`
-
-Enemy group fields:
-
-- `enemyConfig`
-- `count`
-- `spawnPattern`
-- `delay`
+- `xpAmount`
+- `orbPrefab`
+- `dropChance`
+- `magnetRadius`
+- `lifetimeSeconds`
+- `mergeRules`
 
 Validation:
 
-- `maxAlive` cannot exceed performance budget without approval.
-- All enemy references must be valid.
+- XP orbs must be pool-compatible.
+- Pickup count must not exceed performance budget.
 
-## RewardTableConfig
+## DifficultyCurveConfig
 
 Required fields:
 
 - `id`
-- `rewardEntries`
-- `rollCount`
-- `guaranteedRewards`
-- `scalingRules`
-
-Reward entry fields:
-
-- `rewardType`
-- `itemOrCurrencyId`
-- `minAmount`
-- `maxAmount`
-- `weight`
+- `timeToMultiplier`
+- `enemyHealthMultiplier`
+- `enemyDamageMultiplier`
+- `spawnRateMultiplier`
+- `eliteFrequencyMultiplier`
+- `xpMultiplier`
 
 Validation:
 
-- No premium currency hard gate for basic vertical slice progress.
-- Reward ranges must be compatible with economy spreadsheet.
-
-## MonetizationConfig
-
-Required fields:
-
-- `rewardedReviveEnabled`
-- `doubleRewardAdEnabled`
-- `freeChestCooldownSeconds`
-- `abilityRerollAdEnabled`
-- `starterPackEnabled`
-- `interstitialEnabled`
-- `interstitialFrequency`
-
-Validation:
-
-- Interstitials default off for vertical slice.
-- Fake ad service only until SDK approval.
+- Multipliers need safe min/max.
+- Curves must be visible in balancing tools.
 
 ## Save Data
 
-Required fields:
+Planned fields:
 
 - `schemaVersion`
 - `playerIdLocal`
-- `currencies`
-- `gearInventory`
-- `equippedGear`
-- `talents`
-- `chapterProgress`
+- `unlockedCharacters`
+- `unlockedAbilities`
+- `metaUpgrades`
 - `settings`
-- `lastDailyRewardClaim`
+- `bestRuns`
 
-Validation:
-
-- Save version must support future migration.
-- Save/load failures must not erase data without explicit recovery path.
-
-## Analytics Event Payload
-
-Required fields:
-
-- `eventName`
-- `timestamp`
-- `sessionId`
-- `runId` where relevant
-- `parameters`
-
-Validation:
-
-- Event names use lowercase snake_case.
-- Do not send PII.
-- Gameplay code uses service interface only.
-
+No monetization or premium currency save data is required for MVP.

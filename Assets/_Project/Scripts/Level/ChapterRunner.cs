@@ -13,11 +13,13 @@ namespace TapKnockout.Level
         [Header("Room Runtime")]
         [SerializeField] private RoomManager roomManager;
         [SerializeField] private RoomManager[] roomManagers = Array.Empty<RoomManager>();
+        [SerializeField] private RuntimeRoomLoader runtimeRoomLoader;
 
         [Header("Runtime")]
         [SerializeField] private bool startChapterOnStart;
         [SerializeField] private bool autoStartFirstRoom = true;
         [SerializeField] private bool autoAdvanceRooms;
+        [SerializeField] private bool resetPausedTimeScaleOnChapterStart = true;
 
         [Header("Debug")]
         [SerializeField] private bool logLifecycle;
@@ -49,6 +51,7 @@ namespace TapKnockout.Level
         private void Reset()
         {
             roomManager = GetComponent<RoomManager>();
+            runtimeRoomLoader = GetComponent<RuntimeRoomLoader>();
         }
 
         private void Awake()
@@ -56,6 +59,11 @@ namespace TapKnockout.Level
             if (roomManager == null)
             {
                 roomManager = GetComponent<RoomManager>();
+            }
+
+            if (runtimeRoomLoader == null)
+            {
+                runtimeRoomLoader = GetComponent<RuntimeRoomLoader>();
             }
         }
 
@@ -78,6 +86,13 @@ namespace TapKnockout.Level
             roomManager = defaultRoomManager;
         }
 
+        public void SetReferences(ChapterConfig chapterConfig, RoomManager defaultRoomManager, RuntimeRoomLoader roomLoader)
+        {
+            config = chapterConfig;
+            roomManager = defaultRoomManager;
+            runtimeRoomLoader = roomLoader;
+        }
+
         public void SetRoomManagers(RoomManager[] managers)
         {
             roomManagers = managers ?? Array.Empty<RoomManager>();
@@ -96,6 +111,11 @@ namespace TapKnockout.Level
         public void StartChapter()
         {
             UnsubscribeActiveRoom();
+
+            if (resetPausedTimeScaleOnChapterStart && Time.timeScale <= 0f)
+            {
+                Time.timeScale = 1f;
+            }
 
             CurrentRoomIndex = -1;
             IsChapterRunning = true;
@@ -168,6 +188,8 @@ namespace TapKnockout.Level
                 activeRoomManager.OnRoomCompleted += HandleRoomCompleted;
             }
 
+            var activeRoomInstance = runtimeRoomLoader != null ? runtimeRoomLoader.LoadRoom(roomConfig) : null;
+            activeRoomManager.SetActiveRoomInstance(activeRoomInstance);
             activeRoomManager.StartRoom(roomConfig);
             SetFlowState(ChapterFlowState.CombatRunning);
             return true;
