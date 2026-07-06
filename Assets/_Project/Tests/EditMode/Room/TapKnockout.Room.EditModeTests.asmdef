@@ -2,6 +2,7 @@
   "name": "TapKnockout.Room.EditModeTests",
   "rootNamespace": "TapKnockout.Room.Tests",
   "references": [
+    "TapKnockout.Camera",
     "TapKnockout.Wave",
     "TapKnockout.Room"
   ],

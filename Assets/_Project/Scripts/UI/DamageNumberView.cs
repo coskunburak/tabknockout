@@ -14,6 +14,7 @@ namespace TapKnockout.UI
 
         private RectTransform rectTransform;
         private Vector2 startPosition;
+        private Vector3 baseScale = Vector3.one;
         private float remainingLifetime;
         private bool isPlaying;
 
@@ -38,6 +39,8 @@ namespace TapKnockout.UI
             {
                 canvasGroup = GetComponent<CanvasGroup>();
             }
+
+            baseScale = transform.localScale;
         }
 
         private void OnValidate()
@@ -46,6 +49,11 @@ namespace TapKnockout.UI
         }
 
         public void Play(float amount, Vector2 anchoredPosition, Color color)
+        {
+            Play(amount, anchoredPosition, color, 1f);
+        }
+
+        public void Play(float amount, Vector2 anchoredPosition, Color color, float scaleMultiplier)
         {
             if (rectTransform == null)
             {
@@ -58,6 +66,7 @@ namespace TapKnockout.UI
             gameObject.SetActive(true);
 
             rectTransform.anchoredPosition = anchoredPosition;
+            rectTransform.localScale = baseScale * Mathf.Clamp(scaleMultiplier, 0.2f, 2.5f);
 
             if (label != null)
             {
@@ -104,6 +113,11 @@ namespace TapKnockout.UI
         {
             isPlaying = false;
             remainingLifetime = 0f;
+            if (rectTransform != null)
+            {
+                rectTransform.localScale = baseScale;
+            }
+
             gameObject.SetActive(false);
         }
     }

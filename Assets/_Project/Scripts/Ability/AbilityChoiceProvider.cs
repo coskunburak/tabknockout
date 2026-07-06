@@ -22,6 +22,8 @@ namespace TapKnockout.Ability
             this.random = random ?? new Random();
         }
 
+        public bool AllowPlaceholderAbilitiesInOffers { get; set; }
+
         public IReadOnlyList<AbilityDefinition> GenerateChoices(
             IReadOnlyList<AbilityDefinition> pool,
             RunAbilityState runState,
@@ -48,12 +50,14 @@ namespace TapKnockout.Ability
                 {
                     RemoveCandidatesWithAbilityId(candidates, selected.AbilityId);
                 }
+
+                RemoveCandidatesInMutuallyExclusiveGroup(candidates, selected.MutuallyExclusiveGroupId);
             }
 
             return choices;
         }
 
-        private static List<AbilityDefinition> BuildCandidates(IReadOnlyList<AbilityDefinition> pool, RunAbilityState runState)
+        private List<AbilityDefinition> BuildCandidates(IReadOnlyList<AbilityDefinition> pool, RunAbilityState runState)
         {
             var candidates = new List<AbilityDefinition>(pool.Count);
             for (var i = 0; i < pool.Count; i++)
@@ -66,7 +70,7 @@ namespace TapKnockout.Ability
 
                 if (runState != null)
                 {
-                    if (runState.CanBeOffered(definition))
+                    if (runState.CanBeOffered(definition, AllowPlaceholderAbilitiesInOffers))
                     {
                         candidates.Add(definition);
                     }
@@ -74,7 +78,7 @@ namespace TapKnockout.Ability
                     continue;
                 }
 
-                if (definition.IsEnabled && definition.HasValidId)
+                if (CanBeOfferedWithoutRunState(definition))
                 {
                     candidates.Add(definition);
                 }
@@ -115,6 +119,42 @@ namespace TapKnockout.Ability
             for (var i = candidates.Count - 1; i >= 0; i--)
             {
                 if (string.Equals(candidates[i].AbilityId, abilityId, StringComparison.Ordinal))
+                {
+                    candidates.RemoveAt(i);
+                }
+            }
+        }
+
+        private bool CanBeOfferedWithoutRunState(AbilityDefinition definition)
+        {
+            if (definition == null || !definition.IsEnabled || !definition.HasValidId || definition.Weight <= 0f)
+            {
+                return false;
+            }
+
+            if (!AllowPlaceholderAbilitiesInOffers && (definition.IsPlaceholder || !definition.IsImplementedForNormalOffers))
+            {
+                return false;
+            }
+
+            if (definition.PrerequisiteAbilityIds.Count > 0 || definition.RequiredTags.Count > 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void RemoveCandidatesInMutuallyExclusiveGroup(List<AbilityDefinition> candidates, string groupId)
+        {
+            if (string.IsNullOrWhiteSpace(groupId))
+            {
+                return;
+            }
+
+            for (var i = candidates.Count - 1; i >= 0; i--)
+            {
+                if (string.Equals(candidates[i].MutuallyExclusiveGroupId, groupId, StringComparison.Ordinal))
                 {
                     candidates.RemoveAt(i);
                 }

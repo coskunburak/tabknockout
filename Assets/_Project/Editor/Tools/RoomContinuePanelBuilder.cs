@@ -215,6 +215,14 @@ namespace TapKnockout.Editor.Tools
         {
             flowController ??= Object.FindFirstObjectByType<ChapterRoomRewardFlowController>(FindObjectsInactive.Include);
 
+            controller.enabled = false;
+            if (root != null && !root.activeSelf)
+            {
+                Undo.RecordObject(root, "Activate Room Continue Panel");
+                root.SetActive(true);
+                EditorUtility.SetDirty(root);
+            }
+
             var serializedObject = new SerializedObject(controller);
             serializedObject.FindProperty("root").objectReferenceValue = root;
             serializedObject.FindProperty("canvasGroup").objectReferenceValue = canvasGroup;
@@ -222,7 +230,10 @@ namespace TapKnockout.Editor.Tools
             serializedObject.FindProperty("continueLabel").objectReferenceValue = label;
             serializedObject.FindProperty("flowController").objectReferenceValue = flowController;
             serializedObject.FindProperty("hideOnStart").boolValue = true;
+            serializedObject.FindProperty("pollFlowControllerState").boolValue = true;
+            serializedObject.FindProperty("logDebug").boolValue = true;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
+            controller.enabled = true;
         }
 
         private static void SetPanelVisible(CanvasGroup canvasGroup, Button button, bool visible)

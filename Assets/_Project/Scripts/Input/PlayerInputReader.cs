@@ -17,6 +17,7 @@ namespace TapKnockout.Input
         [Header("Editor / Development Input")]
         [SerializeField] private bool enableKeyboardInput = true;
         [SerializeField] private bool enablePointerDragInput = true;
+        [SerializeField] private bool enableMouseDragInput;
         [SerializeField, Min(1f)] private float pointerPixelsForFullInput = 120f;
 
         private Vector2 pointerStartPosition;
@@ -104,7 +105,9 @@ namespace TapKnockout.Input
                 return ReadPointerPosition(touchPosition, Touchscreen.current.primaryTouch.press.wasPressedThisFrame);
             }
 
-            if (Mouse.current != null && Mouse.current.leftButton.isPressed)
+            if (enableMouseDragInput &&
+                Mouse.current != null &&
+                Mouse.current.leftButton.isPressed)
             {
                 var mousePosition = Mouse.current.position.ReadValue();
                 return ReadPointerPosition(mousePosition, Mouse.current.leftButton.wasPressedThisFrame);
@@ -118,7 +121,7 @@ namespace TapKnockout.Input
                 return ReadPointerPosition(touch.position, touch.phase == TouchPhase.Began);
             }
 
-            if (UnityEngine.Input.GetMouseButton(0))
+            if (enableMouseDragInput && UnityEngine.Input.GetMouseButton(0))
             {
                 return ReadPointerPosition(UnityEngine.Input.mousePosition, UnityEngine.Input.GetMouseButtonDown(0));
             }

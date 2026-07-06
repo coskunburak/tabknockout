@@ -51,6 +51,27 @@ namespace TapKnockout.Level.Tests
         }
 
         [Test]
+        public void CombatRoomWithManualContinue_WaitsForContinueWithoutAbilitySelection()
+        {
+            var room = ScriptableObject.CreateInstance<RoomTemplateConfig>();
+
+            try
+            {
+                SetAutoAdvanceAfterClear(room, false);
+
+                var decision = RoomCompletionDecision.Evaluate(room, 0, 2);
+
+                Assert.That(decision.ShouldWaitForContinue, Is.True);
+                Assert.That(decision.ShouldOpenAbilitySelection, Is.False);
+                Assert.That(decision.ShouldAutoAdvance, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(room);
+            }
+        }
+
+        [Test]
         public void LastRoom_CompletesChapter()
         {
             var room = ScriptableObject.CreateInstance<RoomTemplateConfig>();
@@ -110,6 +131,13 @@ namespace TapKnockout.Level.Tests
         {
             var serializedObject = new SerializedObject(room);
             serializedObject.FindProperty("rewardType").enumValueIndex = (int)rewardType;
+            serializedObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetAutoAdvanceAfterClear(RoomTemplateConfig room, bool value)
+        {
+            var serializedObject = new SerializedObject(room);
+            serializedObject.FindProperty("autoAdvanceAfterClear").boolValue = value;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
     }

@@ -1,0 +1,21 @@
+{
+  "name": "TapKnockout.Pickups.EditModeTests",
+  "rootNamespace": "TapKnockout.Pickups.Tests",
+  "references": [
+    "TapKnockout.Pickups"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

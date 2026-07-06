@@ -13,18 +13,35 @@ namespace TapKnockout.Player
         [Header("Input")]
         [SerializeField] private MonoBehaviour inputSourceBehaviour;
         [SerializeField] private bool findInputSourceOnSameObject = true;
+        [SerializeField] private bool preferDesktopInputReader = true;
+
+        [Header("Rigidbody")]
+        [SerializeField] private bool enforceHorizontalRigidbodyMovement = true;
+        [SerializeField] private bool useKinematicMotor = true;
+        [SerializeField] private bool disableGravityForTopDownMotor = true;
+
+        [Header("Facing")]
+        [SerializeField] private bool rotateTowardMovement = true;
 
         [Header("Fallback Values")]
         [SerializeField, Min(0f)] private float fallbackMoveSpeed = 5f;
         [SerializeField, Min(0f)] private float fallbackAcceleration = 45f;
+        [SerializeField, Min(0f)] private float fallbackDeceleration = 55f;
         [SerializeField, Min(0f)] private float fallbackRotationSpeed = 720f;
         [SerializeField, Range(0f, 0.95f)] private float fallbackMovementDeadZone = 0.12f;
+        [SerializeField] private bool fallbackUseMovementSmoothing = true;
         [SerializeField, Min(0f)] private float fallbackStopToAttackMovementThreshold = 0.08f;
+
+        [Header("Debug")]
+        [SerializeField] private Vector2 debugMoveInput;
+        [SerializeField] private Vector3 debugTargetDirection;
+        [SerializeField] private Vector3 debugHorizontalVelocity;
 
         private Rigidbody cachedRigidbody;
         private IPlayerInputSource inputSource;
         private bool loggedMissingConfig;
         private bool loggedMissingInputSource;
+        private Vector3 internalSmoothedVelocity;
 
         public bool IsMoving { get; private set; }
         public bool IsMovingAboveAttackThreshold { get; private set; }
@@ -32,23 +49,24 @@ namespace TapKnockout.Player
         public Vector3 CurrentMoveDirection { get; private set; }
         public Vector3 LastFacingDirection { get; private set; } = Vector3.forward;
 
+        public PlayerConfig Config => config;
+
         private float MoveSpeed => config != null ? config.MoveSpeed : fallbackMoveSpeed;
         private float EffectiveMoveSpeed => MoveSpeed * (runtimeStats != null ? runtimeStats.MoveSpeedMultiplier : 1f);
         private float Acceleration => config != null ? config.Acceleration : fallbackAcceleration;
+        private float Deceleration => config != null ? config.Deceleration : fallbackDeceleration;
         private float RotationSpeed => config != null ? config.RotationSpeed : fallbackRotationSpeed;
         private float MovementDeadZone => config != null ? config.MovementDeadZone : fallbackMovementDeadZone;
+        private bool UseMovementSmoothing => config != null ? config.UseMovementSmoothing : fallbackUseMovementSmoothing;
         private float StopToAttackMovementThreshold => config != null
             ? config.StopToAttackMovementThreshold
             : fallbackStopToAttackMovementThreshold;
-
         private void Reset()
         {
             cachedRigidbody = GetComponent<Rigidbody>();
             if (cachedRigidbody != null)
             {
-                cachedRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-                cachedRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
-                cachedRigidbody.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                ConfigureRigidbodyForMovement();
             }
 
             runtimeStats = GetComponent<PlayerRuntimeStats>();
@@ -57,6 +75,7 @@ namespace TapKnockout.Player
         private void Awake()
         {
             cachedRigidbody = GetComponent<Rigidbody>();
+            ConfigureRigidbodyForMovement();
             if (runtimeStats == null)
             {
                 runtimeStats = GetComponent<PlayerRuntimeStats>();
@@ -72,7 +91,8 @@ namespace TapKnockout.Player
             {
                 CurrentMoveDirection = Vector3.zero;
                 IsMoving = false;
-                IsMovingAboveAttackThreshold = true;
+                IsMovingAboveAttackThreshold = false;
+                StopHorizontalMotion();
                 return;
             }
 
@@ -90,7 +110,9 @@ namespace TapKnockout.Player
             inputSource?.SetMovementDeadZone(MovementDeadZone);
 
             var moveInput = inputSource != null ? inputSource.MoveInput : Vector2.zero;
+            debugMoveInput = moveInput;
             var targetDirection = ToWorldMoveDirection(moveInput);
+            debugTargetDirection = targetDirection;
             var isInputMoving = targetDirection.sqrMagnitude > 0f;
 
             CurrentMoveDirection = isInputMoving ? targetDirection : Vector3.zero;
@@ -102,7 +124,11 @@ namespace TapKnockout.Player
             }
 
             MoveRigidbody(targetDirection);
-            RotateTowardMovement(targetDirection);
+            if (rotateTowardMovement)
+            {
+                RotateTowardMovement(targetDirection);
+            }
+
             UpdateAttackMovementState();
         }
 
@@ -117,17 +143,48 @@ namespace TapKnockout.Player
 
             CurrentMoveDirection = Vector3.zero;
             IsMoving = false;
-            IsMovingAboveAttackThreshold = true;
+            IsMovingAboveAttackThreshold = false;
+            internalSmoothedVelocity = Vector3.zero;
 
             if (cachedRigidbody != null)
             {
-                var velocity = cachedRigidbody.linearVelocity;
-                cachedRigidbody.linearVelocity = new Vector3(0f, velocity.y, 0f);
+                StopHorizontalMotion();
             }
+        }
+
+        public void SetInputSource(MonoBehaviour inputSource)
+        {
+            inputSourceBehaviour = inputSource;
+            this.inputSource = inputSourceBehaviour as IPlayerInputSource;
+            loggedMissingInputSource = false;
+
+            if (this.inputSource == null && inputSourceBehaviour != null)
+            {
+                Debug.LogWarning($"{inputSourceBehaviour.name} does not implement {nameof(IPlayerInputSource)} and cannot drive {nameof(PlayerMovementController)}.", this);
+            }
+        }
+
+        public void SetRotateTowardMovement(bool shouldRotateTowardMovement)
+        {
+            rotateTowardMovement = shouldRotateTowardMovement;
         }
 
         private void ResolveInputSource()
         {
+            if (preferDesktopInputReader)
+            {
+                var desktopInputReader = GetComponent<DesktopInputReader>();
+                if (desktopInputReader != null &&
+                    (inputSourceBehaviour == null ||
+                        inputSourceBehaviour is PlayerInputReader ||
+                        inputSourceBehaviour == desktopInputReader))
+                {
+                    inputSource = desktopInputReader;
+                    inputSourceBehaviour = desktopInputReader;
+                    return;
+                }
+            }
+
             inputSource = inputSourceBehaviour as IPlayerInputSource;
 
             if (inputSource == null && findInputSourceOnSameObject)
@@ -159,14 +216,81 @@ namespace TapKnockout.Player
         private void MoveRigidbody(Vector3 targetDirection)
         {
             var targetHorizontalVelocity = targetDirection * EffectiveMoveSpeed;
-            var currentVelocity = cachedRigidbody.linearVelocity;
-            var currentHorizontalVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
-            var newHorizontalVelocity = Vector3.MoveTowards(
-                currentHorizontalVelocity,
-                targetHorizontalVelocity,
-                Acceleration * Time.fixedDeltaTime);
+            var newHorizontalVelocity = targetHorizontalVelocity;
 
-            cachedRigidbody.linearVelocity = new Vector3(newHorizontalVelocity.x, currentVelocity.y, newHorizontalVelocity.z);
+            if (UseMovementSmoothing)
+            {
+                var rate = targetDirection.sqrMagnitude > 0f ? Acceleration : Deceleration;
+
+                // Do NOT use currentVelocity from the Rigidbody for smoothing.
+                // Physics engine collision resolution (like bumping into arena walls)
+                // alters currentVelocity, which causes a "pulling/dragging" feeling
+                // when interpolated back towards input. We use an internal state instead.
+                internalSmoothedVelocity = Vector3.MoveTowards(
+                    internalSmoothedVelocity,
+                    targetHorizontalVelocity,
+                    rate * Time.fixedDeltaTime);
+
+                newHorizontalVelocity = internalSmoothedVelocity;
+            }
+            else
+            {
+                internalSmoothedVelocity = targetHorizontalVelocity;
+            }
+
+            if (targetDirection.sqrMagnitude <= 0.0001f)
+            {
+                newHorizontalVelocity = Vector3.zero;
+                internalSmoothedVelocity = Vector3.zero;
+                StopHorizontalMotion();
+                debugHorizontalVelocity = Vector3.zero;
+                return;
+            }
+
+            ApplyHorizontalMotion(newHorizontalVelocity);
+            debugHorizontalVelocity = newHorizontalVelocity;
+        }
+
+        private void StopHorizontalMotion()
+        {
+            if (cachedRigidbody == null)
+            {
+                cachedRigidbody = GetComponent<Rigidbody>();
+                if (cachedRigidbody == null)
+                {
+                    return;
+                }
+            }
+
+            var verticalVelocity = cachedRigidbody.isKinematic ? 0f : cachedRigidbody.linearVelocity.y;
+            StopHorizontalMotion(verticalVelocity);
+        }
+
+        private void StopHorizontalMotion(float verticalVelocity)
+        {
+            internalSmoothedVelocity = Vector3.zero;
+            if (!cachedRigidbody.isKinematic)
+            {
+                cachedRigidbody.linearVelocity = new Vector3(0f, verticalVelocity, 0f);
+                cachedRigidbody.angularVelocity = Vector3.zero;
+            }
+
+            debugHorizontalVelocity = Vector3.zero;
+        }
+
+        private void ApplyHorizontalMotion(Vector3 horizontalVelocity)
+        {
+            if (cachedRigidbody.isKinematic)
+            {
+                var currentPosition = cachedRigidbody.position;
+                var targetPosition = currentPosition + horizontalVelocity * Time.fixedDeltaTime;
+                targetPosition.y = currentPosition.y;
+                cachedRigidbody.MovePosition(targetPosition);
+                return;
+            }
+
+            var currentVelocity = cachedRigidbody.linearVelocity;
+            cachedRigidbody.linearVelocity = new Vector3(horizontalVelocity.x, currentVelocity.y, horizontalVelocity.z);
         }
 
         private void RotateTowardMovement(Vector3 targetDirection)
@@ -187,9 +311,39 @@ namespace TapKnockout.Player
 
         private void UpdateAttackMovementState()
         {
-            var velocity = cachedRigidbody.linearVelocity;
-            var horizontalSpeed = new Vector2(velocity.x, velocity.z).magnitude;
+            var horizontalSpeed = cachedRigidbody.isKinematic
+                ? new Vector2(internalSmoothedVelocity.x, internalSmoothedVelocity.z).magnitude
+                : new Vector2(cachedRigidbody.linearVelocity.x, cachedRigidbody.linearVelocity.z).magnitude;
             IsMovingAboveAttackThreshold = horizontalSpeed > StopToAttackMovementThreshold;
+        }
+
+        private void ConfigureRigidbodyForMovement()
+        {
+            if (cachedRigidbody == null || !enforceHorizontalRigidbodyMovement)
+            {
+                return;
+            }
+
+            cachedRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+            if (useKinematicMotor)
+            {
+                cachedRigidbody.isKinematic = true;
+                cachedRigidbody.useGravity = !disableGravityForTopDownMotor;
+                cachedRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            }
+            else
+            {
+                cachedRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            }
+
+            cachedRigidbody.constraints &= ~RigidbodyConstraints.FreezePositionX;
+            cachedRigidbody.constraints &= ~RigidbodyConstraints.FreezePositionZ;
+            cachedRigidbody.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+            if (!useKinematicMotor && cachedRigidbody.isKinematic)
+            {
+                Debug.LogWarning($"{nameof(PlayerMovementController)} on {name} has a kinematic Rigidbody. WASD velocity movement requires Is Kinematic to be off.", this);
+            }
         }
     }
 }

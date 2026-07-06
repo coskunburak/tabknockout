@@ -16,6 +16,10 @@ namespace TapKnockout.Feedback
         LowHealthWarning = 11,
         EnemyTelegraph = 12,
         EnemyAttackRelease = 13,
-        BossPatternTelegraph = 14
+        BossPatternTelegraph = 14,
+        ShotFired = 15,
+        SkillHit = 16,
+        BossHit = 17,
+        PlayerDamaged = 18
     }
 }

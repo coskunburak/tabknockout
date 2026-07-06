@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4994922215604e249fe6074061ac136, type: 3}
+  m_Name: Wave_Test_SplitterEnemy
+  m_EditorClassIdentifier: TapKnockout.Wave::TapKnockout.Wave.WaveConfig
+  waveId: wave_test_enemy_splitter
+  enemies:
+  - enemyConfig: {fileID: 11400000, guid: f8fd88608c19f4b69b3d0098d803b7eb, type: 2}
+    enemyPrefab: {fileID: 3762042110337293365, guid: e0227dd81298042bc89b4a85305abe7b, type: 3}
+    count: 3
+    spawnDelay: 0.35
+    spawnPointIndex: -1
+  startDelay: 0.35
+  completeWhenAllSpawnedEnemiesDead: 1

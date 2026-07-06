@@ -17,6 +17,7 @@ namespace TapKnockout.Room
 
         [Header("Room Hooks")]
         [SerializeField] private bool lockExitsUntilCleared = true;
+        [SerializeField] private GameObject roomPrefab;
 
         [Header("Rewards")]
         [SerializeField] private RoomRewardType rewardType = RoomRewardType.None;
@@ -34,12 +35,25 @@ namespace TapKnockout.Room
         public IReadOnlyList<WaveConfig> Waves => waves;
         public float StartDelay => startDelay;
         public bool LockExitsUntilCleared => lockExitsUntilCleared;
+        public GameObject RoomPrefab => roomPrefab;
         public bool IsBossRoom => isBossRoom || roomType == RoomType.Boss;
         public bool GrantsAbilityReward => grantsAbilityReward || rewardType == RoomRewardType.Ability || roomType == RoomType.AbilityReward;
         public bool GrantsHealReward => grantsHealReward || rewardType == RoomRewardType.Heal || roomType == RoomType.Heal;
         public bool AutoAdvanceAfterClear => autoAdvanceAfterClear;
         public string EnvironmentThemeId => environmentThemeId;
         public bool HasWaves => waves != null && waves.Count > 0;
+        public bool HasRoomPrefab => roomPrefab != null;
+
+        public bool TryGetRoomPrefabContract(out RoomPrefabContract contract)
+        {
+            contract = roomPrefab != null ? roomPrefab.GetComponentInChildren<RoomPrefabContract>(true) : null;
+            return contract != null;
+        }
+
+        public bool HasValidRoomPrefabReference()
+        {
+            return roomPrefab == null || roomPrefab.GetComponentInChildren<RoomPrefabContract>(true) != null;
+        }
 
         private void OnValidate()
         {
@@ -65,6 +79,11 @@ namespace TapKnockout.Room
             if (roomType == RoomType.Boss && rewardType == RoomRewardType.None)
             {
                 rewardType = RoomRewardType.BossClear;
+            }
+
+            if (roomPrefab != null && roomPrefab.GetComponentInChildren<RoomPrefabContract>(true) == null)
+            {
+                Debug.LogWarning($"{name} references a room prefab without {nameof(RoomPrefabContract)}: {roomPrefab.name}", this);
             }
         }
     }

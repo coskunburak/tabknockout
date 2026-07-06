@@ -1,0 +1,24 @@
+{
+  "name": "TapKnockout.Survivor",
+  "rootNamespace": "TapKnockout.Survivor",
+  "references": [
+    "TapKnockout.Ability",
+    "TapKnockout.Combat",
+    "TapKnockout.Enemy",
+    "TapKnockout.Input",
+    "TapKnockout.Pickups",
+    "TapKnockout.Player",
+    "TapKnockout.Boss",
+    "TapKnockout.Camera",
+    "TapKnockout.Projectile"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

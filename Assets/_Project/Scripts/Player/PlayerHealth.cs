@@ -31,6 +31,9 @@ namespace TapKnockout.Player
         public event Action<HitContext> OnDamageIgnored;
         public event Action<HitContext> OnPlayerDied;
 
+        /// <summary>Raised when Heal() succeeds. Arg: amount actually restored.</summary>
+        public event Action<float> OnHealed;
+
         public bool IsAlive => !hasDied && CurrentHealth > 0f;
         public GameObject GameObject => gameObject;
         public float CurrentHealth { get; private set; }
@@ -126,7 +129,7 @@ namespace TapKnockout.Player
                 return;
             }
 
-            if (ShouldIgnoreDamage())
+            if (ShouldIgnoreDamage(hitContext))
             {
                 hitContext.WasIgnored = true;
 
@@ -139,10 +142,11 @@ namespace TapKnockout.Player
                 return;
             }
 
-            var damageAmount = Mathf.Max(0f, hitContext.DamageAmount);
+            var damageAmount = ResolveIncomingDamage(hitContext);
             hitContext.WasIgnored = false;
+            hitContext.DamageAmount = damageAmount;
             CurrentHealth = Mathf.Max(0f, CurrentHealth - damageAmount);
-            nextDamageAllowedTime = Time.time + ContactDamageInvulnerabilityWindow;
+            nextDamageAllowedTime = Time.time + ResolvePostHitInvulnerabilityWindow();
 
             if (logDamage)
             {
@@ -159,9 +163,66 @@ namespace TapKnockout.Player
             }
         }
 
-        private bool ShouldIgnoreDamage()
+        public bool Heal(float amount)
         {
-            return IsDashInvulnerable || IsDamageInvulnerabilityActive;
+            if (amount <= 0f || !IsAlive)
+            {
+                return false;
+            }
+
+            var previousHealth = CurrentHealth;
+            CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
+            var healed = CurrentHealth > previousHealth;
+            if (healed)
+            {
+                OnHealed?.Invoke(CurrentHealth - previousHealth);
+            }
+
+            return healed;
+        }
+
+        private bool ShouldIgnoreDamage(HitContext hitContext)
+        {
+            if (IsDashInvulnerable || IsDamageInvulnerabilityActive)
+            {
+                return true;
+            }
+
+            if (hitContext == null || hitContext.DamageAmount <= 0f)
+            {
+                return false;
+            }
+
+            if (runtimeStats != null && runtimeStats.TryConsumeShieldCharge())
+            {
+                return true;
+            }
+
+            return runtimeStats != null &&
+                runtimeStats.DodgeChance > 0f &&
+                UnityEngine.Random.value <= runtimeStats.DodgeChance;
+        }
+
+        private float ResolveIncomingDamage(HitContext hitContext)
+        {
+            var damageAmount = Mathf.Max(0f, hitContext.DamageAmount);
+            if (runtimeStats != null)
+            {
+                damageAmount *= runtimeStats.DamageReductionMultiplier;
+            }
+
+            return Mathf.Max(0f, damageAmount);
+        }
+
+        private float ResolvePostHitInvulnerabilityWindow()
+        {
+            var window = ContactDamageInvulnerabilityWindow;
+            if (runtimeStats != null && runtimeStats.InvulnerabilityAfterHitDuration > 0f)
+            {
+                window = Mathf.Max(window, runtimeStats.InvulnerabilityAfterHitDuration);
+            }
+
+            return window;
         }
 
         private void ResolveReferences()

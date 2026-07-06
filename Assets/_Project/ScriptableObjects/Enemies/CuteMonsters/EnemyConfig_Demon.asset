@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d14ebcd843cb426aba24a163d04efb2, type: 3}
+  m_Name: EnemyConfig_Demon
+  m_EditorClassIdentifier: TapKnockout.Enemy::TapKnockout.Enemy.EnemyConfig
+  enemyId: cute_demon
+  displayName: Demon
+  archetype: 0
+  rank: 0
+  maxHealth: 48
+  deathDelay: 0.28
+  moveSpeed: 2.35
+  acceleration: 19
+  rotationSpeed: 720
+  stoppingDistance: 1.05
+  contactDamage: 9
+  attackRange: 1.2
+  attackCooldown: 0.95
+  attackWindup: 0.14
+  projectileSpeed: 0
+  projectileCount: 0
+  explosionRadius: 1.5
+  stunResistance: 0
+  knockbackResistance: 0.22
+  canBeKnockedBack: 1
+  canBeInterrupted: 1
+  attackPattern: {fileID: 0}
+  telegraphConfig: {fileID: 0}
+  projectilePrefab: {fileID: 0}
+  splitSpawnPrefab: {fileID: 0}
+  splitSpawnCount: 0
+  shieldBlockAngle: 120
+  shieldDamageReduction: 0.65
+  chargeSpeedMultiplier: 2.8
+  chargeDuration: 0.45
+  chargeRecoveryDuration: 0.55
+  coinReward: 1
+  xpReward: 2
+  spawnVfx: 82
+  attackVfx: 25
+  deathVfx: 8

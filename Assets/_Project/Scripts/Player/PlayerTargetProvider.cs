@@ -91,7 +91,9 @@ namespace TapKnockout.Player
         {
             result = TargetingResult.None;
 
-            if (candidateCollider == null || IsSelf(candidateCollider.transform))
+            if (candidateCollider == null ||
+                !candidateCollider.gameObject.activeInHierarchy ||
+                IsSelf(candidateCollider.transform))
             {
                 return false;
             }
@@ -116,6 +118,11 @@ namespace TapKnockout.Player
                 return false;
             }
 
+            if (!targetGameObject.activeInHierarchy)
+            {
+                return false;
+            }
+            
             var offset = targetTransform.position - origin;
             offset.y = 0f;
             var distance = offset.magnitude;

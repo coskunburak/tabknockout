@@ -5,6 +5,7 @@
     "TapKnockout.Input",
     "TapKnockout.Combat",
     "TapKnockout.Projectile",
+    "TapKnockout.Camera",
     "TapKnockout.Ability",
     "Unity.InputSystem"
   ],

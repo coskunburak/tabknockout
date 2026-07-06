@@ -1,85 +1,112 @@
-# UI/UX and Mobile Controls
+# UI, UX, and Controls
 
-## Orientation
+## Control Scheme
 
-Portrait.
+MVP desktop controls:
 
-Reference resolution:
+| Input | Action |
+|---|---|
+| WASD | Move. |
+| Mouse | Aim. |
+| Left Mouse | Primary attack policy, either hold-to-fire or aim source for auto-fire. |
+| Right Mouse | Optional alternate active skill or dash if selected. |
+| Space or Shift | Dash/evade. |
+| Q/E/R/F | Active skills. |
+| 1/2/3/4 | Alternate active skill hotkeys. |
+| Esc | Pause/settings. |
+| Tab | Build overview. |
 
-```text
-1080 x 1920
-```
+Controller support is a future option. Touch controls are deprecated for the desktop prototype.
 
-Canvas Scaler:
+## Primary HUD
 
-```text
-Scale With Screen Size
-Match 0.5
-```
+Required HUD elements:
 
-Safe area support required.
+- Health bar.
+- XP bar and current level.
+- Run timer.
+- Active skill cooldown slots.
+- Dash cooldown indicator.
+- Boss health bar when active.
+- Wave/elite/boss warning banner.
+- Pickup/level-up feedback.
+- Pause button or key prompt.
 
-## Gameplay HUD
+Optional:
 
-Elements:
+- Minimap or arena compass.
+- Damage numbers.
+- Buff/debuff row.
+- Kill count.
+- Current build summary shortcut.
 
-- HP bar
-- XP/level bar
-- Dash cooldown button
-- Ability icons
-- Pause button
-- Boss HP bar
-- Coin/reward feedback
+## Level-Up Modal
 
-## Controls
+The level-up modal should:
 
-First control scheme:
+- Pause or safely slow combat.
+- Show 3 choices by default.
+- Show icon, name, category, rarity, short effect text, and stack/current level.
+- Support keyboard and mouse selection.
+- Avoid long text and tiny fonts.
+- Resume combat only after selection is applied.
 
-```text
-Drag anywhere movement
-Stop to auto-attack
-Dash button bottom-right
-```
+## Active Skill UX
 
-Alternatives to test:
+Each skill slot needs:
 
-- Double tap dash
-- Swipe dash
-- Attack while moving
-- Dash toward nearest enemy
+- Icon.
+- Hotkey label.
+- Cooldown radial/fill.
+- Charges if applicable.
+- Disabled/invalid state.
+- Clear cast feedback.
 
-## Ability Selection UI
+The player must be able to understand which skills are ready without looking away from combat for too long.
 
-- Pause gameplay.
-- Show 3 ability cards.
-- Each card has icon, title, short description.
-- Rarity color.
-- Optional reroll later.
+## Readability Under Density
 
-## Home Screens
+Readability is a core UX requirement:
 
-- Chapter select
-- Gear
-- Talents
-- Shop
-- Missions
-- Daily rewards
-- Settings
+- Enemy silhouettes must remain distinct from pickups and VFX.
+- Boss and elite telegraphs must override background clutter.
+- XP orbs should be visible without hiding danger zones.
+- Damage numbers should be optional or capped.
+- Important warnings should not overlap level-up cards or boss HP.
+- UI must be legible at common desktop resolutions.
 
-Vertical slice:
+## Screen Flow
 
-- Basic Home
-- Chapter start
-- Gear/talent placeholders
-- Run result
+MVP screens:
 
-## FTUE
+- Boot/loading.
+- Main menu.
+- Character/loadout select, minimal.
+- Gameplay HUD.
+- Pause menu.
+- Level-up choice modal.
+- Run result screen.
+- Settings.
 
-Tutorial steps:
+Future screens:
 
-1. Move
-2. Stop to attack
-3. Dash
-4. Clear room
-5. Select ability
-6. Upgrade
+- Ability codex.
+- Meta progression.
+- Challenge arena select.
+- Steam demo feedback link.
+
+## Settings
+
+MVP settings should include:
+
+- Resolution/fullscreen mode.
+- Master/music/SFX volume.
+- Mouse sensitivity if camera/aim needs it.
+- Damage numbers on/off if implemented.
+- Screenshake intensity.
+- VSync/frame cap if supported.
+- Keybinds, at least planned.
+
+## Deprecated Mobile UX
+
+Portrait safe-area UI, virtual joystick, touch attack controls, mobile notch layout, and rewarded-ad panels are not part of the desktop MVP.

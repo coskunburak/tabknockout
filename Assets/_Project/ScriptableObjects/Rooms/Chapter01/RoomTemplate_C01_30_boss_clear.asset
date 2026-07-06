@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67d508a2348024101bdc96f72a93c991, type: 3}
+  m_Name: RoomTemplate_C01_30_boss_clear
+  m_EditorClassIdentifier: TapKnockout.Room::TapKnockout.Room.RoomTemplateConfig
+  roomId: room_c01_30_boss_clear
+  roomType: 5
+  waves:
+  - {fileID: 11400000, guid: fcae823f997774eecb018ca878ef00c4, type: 2}
+  startDelay: 0.35
+  lockExitsUntilCleared: 1
+  roomPrefab: {fileID: 5942774362380683088, guid: 143a9fad18f404615a5475157f61ea59, type: 3}
+  rewardType: 5
+  autoAdvanceAfterClear: 0
+  grantsAbilityReward: 0
+  grantsHealReward: 0
+  isBossRoom: 1
+  environmentThemeId: pf_room_boss

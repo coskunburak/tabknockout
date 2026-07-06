@@ -18,7 +18,7 @@ namespace TapKnockout.Editor.Tools
         private const string PerfectDashConfigPath = CombatConfigFolder + "/PerfectDashConfig_Default.asset";
         private const string WallSlamConfigPath = CombatConfigFolder + "/WallSlamConfig_Default.asset";
         private const string ChainKnockbackConfigPath = CombatConfigFolder + "/ChainKnockbackConfig_Default.asset";
-        private const string PlayerPrefabPath = "Assets/_Project/Prefabs/Player/PF_Player_Rogue_Generated.prefab";
+        private const string PlayerPrefabPath = "Assets/_Project/Prefabs/Player/Player.prefab";
         private const string BasicMeleeEnemyPrefabPath = "Assets/_Project/Prefabs/Enemies/Generated/PF_Enemy_BasicMelee_GreenDemon_Generated.prefab";
         private const string FeedbackRootName = "VFXFeedbackRoot";
 

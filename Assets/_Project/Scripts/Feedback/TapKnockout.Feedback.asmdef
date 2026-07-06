@@ -9,7 +9,9 @@
     "TapKnockout.Room",
     "TapKnockout.Ability",
     "TapKnockout.Player",
-    "TapKnockout.Boss"
+    "TapKnockout.Boss",
+    "TapKnockout.Pickups",
+    "TapKnockout.Survivor"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

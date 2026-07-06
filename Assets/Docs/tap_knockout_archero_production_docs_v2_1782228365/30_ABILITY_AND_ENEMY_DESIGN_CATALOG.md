@@ -2,87 +2,119 @@
 
 ## Ability Tags
 
-- `attack`
+- `active`
+- `passive`
+- `weapon`
 - `projectile`
 - `dash`
+- `area`
 - `defense`
-- `utility`
+- `survival`
 - `status`
-- `economy`
 - `summon`
+- `pickup`
+- `boss`
 
-## Initial Ability Catalog
+## Active Skills
 
-| ID | Name | Tags | Rarity | Max Stacks | Effect | Slice Priority |
-|---|---|---|---|---|---|---|
-| `attack_up` | Attack Up | attack | common | 5 | Increase base damage. | P0 |
-| `attack_speed_up` | Attack Speed Up | attack | common | 5 | Reduce attack cooldown. | P0 |
-| `max_hp_up` | Max HP Up | defense | common | 5 | Increase max HP and heal partial amount. | P0 |
-| `move_speed_up` | Move Speed Up | utility | common | 3 | Increase movement speed. | P0 |
-| `crit_chance_up` | Crit Chance Up | attack | uncommon | 5 | Increase critical chance. | P1 |
-| `double_shot` | Double Shot | projectile | rare | 1 | Fire an additional forward projectile with damage modifier. | P0 |
-| `pierce` | Pierce | projectile | uncommon | 3 | Projectiles pass through additional enemies. | P0 |
-| `ricochet` | Ricochet | projectile | rare | 1 | Projectile bounces to nearby target after hit. | P1 |
-| `side_shot` | Side Shot | projectile | rare | 2 | Add angled side projectiles. | P1 |
-| `dash_shockwave` | Dash Shockwave | dash | uncommon | 3 | Dash end emits radial impact damage. | P0 |
-| `dash_cooldown_down` | Dash Cooldown Down | dash | common | 4 | Reduce dash cooldown. | P0 |
-| `dash_damage_up` | Dash Damage Up | dash | common | 5 | Increase dash impact damage. | P0 |
-| `dash_knockback_up` | Dash Knockback Up | dash | common | 3 | Increase dash knockback force. | P0 |
-| `dash_fire_trail` | Dash Fire Trail | dash,status | rare | 3 | Dash leaves damage-over-time trail. | P1 |
-| `dash_chain_lightning` | Dash Chain Lightning | dash,status | rare | 3 | Dash hit chains lightning to nearby enemies. | P1 |
-| `burning_hits` | Burning Hits | status,attack | uncommon | 3 | Attacks apply burn. | P1 |
-| `chain_lightning` | Chain Lightning | status,projectile | rare | 3 | Attacks chain lightning. | P1 |
-| `orbiting_blade` | Orbiting Blade | summon,attack | rare | 3 | Add orbiting damage source. | P1 |
-| `heal_after_room` | Heal After Room | defense | common | 3 | Heal when room clears. | P0 |
-| `shield_on_room_start` | Shield On Room Start | defense | uncommon | 3 | Temporary shield at room start. | P1 |
-| `coin_bonus` | Coin Bonus | economy | common | 5 | Increase coin rewards. | P2 |
-| `boss_damage_up` | Boss Damage Up | attack | uncommon | 3 | Increase damage to bosses. | P1 |
-| `projectile_size_up` | Projectile Size Up | projectile | uncommon | 3 | Increase projectile hit size. | P2 |
-| `pickup_magnet` | Pickup Magnet | utility | common | 3 | Increase pickup radius. | P2 |
-| `revive_token` | Revive Token | defense | rare | 1 | One non-ad revive in run. | P2 |
-
-## Ability Design Rules
-
-- Dash abilities must create visible combat moments.
-- Damage-only abilities should not crowd out dash identity.
-- Rare abilities may change behavior; common abilities should tune stats.
-- Avoid exact names/icons/effects that copy protected games.
-- Every ability needs analytics-safe `ability_id`.
-
-## Enemy Taxonomy
-
-| ID | Name | Role | Core Behavior | Dash Interaction | Slice Priority |
+| ID | Name | Tags | Rarity | Effect | Priority |
 |---|---|---|---|---|---|
-| `enemy_melee_chaser` | Melee Chaser | melee | Moves directly toward player and attacks in range. | Knockback interrupts movement briefly. | P0 |
-| `enemy_ranged_shooter` | Ranged Shooter | ranged | Keeps distance and fires readable projectile. | Dash can close gap and interrupt windup later. | P0 |
-| `enemy_charger` | Charger | charger | Telegraphs line charge, rushes forward, recovers. | Dash impact can interrupt or redirect based on config. | P0 |
-| `enemy_elite_guard` | Elite Guard | elite | Tankier melee with wider attack. | Strong knockback feedback. | P1 |
-| `enemy_bomber` | Area Denial | ranged | Throws delayed AoE marker. | Dash helps escape danger zone. | P2 |
-| `enemy_summoner` | Summoner | support | Spawns weak adds. | Dash can punish stationary casting. | P2 |
+| `skill_arc_blast` | Arc Blast | active,area | common | Short cone burst in aim direction. | P0 |
+| `skill_ground_slam` | Ground Slam | active,area,defense | uncommon | Radial AoE around player with knockback. | P0 |
+| `skill_meteor_mark` | Meteor Mark | active,area | rare | Delayed targeted AoE at mouse point. | P1 |
+| `skill_guard_pulse` | Guard Pulse | active,defense | uncommon | Temporary shield plus pulse damage. | P1 |
+| `skill_orbit_blade` | Orbit Blade | active,summon | rare | Temporary orbiting damage source. | P1 |
 
-## Boss Catalog
+## Passive Upgrades
 
-### `boss_stone_brute`
+| ID | Name | Tags | Max Stacks | Effect | Priority |
+|---|---|---|---|---|---|
+| `attack_up` | Attack Up | passive,weapon | 5 | Increase base damage. | P0 |
+| `battle_rhythm` | Battle Rhythm | passive,weapon | 5 | Increase attack speed. | P0 |
+| `iron_core` | Iron Core | passive,defense | 5 | Increase max HP and partial heal. | P0 |
+| `swift_footwork` | Swift Footwork | passive,survival | 3 | Increase movement speed. | P0 |
+| `pickup_magnet` | Pickup Magnet | passive,pickup | 3 | Increase pickup radius. | P0 |
+| `boss_focus` | Boss Focus | passive,boss | 3 | Increase damage to bosses/elites. | P1 |
 
-Role: first vertical slice boss.
+## Projectile Modifiers
+
+| ID | Name | Tags | Max Stacks | Effect | Priority |
+|---|---|---|---|---|---|
+| `twin_shot` | Twin Shot | projectile,weapon | 1 | Adds an additional projectile. | P0 |
+| `pierce` | Pierce | projectile | 3 | Projectiles pass through additional enemies. | P0 |
+| `wide_angle` | Wide Angle | projectile | 2 | Adds angled side projectiles. | P1 |
+| `ricochet` | Ricochet | projectile | 1 | Projectile jumps to nearby target after hit. | P1 |
+| `charged_rounds` | Charged Rounds | projectile,status | 3 | Adds lightning/status hit chance. | P1 |
+
+## Movement and Dash Upgrades
+
+| ID | Name | Tags | Max Stacks | Effect | Priority |
+|---|---|---|---|---|---|
+| `phase_step` | Phase Step | dash,survival | 3 | Improves dash i-frame window. | P0 |
+| `dash_cooldown_down` | Dash Cooldown Down | dash | 4 | Reduces dash cooldown. | P0 |
+| `dash_shockwave` | Dash Shockwave | dash,area | 3 | Dash end emits radial damage. | P0 |
+| `bulldozer` | Bulldozer | dash | 3 | Increases dash knockback. | P0 |
+| `dash_fire_trail` | Dash Fire Trail | dash,status | 3 | Dash leaves damage trail. | P1 |
+
+## Defensive and Survival Upgrades
+
+| ID | Name | Tags | Max Stacks | Effect | Priority |
+|---|---|---|---|---|---|
+| `regen_spark` | Regen Spark | defense,survival | 3 | Small periodic heal. | P1 |
+| `emergency_barrier` | Emergency Barrier | defense | 1 | Shield triggers at low HP. | P1 |
+| `armor_plating` | Armor Plating | defense | 5 | Reduces incoming damage. | P0 |
+| `second_wind` | Second Wind | survival | 1 | One non-monetized revive or near-death heal. | P2 |
+
+## Basic Enemies
+
+| ID | Role | Core Behavior | MVP Priority |
+|---|---|---|---|
+| `enemy_melee_chaser` | melee | Moves toward player and deals contact/short melee damage. | P0 |
+| `enemy_swarm_runner` | swarm | Fast low-HP enemy used for density. | P0 |
+| `enemy_ranged_shooter` | ranged | Keeps distance and fires readable projectiles. | P0 |
+| `enemy_charger` | charger | Telegraphs line charge, rushes, then recovers. | P0 |
+| `enemy_tank_guard` | tank | Slow, high HP, blocks space. | P0 |
+
+## Elite Variants
+
+| ID | Base | Modifier | Behavior |
+|---|---|---|---|
+| `elite_burning_charger` | `enemy_charger` | Fire trail | Charge leaves danger trail. |
+| `elite_shield_guard` | `enemy_tank_guard` | Shielded | Starts shielded, vulnerable after attack. |
+| `elite_storm_shooter` | `enemy_ranged_shooter` | Multi-shot | Fires spread projectiles with clear tell. |
+
+## Boss Designs
+
+### `boss_arena_brute`
+
+Role: first MVP boss.
 
 Attacks:
 
-- Ground slam: radial telegraph, delayed impact, high readability.
-- Charge: line telegraph, movement burst, wall/recovery window.
-- Add summon: spawns small melee enemies at defined health thresholds or cooldowns.
-- Circular danger zone later: optional soft-launch expansion.
-
-Dash interactions:
-
-- Dash can avoid slam.
-- Dash can cross charge path if timed.
-- Dash impact can damage boss but should not trivialize boss interrupts unless config enables it.
+- Ground slam: radial telegraph, delayed impact.
+- Line charge: long telegraph, burst movement, recovery.
+- Add call: spawns limited melee adds.
+- Shock ring: expanding ring later if readable.
 
 Acceptance:
 
-- Boss has clear windup/recovery.
-- Boss HP bar updates.
-- Boss defeat ends room/chapter.
-- Boss events emit analytics hooks.
+- Boss warning appears before spawn.
+- Boss health bar binds correctly.
+- Attacks are readable with adds alive.
+- Defeat ends the MVP run.
 
+## Enemy Design Rules
+
+- Every enemy must be readable from the survivor camera.
+- Enemy density should come from simple behaviors first.
+- Ranged and charger attacks need clear telegraphs.
+- Elite modifiers must be visible.
+- Bosses need windup, impact, and recovery.
+
+## Ability Design Rules
+
+- Every ability needs a stable ID.
+- Every level-up choice needs a short readable description.
+- Active skills need cooldown UI.
+- Stacks need clear limits.
+- Synergy tags must support reporting and weighted offers.

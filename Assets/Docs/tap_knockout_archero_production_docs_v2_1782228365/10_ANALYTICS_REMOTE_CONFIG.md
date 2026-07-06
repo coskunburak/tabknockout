@@ -1,93 +1,117 @@
 # Analytics, Remote Config, and A/B Testing
 
-## Event Naming
+## Analytics Position
 
-Use lowercase snake_case.
+Analytics are planned through interfaces first. No real SDK is approved by default. Console/local analytics are enough until the prototype proves the loop.
 
-## Core Events
+Event names use lowercase snake_case and must not include personal data.
 
-- session_start
-- ftue_start
-- ftue_step_complete
-- chapter_start
-- room_start
-- room_complete
-- ability_offered
-- ability_selected
-- player_death
-- run_end
-- gear_upgrade
-- talent_upgrade
-- rewarded_ad_offer
-- rewarded_ad_complete
-- iap_offer_shown
-- purchase_attempt
-- purchase_success
+## Core Run Events
+
+Required run-based events:
+
+- `session_start`
+- `run_start`
+- `run_end`
+- `death_time`
+- `wave_reached`
+- `boss_spawned`
+- `boss_defeated`
+- `level_up`
+- `ability_offered`
+- `ability_selected`
+- `active_skill_used`
+- `dash_used`
+- `dash_hit`
+- `damage_taken`
+- `enemy_killed`
+- `elite_spawned`
+- `elite_killed`
+- `pickup_collected`
+- `xp_collected`
+- `player_death`
+
+## Common Parameters
+
+- `session_id`
+- `run_id`
+- `arena_id`
+- `run_time_seconds`
+- `player_level`
+- `ability_ids`
+- `enemy_id`
+- `boss_id`
+- `wave_id`
+- `difficulty_scalar`
+- `source`
+- `result`
 
 ## Funnels
 
-FTUE:
+First run funnel:
 
 ```text
-ftue_start
-movement_complete
+session_start
+run_start
 first_enemy_killed
-first_room_complete
+first_pickup_collected
+first_level_up
 first_ability_selected
-first_run_end
-first_upgrade_complete
-```
-
-Run:
-
-```text
-chapter_start
-room_start
-room_complete
-ability_selected
-boss_start
-boss_defeated
-chapter_complete
+first_active_skill_used
+first_elite_spawned
+first_boss_spawned
 run_end
 ```
 
-## Remote Config Values
+Run performance funnel:
 
-- enemy_health
-- enemy_damage
-- room_enemy_count
-- ability_weights
-- reward_amounts
-- dash_cooldown
-- ad_placements_enabled
-- starter_pack_enabled
+```text
+run_start
+wave_reached
+level_up
+elite_killed
+boss_spawned
+boss_defeated
+run_end
+```
+
+## Remote Config
+
+Remote/local config should support:
+
+- Enemy spawn rates.
+- Wave timing.
+- XP curve.
+- Ability weights.
+- Boss timing.
+- Difficulty multipliers.
+- Enemy health and damage multipliers.
+- Pickup magnet base values.
+- Active skill cooldown multipliers.
+- Elite spawn timing.
+
+Local defaults must always exist so the game works offline.
 
 ## A/B Tests
 
-Controls:
+Candidate tests after core feel is stable:
 
-- Dash button vs double tap
-- Stop-to-attack vs moving attack
+- Auto-fire vs hold-to-fire.
+- Dash on Space vs Shift.
+- Boss spawn at 8, 9, or 10 minutes.
+- XP curve speed.
+- Ability offer rarity mix.
+- Enemy density vs enemy toughness.
 
-Difficulty:
-
-- Chapter 1 health/damage
-- Boss HP
-- Ability frequency
-
-Monetization:
-
-- Revive ad timing
-- Starter pack placement
-- Reward multiplier
+No monetization A/B tests are planned for MVP.
 
 ## Architecture
 
-Use:
+Gameplay code should use:
 
 ```csharp
 IAnalyticsService.TrackEvent(...)
 IRemoteConfigService.GetValue(...)
 ```
 
-No direct SDK calls from gameplay code.
+No direct vendor SDK calls from gameplay code.

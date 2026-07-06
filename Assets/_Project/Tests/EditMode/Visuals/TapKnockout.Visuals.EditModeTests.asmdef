@@ -1,0 +1,22 @@
+{
+  "name": "TapKnockout.Visuals.EditModeTests",
+  "rootNamespace": "TapKnockout.Visuals.Tests",
+  "references": [
+    "TapKnockout.Input",
+    "TapKnockout.Visuals"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

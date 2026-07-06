@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1759b4f88fe9e439786425bea191dccd, type: 3}
+  m_Name: AC_Mushroom_SporePoisonZone
+  m_EditorClassIdentifier: TapKnockout.Enemy::TapKnockout.Enemy.EnemyAttackConfig
+  attackId: mushroom_spore_zone
+  displayName: Mushroom Spore Zone
+  attackType: 10
+  triggerRange: 7
+  preferredMinRange: 0
+  preferredMaxRange: 8
+  cooldown: 4
+  initialCooldownOffset: 0
+  windupTime: 0.75
+  activeTime: 0.15
+  recoveryTime: 0.65
+  canMoveDuringWindup: 1
+  commitLocksMovement: 1
+  canMoveDuringRecovery: 1
+  commitLocksRotation: 1
+  damage: 1
+  knockbackForce: 0
+  knockbackDuration: 0
+  hitboxShape: 4
+  hitboxRadius: 1.2
+  hitboxLength: 3
+  hitboxArcHalfAngle: 60
+  hitLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 8
+  projectileLifetime: 4
+  homingStrength: 0
+  homingMaxTurnDegreesPerSecond: 45
+  areaZonePrefab: {fileID: 3013680536145397570, guid: 29b22a6c44ba340f59ab00cf7b65daad, type: 3}
+  areaZoneRadius: 2.2
+  areaZoneDuration: 4.5
+  areaZoneTickInterval: 1
+  areaZoneTickDamage: 3
+  maxActiveZones: 2
+  statusEffectType: 2
+  statusEffectDuration: 2
+  statusEffectSlowMultiplier: 1
+  animationTrigger: Attack
+  useAnimationTrigger: 1
+  telegraphPrefab: {fileID: 3752487173877884532, guid: f28ecf3ded958420e8ef7a4d07ddadde, type: 3}
+  activeVfxPrefab: {fileID: 4899505144755931842, guid: bc7e2ecea5cee46b8bd892d4b0392a1d, type: 3}
+  impactVfxPrefab: {fileID: 2004647251386044202, guid: 50b3843db6a1a4b53b29987c58e30d5e, type: 3}
+  vfxLifetime: 1.25
+  telegraphType: 1
+  debugColor: {r: 0.5, g: 0.1, b: 0.8, a: 1}
+  diveSpeedMultiplier: 4
+  overshootDistance: 3
+  beamLength: 8
+  beamWidth: 0.35

@@ -1,101 +1,91 @@
 # Meta Progression and Economy
 
+## MVP Position
+
+The desktop survivor MVP should be demo-friendly and gameplay-first. Do not build a mobile daily economy, ad economy, or complex gear treadmill before the arena loop is fun.
+
+MVP progression can be minimal:
+
+- Character unlocks or loadout unlocks.
+- Ability unlocks for future runs.
+- Basic currency or score summary.
+- Persistent settings and run history.
+
+## Run Rewards
+
+Potential run result values:
+
+- Duration survived.
+- Level reached.
+- Boss defeated.
+- Enemies killed.
+- Elites killed.
+- Build summary.
+- XP collected.
+- Optional coins/materials if meta upgrades are enabled.
+
+Rewards should reinforce replay without creating grind before the core loop is validated.
+
 ## Currencies
 
-### Coins
+### MVP Currency
 
-Sources:
-- Room rewards
-- Chapter completion
-- Daily missions
-- Rewarded ads
-- Events
+Use at most one simple soft currency if needed:
 
-Sinks:
-- Gear upgrades
-- Talents
-- Basic shop
+- Earned from run completion, elite kills, boss defeat, and achievements.
+- Spent on character unlocks, small permanent upgrades, or cosmetic/demo unlocks.
 
-### Gems
+### Future Currencies
 
-Sources:
-- Achievements
-- Daily milestones
-- IAP
-- Events
+Additional currencies are future optional:
 
-Sinks:
-- Chests
-- Rerolls
-- Revive
-- Premium shop
+- Materials for upgrade trees.
+- Boss tokens for special unlocks.
+- Premium currency only if the commercial model later requires it.
 
-### Materials
+No premium currency is required for the desktop MVP.
 
-Sources:
-- Bosses
-- Daily dungeons
-- Chests
-- Events
+## Meta Upgrades
 
-Sinks:
-- Weapon/armor upgrades
-- Talent nodes
+Possible future permanent upgrades:
+
+- Max HP.
+- Base damage.
+- Movement speed.
+- Pickup radius.
+- Starting skill slot.
+- Reroll count.
+- Dash cooldown.
+
+Meta upgrades should not make early runs trivial. Keep upgrade values small and cap them.
 
 ## Gear
 
-Slots:
+Gear is optional future scope, not an MVP requirement.
 
-- Weapon
-- Armor
-- Ring
-- Amulet
-- Boots
-- Companion later
+If implemented later:
 
-Rarity:
+- Keep slot count low.
+- Avoid mobile gacha assumptions.
+- Prefer clear Steam-friendly unlock and crafting paths.
+- Do not require ad/IAP systems.
 
-- Common
-- Uncommon
-- Rare
-- Epic
-- Legendary
-- Mythic later
+## Ability Unlocks
 
-Vertical slice:
+Ability unlocks fit the desktop survivor structure:
 
-- Weapon + armor only
-- Common/Rare/Epic only
-
-## Talents
-
-Permanent upgrades:
-
-- Max HP
-- Attack Damage
-- Move Speed
-- Dash Cooldown
-- Crit Chance
-- Coin Bonus
-- Reward Bonus
-
-## Reward Tables
-
-Use data-driven configs:
-
-- RewardTableConfig
-- ChapterRewardConfig
-- ChestConfig
-- DailyRewardConfig
-- MissionRewardConfig
+- Start with a curated MVP pool.
+- Unlock additional active skills, passives, and modifiers through achievements or boss clears.
+- Keep each unlock visible in future level-up pools.
 
 ## Economy Rules
 
-- Early upgrades should be frequent.
-- Do not add too many currencies early.
-- Rewarded ads accelerate, not block.
-- Premium currency must not be required for basic progress.
+- Core fun first, economy second.
+- No energy system for MVP.
+- No ad-gated progression for MVP.
+- No mobile daily retention loops as a baseline requirement.
+- Balance with telemetry after the run loop is playable.
 
-## Energy
+## Legacy Note
 
-Do not implement energy in vertical slice. Keep hooks for future if needed.
+Rewarded ads, daily missions, free chests, gem packs, and mobile shop tabs are legacy/future optional concepts. They are not part of the desktop MVP unless a later product decision explicitly reintroduces them.

@@ -2,6 +2,7 @@
   "name": "TapKnockout.Input",
   "rootNamespace": "TapKnockout.Input",
   "references": [
+    "TapKnockout.Combat",
     "Unity.InputSystem"
   ],
   "includePlatforms": [],

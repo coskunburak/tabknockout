@@ -4,7 +4,7 @@ using UnityEngine;
 namespace TapKnockout.Enemy
 {
     [DisallowMultipleComponent]
-    public sealed class EnemyAttackController : MonoBehaviour
+    public sealed class EnemyAttackController : MonoBehaviour, IPoolLifecycle
     {
         [Header("Config")]
         [SerializeField] private EnemyConfig config;
@@ -100,6 +100,45 @@ namespace TapKnockout.Enemy
         {
             target = attackTarget;
             targetDamageable = ResolveDamageable(attackTarget);
+        }
+
+        public void ResetRuntimeState(bool clearTarget = true)
+        {
+            cooldownRemaining = 0f;
+            windupRemaining = 0f;
+            isWindingUp = false;
+            windupTarget = null;
+            windupDamageable = null;
+            telegraphController?.EndTelegraph();
+
+            if (clearTarget)
+            {
+                target = null;
+                targetDamageable = null;
+            }
+            else
+            {
+                targetDamageable = ResolveDamageable(target);
+            }
+        }
+
+        public void OnBeforeSpawnFromPool()
+        {
+            ResetRuntimeState();
+        }
+
+        public void OnSpawnedFromPool()
+        {
+        }
+
+        public void OnBeforeDespawnToPool()
+        {
+            ResetRuntimeState();
+        }
+
+        public void ResetForPool()
+        {
+            ResetRuntimeState();
         }
 
         public bool IsTargetInRange()

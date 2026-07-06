@@ -63,6 +63,30 @@ namespace TapKnockout.VFX
         AbilityEnergyRing = 60,
         AbilityRevive = 61,
         AbilityInvulnerability = 62,
-        AbilityGenericUpgrade = 63
+        AbilityGenericUpgrade = 63,
+
+        PrimaryFireMuzzle = 70,
+        PrimaryProjectileTrail = 71,
+        PrimaryProjectileImpact = 72,
+        PrimaryCriticalImpact = 73,
+        ForwardCleaveCast = 74,
+        ForwardCleaveHit = 75,
+        GroundImpactCast = 76,
+        GroundImpactArea = 77,
+        GroundImpactHit = 78,
+        DashEnd = 79,
+        SpawnTelegraph = 80,
+        EnemyDeathLarge = 81,
+        EnemySpawn = 82,
+        EliteSpawn = 83,
+        EliteDeath = 84,
+        BossSpawnWarning = 85,
+        BossPhaseTransition = 86,
+        BossHeavyAttackTelegraph = 87,
+        BossHeavyAttackImpact = 88,
+        XPOrbIdle = 89,
+        XPOrbCollect = 90,
+        LevelUpBurst = 91,
+        ReticleFirePulse = 92
     }
 }

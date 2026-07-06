@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 184976bd21a9a4f42b0d215501627ed3, type: 3}
+  m_Name: BossConfig_YellowDragon
+  m_EditorClassIdentifier: TapKnockout.Boss::TapKnockout.Boss.BossConfig
+  bossId: boss_yellow_dragon
+  displayName: Yellow Dragon
+  enemyConfig: {fileID: 11400000, guid: ee1d2f55658904d0997c457aed58a5bb, type: 2}
+  phases:
+  - phaseState: 1
+    enterAtOrBelowHealthPercent: 1
+    pattern: {fileID: 11400000, guid: e44e1f76a79844bb19976fd926340d49, type: 2}
+    enrage: 0
+    cooldownDurationMultiplier: 1
+    chargeSpeedMultiplier: 1
+    phaseChangedVfx: 26
+  - phaseState: 2
+    enterAtOrBelowHealthPercent: 0.66
+    pattern: {fileID: 11400000, guid: e44e1f76a79844bb19976fd926340d49, type: 2}
+    enrage: 0
+    cooldownDurationMultiplier: 0.9
+    chargeSpeedMultiplier: 1.08
+    phaseChangedVfx: 26
+  - phaseState: 3
+    enterAtOrBelowHealthPercent: 0.33
+    pattern: {fileID: 11400000, guid: e44e1f76a79844bb19976fd926340d49, type: 2}
+    enrage: 1
+    cooldownDurationMultiplier: 0.75
+    chargeSpeedMultiplier: 1.18
+    phaseChangedVfx: 26
+  addEnemyConfig: {fileID: 11400000, guid: 343f6c79d0c59497f9cd9e27540e7839, type: 2}
+  addEnemyPrefab: {fileID: 3753429165916156335, guid: 2faf504e4abf44a8fa816ebdde3eda38, type: 3}
+  maxActiveAdds: 4
+  introVfx: 85
+  enrageVfx: 86
+  deathVfx: 15

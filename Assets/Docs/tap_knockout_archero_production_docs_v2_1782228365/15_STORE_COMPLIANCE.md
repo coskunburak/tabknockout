@@ -1,59 +1,70 @@
 # Store and Compliance Checklist
 
-## Product
+## Current Platform Target
 
-- Final app name
-- Original icon
-- Screenshots
-- Preview video
-- Short description
-- Full description
-- Keywords
-- Category
-- Age rating
+The current target is desktop-first PC/Steam. Android and iOS checklist items are future port work, not MVP gates.
+
+## Steam/Demo Product Checklist
+
+- Final game name or demo name.
+- Original capsule art plan.
+- Screenshots from real gameplay.
+- Short description.
+- Full description.
+- Feature list.
+- System requirements.
+- Controller support statement if applicable.
+- Age rating/content disclosure.
+- Credits and license list.
+- Privacy statement if telemetry exists.
+- Known issue list for playtests.
+
+## Build Checklist
+
+- Desktop build starts cleanly.
+- Resolution and fullscreen/windowed behavior works.
+- Mouse lock/cursor behavior is intentional.
+- Keyboard controls are documented.
+- No unapproved SDKs are present.
+- No generated folders are committed.
+- Version number is set.
+- Third-party asset licenses are tracked.
 
 ## Privacy
 
-- Privacy policy URL
-- Analytics disclosure
-- Ads disclosure
-- IAP disclosure
-- Data collection disclosure
-- Consent flow if needed
+If analytics or crash reporting is added later:
 
-## Android
-
-- Package name
-- Signing key
-- Version code
-- Target SDK
-- ARM64
-- IL2CPP
-- Release build
-
-## iOS
-
-- Bundle ID
-- Signing
-- App Store Connect
-- Privacy manifest
-- Purchase restore if IAP
+- Document provider.
+- Document data collected.
+- Avoid personal data.
+- Provide privacy policy.
+- Provide opt-out if required by platform or law.
 
 ## Monetization
 
-- Rewarded ad tested
-- Reward grant verified
-- IAP sandbox tested
-- No Ads product tested
-- Store pricing verified
+MVP has no ad/IAP requirement.
 
-## QA
+Future paid options must define:
 
-- New install
-- Update install
-- Offline
-- Weak connection
-- Pause/resume
-- Ad fail path
-- Purchase fail path
-- Save/load
+- Price model.
+- DLC/supporter pack scope if used.
+- Refund/platform policy expectations.
+- Purchase restore only if required by the platform.
+
+## Future Mobile Port Checklist
+
+Only if mobile is reintroduced:
+
+- Android package id.
+- iOS bundle id.
+- Signing.
+- Target SDK.
+- Safe area.
+- Touch controls.
+- Ads/IAP compliance.
+- Purchase restore.
+- Store privacy disclosure.
+
+## Deprecated MVP Gates
+
+Rewarded ad testing, IAP sandbox, no-ads product, interstitial frequency, mobile daily shop, and mobile soft launch compliance are deprecated for the desktop MVP.

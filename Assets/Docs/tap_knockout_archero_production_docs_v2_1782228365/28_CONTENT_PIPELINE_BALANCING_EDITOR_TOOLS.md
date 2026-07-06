@@ -7,24 +7,8 @@
 3. Add entry to `17_CREDITS_TEMPLATE.md`.
 4. Import or migrate into `Assets/ThirdParty/<Source>/<PackName>` only after approval.
 5. Create production prefabs/material variants under `Assets/_Project`.
-6. Do not modify third-party source assets unless unavoidable; prefer variants.
-7. Validate scale, orientation, material count, texture size, and mobile readability.
-
-## Current Staged Asset Notes
-
-Known license files found:
-
-- KayKit Character Animations: CC0.
-- KayKit Dungeon Remastered: CC0.
-- Quaternius Ultimate Animated Character Pack: CC0.
-- Quaternius Medieval Weapons: CC0.
-- Quaternius RPG Characters: CC0.
-- Kenney Mini Dungeon: CC0.
-- Kenney UI Pack: CC0.
-
-Risk:
-
-- `Cute Animated Monsters - Aug 2020` has no license file found in the shallow audit. Do not use it until source and license are proven.
+6. Review from gameplay camera.
+7. Validate scale, silhouette, material count, texture size, VFX readability, and performance.
 
 ## Balancing Spreadsheet Spec
 
@@ -32,54 +16,59 @@ Recommended workbook tabs:
 
 | Tab | Purpose |
 |---|---|
-| `player_base` | HP, move speed, attack, dash defaults. |
-| `weapons` | Damage, cooldown, range, projectile speed, special rules. |
-| `enemies` | HP, damage, speed, attack cooldown, role, reward. |
-| `bosses` | Boss HP, phase thresholds, attack cooldowns, damage. |
-| `abilities` | Rarity, tags, weights, max stacks, effect values. |
-| `chapter_1_rooms` | Room sequence, room type, waves, difficulty rating. |
-| `waves` | Enemy groups, counts, spawn patterns, max alive. |
-| `rewards` | Coins, materials, gems, chest rates, room rewards. |
-| `gear_costs` | Upgrade level, coin/material costs, stat growth. |
-| `talent_costs` | Node, level, cost, stat gain. |
-| `remote_config` | Key, default, min, max, owner, experiment. |
-| `analytics_events` | Event, trigger, parameters, owner, QA status. |
+| `player_base` | HP, move speed, dash, pickup radius, starting attack. |
+| `active_skills` | Cooldowns, damage, duration, radius, charges. |
+| `passives` | Stat upgrades, stacks, rarity, weights. |
+| `projectile_modifiers` | Pierce, split, ricochet, size, speed, count. |
+| `dash_modifiers` | Cooldown, distance, i-frame, impact damage, knockback. |
+| `enemies` | HP, damage, speed, role, budget cost, XP reward. |
+| `elites` | Base enemy, multipliers, modifiers, rewards. |
+| `bosses` | HP, phases, attacks, adds, timing. |
+| `wave_timeline` | Time segments, spawn groups, budget, intensity. |
+| `xp_curve` | Level thresholds and pacing. |
+| `difficulty_curve` | Time-based multipliers. |
+| `remote_config` | Key, default, min, max, owner. |
+| `analytics_events` | Event, trigger, parameters, QA status. |
 
-Rules:
+Deprecated mobile tuning tabs:
 
-- Spreadsheet IDs must match config IDs.
-- Use explicit units, for example seconds, meters, percent.
-- Any value controlled by remote config should have safe min/max.
-- Do not tune monetization before retention and core fun are measured.
+- Room reward tuning.
+- Chapter room sequence.
+- Rewarded ad placements.
+- Daily login economy.
+- Mobile IAP bundle pacing.
 
 ## Editor Tools Plan
 
-Allowed future Editor tools:
-
 | Tool | Purpose | Priority |
 |---|---|---|
-| Vertical Slice Scene Builder | Create placeholder Gameplay scene hierarchy without manual YAML edits. | P0 |
-| Config Validator | Validate ScriptableObject ids, missing references, duplicate ids. | P0 |
-| Ability Catalog Generator | Generate report of abilities, tags, weights, max stacks. | P1 |
-| Room Preview Builder | Instantiate room template with spawn points for designer review. | P1 |
-| Balance Importer | Import CSV/spreadsheet exports into config assets after schema stabilizes. | P2 |
+| Desktop Survivor Scene Builder | Create `DesktopSurvivorPrototype` hierarchy safely. | P0 |
+| Config Validator | Validate IDs, missing references, duplicate IDs, stack limits. | P0 |
+| Enemy Wave Timeline Editor | Author and preview timed spawn segments. | P0 |
+| Spawn Budget Editor | Show live budget cost and max alive pressure. | P0 |
+| Ability Weight Editor | Tune offer weights, rarity, tags, exclusions. | P0 |
+| XP Curve Editor | Preview levels over expected kill/XP rates. | P1 |
+| Difficulty Curve Editor | Preview enemy multipliers over time. | P1 |
+| Boss Milestone Editor | Configure warning, spawn, phases, adds. | P1 |
+| Run Simulator | Simulate timeline, spawn budget, XP, and level-up cadence without full art. | P1 |
+| Debug Overlay | Show run timer, live enemies, budget, FPS, pool counts, XP, next wave. | P1 |
 | Credits Report | Generate third-party asset/license report. | P1 |
-| Build Preflight | Check project settings, scenes, packages, SDK flags before Android build. | P1 |
+| Build Preflight | Check desktop build settings, scenes, packages, SDK flags. | P1 |
 
-Editor tool rules:
+## Editor Tool Rules
 
-- Tools must live under `Assets/_Project/Editor/Tools`.
+- Tools live under `Assets/_Project/Editor/Tools`.
 - Tools must not silently overwrite production scenes.
 - Tools must log created/modified assets.
 - Destructive actions require confirmation.
+- Tools should not import packages or SDKs without approval.
 
 ## Content Review Checklist
 
 - Is the asset original or properly licensed?
-- Is it visually distinct from Archero and other protected games?
-- Does it read clearly in portrait?
-- Does it support dash-impact combat readability?
-- Does it fit mobile performance constraints?
+- Does it read clearly from the survivor camera?
+- Does it work under enemy density?
+- Does it preserve boss/elite telegraph readability?
+- Does it fit desktop performance targets?
 - Is it credited?
 - Is it placed in the correct folder?
-

@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23e089221bc084fb88d177b262c68d10, type: 3}
   m_Name: PlayerConfig_Default
   m_EditorClassIdentifier: TapKnockout.Player::TapKnockout.Player.PlayerConfig
-  maxHealth: 100
-  contactDamageInvulnerabilityWindow: 0.2
+  maxHealth: 180
+  contactDamageInvulnerabilityWindow: 0.45
   moveSpeed: 5
   acceleration: 45
+  deceleration: 55
   rotationSpeed: 720
   movementDeadZone: 0.12
+  useMovementSmoothing: 1
   stopToAttackMovementThreshold: 0.08
   dashDistance: 3.5
   dashDuration: 0.18
@@ -31,3 +33,20 @@ MonoBehaviour:
     m_Bits: 8
   dashHasIFrames: 1
   dashIFrameDuration: 0.12
+  facingPolicy: 1
+  aimRotationSpeed: 1080
+  primaryAttackFirePolicy: 2
+  attackWhileMoving: 1
+  manualFireRequiresInput: 1
+  autoTargetRefreshInterval: 0.1
+  nearestTargetRadius: 12
+  skillInputBufferSeconds: 0.15
+  allowMovementDuringDefaultSkills: 1
+  aimReticleEnabled: 1
+  aimReticleScale: 1
+  aimReticleYOffset: 0.18
+  aimReticleSmoothTime: 0
+  hideSystemCursorDuringGameplay: 1
+  showReticleOnlyDuringGameplay: 1
+  showReticleOnlyWhileAimingOrFiring: 0
+  reticleInvalidAimBehavior: 1

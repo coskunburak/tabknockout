@@ -13,6 +13,7 @@ namespace TapKnockout.Room
 
         [Header("References")]
         [SerializeField] private WaveManager waveManager;
+        [SerializeField] private RoomInstanceController activeRoomInstance;
 
         [Header("Runtime")]
         [SerializeField] private bool startConfiguredRoomOnStart;
@@ -21,6 +22,8 @@ namespace TapKnockout.Room
         [SerializeField] private bool logLifecycle;
 
         private Coroutine startRoutine;
+        private RoomPrefabContract activeRoomContract;
+        private bool exitUnlockedThisRoom;
 
         public event Action<RoomStartedEventArgs> OnRoomStarted;
         public event Action<RoomCompletedEventArgs> OnRoomCompleted;
@@ -29,6 +32,8 @@ namespace TapKnockout.Room
         public bool IsRoomComplete { get; private set; }
         public int CurrentWaveIndex { get; private set; } = -1;
         public RoomTemplateConfig CurrentRoom => config;
+        public RoomPrefabContract ActiveRoomContract => activeRoomContract;
+        public RoomInstanceController ActiveRoomInstance => activeRoomInstance;
 
         private void Reset()
         {
@@ -86,6 +91,8 @@ namespace TapKnockout.Room
             CurrentWaveIndex = -1;
             IsRoomRunning = true;
             IsRoomComplete = false;
+            exitUnlockedThisRoom = false;
+            activeRoomInstance?.LockExitsAtRoomStart(config);
 
             var startedArgs = new RoomStartedEventArgs(this, config);
             OnRoomStarted?.Invoke(startedArgs);
@@ -144,6 +151,44 @@ namespace TapKnockout.Room
             CurrentWaveIndex = -1;
             IsRoomRunning = false;
             IsRoomComplete = false;
+            exitUnlockedThisRoom = false;
+        }
+
+        public void SetActiveRoomInstance(RoomInstanceController roomInstance)
+        {
+            activeRoomInstance = roomInstance;
+            activeRoomContract = activeRoomInstance != null ? activeRoomInstance.Contract : null;
+        }
+
+        public void SetActiveRoomContract(RoomPrefabContract roomContract)
+        {
+            activeRoomContract = roomContract;
+            activeRoomInstance = roomContract != null ? roomContract.GetComponent<RoomInstanceController>() : null;
+        }
+
+        public void LockRoomExits()
+        {
+            exitUnlockedThisRoom = false;
+            activeRoomInstance?.LockExitsAtRoomStart(config);
+        }
+
+        public void UnlockRoomExits()
+        {
+            UnlockRoomExits(config != null ? config.RewardType : RoomRewardType.None);
+        }
+
+        public void UnlockRoomExits(RoomRewardType rewardType)
+        {
+            if (exitUnlockedThisRoom)
+            {
+                return;
+            }
+
+            exitUnlockedThisRoom = true;
+            activeRoomInstance?.UnlockExitsOnRoomClear(config);
+
+            var unlockedArgs = new RoomExitUnlockedEventArgs(this, config, rewardType);
+            RoomEvents.RaiseRoomExitUnlocked(unlockedArgs);
         }
 
         [ContextMenu("Force Complete Room")]
@@ -157,6 +202,11 @@ namespace TapKnockout.Room
             if (config != null && config.StartDelay > 0f)
             {
                 yield return new WaitForSeconds(config.StartDelay);
+            }
+
+            if (activeRoomInstance != null)
+            {
+                yield return activeRoomInstance.PlayRoomStartIntro(config);
             }
 
             startRoutine = null;
@@ -183,6 +233,11 @@ namespace TapKnockout.Room
             IsRoomRunning = false;
             IsRoomComplete = true;
 
+            if (ShouldUnlockExitsOnRoomComplete(config))
+            {
+                UnlockRoomExits(config != null ? config.RewardType : RoomRewardType.None);
+            }
+
             var completedArgs = new RoomCompletedEventArgs(this, config, Mathf.Max(0, CurrentWaveIndex));
             OnRoomCompleted?.Invoke(completedArgs);
             RoomEvents.RaiseRoomCompleted(completedArgs);
@@ -191,6 +246,21 @@ namespace TapKnockout.Room
             {
                 Debug.Log($"{nameof(RoomManager)} completed room {config?.RoomId ?? "<null>"}.", this);
             }
+        }
+
+        private static bool ShouldUnlockExitsOnRoomComplete(RoomTemplateConfig roomConfig)
+        {
+            if (roomConfig == null)
+            {
+                return true;
+            }
+
+            if (roomConfig.IsBossRoom || roomConfig.RewardType == RoomRewardType.BossClear)
+            {
+                return false;
+            }
+
+            return !roomConfig.GrantsAbilityReward;
         }
     }
 }

@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using TapKnockout.Combat;
 using TapKnockout.Player;
 using UnityEngine;
 
@@ -108,6 +109,63 @@ namespace TapKnockout.Player.Tests
             finally
             {
                 Object.DestroyImmediate(gameObject);
+            }
+        }
+
+        [Test]
+        public void ModifyHit_AppliesGuaranteedCriticalDamage()
+        {
+            var player = new GameObject("Player");
+            var target = new GameObject("Target");
+
+            try
+            {
+                var stats = player.AddComponent<PlayerRuntimeStats>();
+                stats.AddCritChance(1f);
+                stats.AddCritDamageMultiplier(0.5f);
+                var hit = new HitContext(player, target, 10f)
+                {
+                    CriticalMultiplier = 2f
+                };
+
+                stats.ModifyHit(hit);
+
+                Assert.That(hit.IsCritical, Is.True);
+                Assert.That(hit.CriticalMultiplier, Is.EqualTo(2.5f).Within(0.0001f));
+                Assert.That(hit.DamageAmount, Is.EqualTo(25f).Within(0.0001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(target);
+                Object.DestroyImmediate(player);
+            }
+        }
+
+        [Test]
+        public void LowHealthBonuses_AffectAttackAndMoveMultipliersOnlyWhenLow()
+        {
+            var player = new GameObject("Player");
+
+            try
+            {
+                var stats = player.AddComponent<PlayerRuntimeStats>();
+                var health = player.AddComponent<PlayerHealth>();
+                health.SetRuntimeStats(stats);
+                health.ResetHealth();
+                stats.AddLowHealthAttackSpeed(0.2f);
+                stats.AddLowHealthMoveSpeedMultiplier(0.25f);
+
+                Assert.That(stats.AttackCooldownMultiplier, Is.EqualTo(1f).Within(0.0001f));
+                Assert.That(stats.MoveSpeedMultiplier, Is.EqualTo(1f).Within(0.0001f));
+
+                health.ReceiveHit(new HitContext(null, player, 70f));
+
+                Assert.That(stats.AttackCooldownMultiplier, Is.EqualTo(0.8f).Within(0.0001f));
+                Assert.That(stats.MoveSpeedMultiplier, Is.EqualTo(1.25f).Within(0.0001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(player);
             }
         }
     }

@@ -7,7 +7,7 @@ namespace TapKnockout.Enemy
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody))]
-    public sealed class KnockbackReceiver : MonoBehaviour
+    public sealed class KnockbackReceiver : MonoBehaviour, IPoolLifecycle
     {
         [Header("Config")]
         [SerializeField] private EnemyConfig config;
@@ -35,8 +35,13 @@ namespace TapKnockout.Enemy
         [SerializeField, Min(0f)] private float fallbackChainTargetCooldown = 0.2f;
         [SerializeField, Min(0)] private int fallbackMaxChainHitsPerKnockback = 1;
 
+        [Header("Runtime Safety")]
+        [SerializeField, Min(0f)] private float maxKnockbackSpeed = 6f;
+        [SerializeField, Min(0f)] private float maxKnockbackDuration = 0.16f;
+
         private Rigidbody cachedRigidbody;
         private EnemyHealth enemyHealth;
+        private EnemyMovement enemyMovement;
         private Vector3 knockbackVelocity;
         private float remainingDuration;
         private float currentEffectiveForce;
@@ -50,6 +55,7 @@ namespace TapKnockout.Enemy
 
         public bool IsKnockbackActive => remainingDuration > 0f;
         public float RemainingDuration => remainingDuration;
+        public float CurrentKnockbackSpeed => knockbackVelocity.magnitude;
         public EnemyConfig Config => config;
 
         private float Resistance => config != null ? config.KnockbackResistance : fallbackResistance;
@@ -80,6 +86,7 @@ namespace TapKnockout.Enemy
         {
             cachedRigidbody = GetComponent<Rigidbody>();
             enemyHealth = GetComponent<EnemyHealth>();
+            enemyMovement = GetComponent<EnemyMovement>();
         }
 
         private void OnValidate()
@@ -94,6 +101,13 @@ namespace TapKnockout.Enemy
             fallbackChainSecondaryForceMultiplier = Mathf.Clamp01(fallbackChainSecondaryForceMultiplier);
             fallbackChainTargetCooldown = Mathf.Max(0f, fallbackChainTargetCooldown);
             fallbackMaxChainHitsPerKnockback = Mathf.Max(0, fallbackMaxChainHitsPerKnockback);
+            maxKnockbackSpeed = Mathf.Max(0f, maxKnockbackSpeed);
+            maxKnockbackDuration = Mathf.Max(0f, maxKnockbackDuration);
+        }
+
+        private void OnDisable()
+        {
+            ResetRuntimeState();
         }
 
         private void FixedUpdate()
@@ -110,11 +124,57 @@ namespace TapKnockout.Enemy
             var targetPosition = currentPosition + knockbackVelocity * stepTime;
             targetPosition.y = currentPosition.y;
             cachedRigidbody.MovePosition(targetPosition);
+
+            if (remainingDuration <= 0f)
+            {
+                CompleteKnockback();
+            }
         }
 
         public void Initialize(EnemyConfig enemyConfig)
         {
             config = enemyConfig;
+        }
+
+        public void ResetRuntimeState()
+        {
+            knockbackVelocity = Vector3.zero;
+            remainingDuration = 0f;
+            currentEffectiveForce = 0f;
+            wallSlamConsumedThisKnockback = false;
+            lastKnockbackSource = null;
+            chainTargetsThisKnockback.Clear();
+            lastChainHitTimesByTarget.Clear();
+
+            if (cachedRigidbody == null)
+            {
+                cachedRigidbody = GetComponent<Rigidbody>();
+            }
+
+            if (cachedRigidbody != null)
+            {
+                cachedRigidbody.linearVelocity = Vector3.zero;
+                cachedRigidbody.angularVelocity = Vector3.zero;
+            }
+        }
+
+        public void OnBeforeSpawnFromPool()
+        {
+            ResetRuntimeState();
+        }
+
+        public void OnSpawnedFromPool()
+        {
+        }
+
+        public void OnBeforeDespawnToPool()
+        {
+            ResetRuntimeState();
+        }
+
+        public void ResetForPool()
+        {
+            ResetRuntimeState();
         }
 
         public void ApplyKnockback(HitContext hitContext)
@@ -144,14 +204,34 @@ namespace TapKnockout.Enemy
                 return;
             }
 
-            var effectiveForce = CalculateEffectiveForce(knockbackData.Force, Resistance);
+            var resistance = knockbackData.IgnoreResistance ? 0f : Resistance;
+            var effectiveForce = CalculateClampedForce(
+                CalculateEffectiveForce(knockbackData.Force, resistance),
+                maxKnockbackSpeed);
             if (effectiveForce <= 0f)
             {
                 return;
             }
 
-            knockbackVelocity = knockbackData.Direction.normalized * effectiveForce;
-            remainingDuration = knockbackData.Duration;
+            var direction = knockbackData.Direction;
+            direction.y = 0f;
+            if (direction.sqrMagnitude <= 0.0001f)
+            {
+                return;
+            }
+
+            var duration = CalculateClampedDuration(knockbackData.Duration, maxKnockbackDuration);
+            if (duration <= 0f)
+            {
+                return;
+            }
+
+            SettlePhysicsVelocity();
+            enemyMovement ??= GetComponent<EnemyMovement>();
+            enemyMovement?.SettleAfterExternalDisplacement();
+
+            knockbackVelocity = direction.normalized * effectiveForce;
+            remainingDuration = duration;
             currentEffectiveForce = effectiveForce;
             lastKnockbackSource = source;
             wallSlamConsumedThisKnockback = false;
@@ -162,6 +242,18 @@ namespace TapKnockout.Enemy
         public static float CalculateEffectiveForce(float force, float resistance)
         {
             return Mathf.Max(0f, force) * (1f - Mathf.Clamp01(resistance));
+        }
+
+        public static float CalculateClampedForce(float effectiveForce, float maxSpeed)
+        {
+            var safeForce = Mathf.Max(0f, effectiveForce);
+            return maxSpeed > 0f ? Mathf.Min(safeForce, maxSpeed) : safeForce;
+        }
+
+        public static float CalculateClampedDuration(float duration, float maxDuration)
+        {
+            var safeDuration = Mathf.Max(0f, duration);
+            return maxDuration > 0f ? Mathf.Min(safeDuration, maxDuration) : safeDuration;
         }
 
         public static float CalculateWallSlamDamage(float effectiveForce, float baseDamage, float damagePerForce)
@@ -247,8 +339,7 @@ namespace TapKnockout.Enemy
 
             if (WallSlamStopsKnockback)
             {
-                remainingDuration = 0f;
-                knockbackVelocity = Vector3.zero;
+                CompleteKnockback();
             }
 
             return true;
@@ -357,6 +448,32 @@ namespace TapKnockout.Enemy
         private static bool IsLayerInMask(int layer, LayerMask mask)
         {
             return (mask.value & (1 << layer)) != 0;
+        }
+
+        private void CompleteKnockback()
+        {
+            knockbackVelocity = Vector3.zero;
+            remainingDuration = 0f;
+            currentEffectiveForce = 0f;
+            SettlePhysicsVelocity();
+            enemyMovement ??= GetComponent<EnemyMovement>();
+            enemyMovement?.SettleAfterExternalDisplacement();
+        }
+
+        private void SettlePhysicsVelocity()
+        {
+            if (cachedRigidbody == null)
+            {
+                cachedRigidbody = GetComponent<Rigidbody>();
+            }
+
+            if (cachedRigidbody == null)
+            {
+                return;
+            }
+
+            cachedRigidbody.linearVelocity = Vector3.zero;
+            cachedRigidbody.angularVelocity = Vector3.zero;
         }
 
         private static void RaiseDamageEventsIfNeeded(HitContext hitContext)

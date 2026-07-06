@@ -27,6 +27,24 @@ namespace TapKnockout.Level.Tests
         }
 
         [Test]
+        public void OnEnable_WhenChapterRewardFlowControllerExists_DisablesLegacyBridge()
+        {
+            var gameObject = new GameObject("Bridge");
+
+            try
+            {
+                gameObject.AddComponent<ChapterRoomRewardFlowController>();
+                var bridge = gameObject.AddComponent<RoomAbilityRewardBridge>();
+
+                Assert.That(bridge.enabled, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(gameObject);
+            }
+        }
+
+        [Test]
         public void RequestAbilityOffer_WithChoices_PausesUntilSelection()
         {
             var previousTimeScale = Time.timeScale;

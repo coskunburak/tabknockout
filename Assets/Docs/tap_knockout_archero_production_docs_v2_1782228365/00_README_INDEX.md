@@ -1,129 +1,75 @@
-# Tap Knockout — Production Docs v2
+# Tap Knockout Documentation Index
 
-Bu paket, önceki 1–2 günlük arena MVP yaklaşımını tamamen değiştirir. Proje artık **Unity ile geliştirilecek, ticari hedefli, Archero tarzı mobil aksiyon roguelite** olarak ele alınır.
+## Canonical Direction
 
-## Yeni Ürün Tanımı
+Tap Knockout is now a desktop-first Unity 3D arena survivor roguelike for PC/Steam-oriented development.
 
-Tap Knockout, dikey ekranda oynanan, tek parmak kontrolüne sahip, oda/room bazlı roguelite mobil aksiyon oyunudur. Oyuncu kısa odaları temizler, run sırasında geçici yetenekler seçer, run dışında gear/talent/metaprogression ile kalıcı güçlenir. Oyunun özgün kimliği **dash-impact / knockback** mekaniğidir.
-
-## Ana Referans Yapı
-
-Archero’dan alınacak genel tür kalıbı:
-
-- Portrait mobil oynanış
-- Oda oda ilerleme
-- Wave/enemy clear
-- Boss odaları
-- Run sırasında ability seçimi
-- Run dışında gear/talent upgrade
-- Daily rewards, missions, ads/IAP, liveops
-
-Kopyalanmayacak şeyler:
-
-- Archero assetleri
-- UI layout birebir
-- İsimler
-- Skill ikonları
-- Balance tabloları
-- Düşman/harita tasarımları
-- Store/monetization ekranları
-
-## Ana Pillarlar
-
-1. **Tek parmakla okunabilir kontrol**
-2. **Oda bazlı roguelite run loop**
-3. **Dash-impact ile özgün combat kimliği**
-4. **Gear, talent, currency ve liveops odaklı ticari yapı**
-5. **Production-level Unity mimarisi**
-6. **Analytics, remote config, QA ve monetization-ready altyapı**
-
-## Dosyalar
-
-| Dosya | Amaç |
-|---|---|
-| `AGENTS.md` | Codex kök kuralları |
-| `01_PRODUCT_VISION.md` | Ürün vizyonu ve pazar konumu |
-| `02_GDD_PRODUCTION.md` | Production game design document |
-| `03_TECH_ARCHITECTURE_UNITY.md` | Unity teknik mimari |
-| `04_COMBAT_AND_ABILITIES.md` | Combat, dash, auto-attack, ability sistemi |
-| `05_LEVEL_ROOM_WAVE.md` | Chapter, room, wave, boss sistemi |
-| `06_META_ECONOMY.md` | Gear, talents, currencies, rewards |
-| `07_MONETIZATION_LIVEOPS.md` | Ads, IAP, shop, missions, events |
-| `08_UI_UX_CONTROLS.md` | Mobil UI/UX ve kontroller |
-| `09_ASSET_PIPELINE.md` | Asset, animasyon, VFX, audio, lisans |
-| `10_ANALYTICS_REMOTE_CONFIG.md` | Analytics, funnel, remote config, A/B |
-| `11_QA_PERFORMANCE_RELEASE.md` | QA, performans, build, release |
-| `12_CODEX_AGENT_GUIDE.md` | Codex çalışma sınırları |
-| `13_ROADMAP.md` | Milestone planı |
-| `14_RISK_REGISTER.md` | Riskler |
-| `15_STORE_COMPLIANCE.md` | Store, privacy, ads/IAP compliance |
-| `16_CODEX_PROMPTS.md` | Hazır Codex promptları |
-| `17_CREDITS_TEMPLATE.md` | Lisans/credit takip şablonu |
-| `18_REPOSITORY_DISCOVERY_AND_DOCUMENTATION_AUDIT.md` | Current repository discovery and docs audit |
-| `19_MISSING_DOCUMENTATION_PLAN.md` | Missing/weak documentation plan and consolidation decisions |
-| `20_BACKLOG_MASTER.md` | Production backlog epics, priorities, dependencies, acceptance |
-| `21_VERTICAL_SLICE_SPEC.md` | Commercial vertical slice scope and acceptance |
-| `22_PRODUCTION_SPRINT_PLAN.md` | Detailed milestone/sprint implementation plan |
-| `23_TECHNICAL_DECISIONS_ADR.md` | Architecture decision record |
-| `24_DATA_CONFIG_SCHEMA.md` | ScriptableObject/config/save/event schema |
-| `25_PREFAB_AND_SCENE_CONTRACTS.md` | Scene, prefab, UI, and Editor builder contracts |
-| `26_MONETIZATION_ANALYTICS_REMOTE_CONFIG_SPEC.md` | Event schema, remote keys, fake ads/IAP, SDK gates |
-| `27_QA_PERFORMANCE_SOFT_LAUNCH_PLAN.md` | QA matrix, mobile performance budget, KPI plan |
-| `28_CONTENT_PIPELINE_BALANCING_EDITOR_TOOLS.md` | Asset intake, balance sheets, Editor tools |
-| `29_RELEASE_BRANCHING_AND_GIT_WORKFLOW.md` | Git, branches, commits, release channels |
-| `30_ABILITY_AND_ENEMY_DESIGN_CATALOG.md` | Initial ability, enemy, and boss catalog |
-
-## Current Repository Reality
-
-The current Unity project is still close to a template:
-
-- Unity `6000.5.0f1`
-- URP `17.5.0`
-- One build scene: `Assets/Scenes/SampleScene.unity`
-- No production gameplay scripts yet
-- No `Assets/_Project` folder yet
-- No `Assets/ThirdParty` folder yet
-- Existing staged asset packs are under `Assets/Assets/game asset packs`
-- The root was not a Git repository during the documentation audit
-- A root `AGENTS.md` now points Codex to this docs package
-
-## NotebookLM Kullanımı
-
-NotebookLM notebook adı:
+Core loop:
 
 ```text
-Tap Knockout Production v2
+enter arena -> survive wave pressure -> kill enemies -> collect XP/drops -> level up -> choose abilities -> fight elites/bosses -> complete or fail the run
 ```
 
-Tüm `.md` dosyalarını kaynak olarak ekle. Codex’e her task öncesi bu kaynaklardan yalnızca ilgili dokümanları sorgulat.
+The target experience combines fast arena survival, build crafting, active skill mastery, readable 3D combat density, and escalating enemy pressure. Reference genres include Vampire Survivors-style escalation, Soulstone Survivors-style 3D arena combat, and Brotato-like upgrade pacing. These are design references only; assets, names, UI, balance, and content must remain original.
 
-## Codex Okuma Sırası
+## Migration Note
 
-Her task öncesi Codex şunları okumalı:
+This documentation package was originally created for a mobile portrait room-based action roguelite. As of the desktop survivor pivot, those ideas are legacy unless a document explicitly marks them as future optional support. The folder name still contains historical wording, but the canonical direction is desktop 3D survivor roguelike with active skills and wave-based progression.
 
-1. `AGENTS.md`
-2. `00_README_INDEX.md`
+## Required Reading
+
+For any future implementation task, read in this order:
+
+1. Root `AGENTS.md`
+2. This index
 3. `12_CODEX_AGENT_GUIDE.md`
-4. `22_PRODUCTION_SPRINT_PLAN.md` when executing sprint work
-5. Göreve özel domain dokümanı
+4. `31_DESKTOP_SURVIVOR_PIVOT_PLAN.md`
+5. `22_PRODUCTION_SPRINT_PLAN.md`
+6. Task-specific docs below
 
-## İlk Hedef
+## Documentation Map
 
-İlk hedef artık küçük MVP değil, **commercial vertical slice foundation**:
+| Doc | Canonical Purpose |
+|---|---|
+| `01_PRODUCT_VISION.md` | Product vision, player fantasy, audience, MVP goal. |
+| `02_GDD_PRODUCTION.md` | Arena survivor game design, run loop, combat, progression, results. |
+| `03_TECH_ARCHITECTURE_UNITY.md` | Desktop Unity architecture and runtime system plan. |
+| `04_COMBAT_AND_ABILITIES.md` | Survivor combat, active skills, passives, modifiers, stacking. |
+| `05_LEVEL_ROOM_WAVE.md` | Arena/run/wave timeline, spawn pressure, elite and boss milestones. |
+| `06_META_ECONOMY.md` | Demo-friendly progression and future meta economy. |
+| `07_MONETIZATION_LIVEOPS.md` | Future optional monetization/liveops after Steam demo validation. |
+| `08_UI_UX_CONTROLS.md` | WASD, mouse aim, skill hotkeys, HUD, level-up UX. |
+| `09_ASSET_PIPELINE.md` | 3D arena, enemy, VFX, pickup, icon, and license pipeline. |
+| `10_ANALYTICS_REMOTE_CONFIG.md` | Run-based analytics and tuning keys. |
+| `11_QA_PERFORMANCE_RELEASE.md` | Desktop survivor QA, performance, release gates. |
+| `12_CODEX_AGENT_GUIDE.md` | Codex workflow and repository safety rules. |
+| `13_ROADMAP.md` | Pivot roadmap from docs to Steam-facing demo. |
+| `14_RISK_REGISTER.md` | Product, tech, performance, balance, and migration risks. |
+| `15_STORE_COMPLIANCE.md` | Steam/demo compliance and future platform gates. |
+| `16_CODEX_PROMPTS.md` | Future task prompts aligned to the desktop survivor pivot. |
+| `17_CREDITS_TEMPLATE.md` | Asset and SDK credit tracking template. |
+| `18_REPOSITORY_DISCOVERY_AND_DOCUMENTATION_AUDIT.md` | Repository and documentation audit after pivot. |
+| `19_MISSING_DOCUMENTATION_PLAN.md` | Documentation coverage plan and consolidation choices. |
+| `20_BACKLOG_MASTER.md` | Backlog grouped by survivor systems. |
+| `21_VERTICAL_SLICE_SPEC.md` | MVP vertical slice scope and acceptance criteria. |
+| `22_PRODUCTION_SPRINT_PLAN.md` | First pivot sprint: prototype foundation. |
+| `23_TECHNICAL_DECISIONS_ADR.md` | Durable technical decisions. |
+| `24_DATA_CONFIG_SCHEMA.md` | ScriptableObject/config schema for arena survivor systems. |
+| `25_PREFAB_AND_SCENE_CONTRACTS.md` | Scene and prefab contracts for desktop survivor prototype. |
+| `26_MONETIZATION_ANALYTICS_REMOTE_CONFIG_SPEC.md` | Detailed telemetry, remote config, and future monetization spec. |
+| `27_QA_PERFORMANCE_SOFT_LAUNCH_PLAN.md` | Desktop demo QA and performance validation plan. |
+| `28_CONTENT_PIPELINE_BALANCING_EDITOR_TOOLS.md` | Survivor balancing sheets and Editor tool plan. |
+| `29_RELEASE_BRANCHING_AND_GIT_WORKFLOW.md` | Git, branch, release, and Steam demo workflow. |
+| `30_ABILITY_AND_ENEMY_DESIGN_CATALOG.md` | Initial survivor ability and enemy catalog. |
+| `31_DESKTOP_SURVIVOR_PIVOT_PLAN.md` | Pivot summary, migration phases, risks, acceptance. |
 
-- Universal 3D / URP Unity projesi
-- Android-first portrait yapı
-- Clean folder structure
-- Player movement
-- Stop-to-attack veya auto-attack
-- Dash-impact
-- Projectile/damage system
-- Enemy spawner
-- Room/wave loop
-- Ability selection
-- Basic HUD
-- Run result
-- Gear/talent/economy stubs
-- Analytics/ads/IAP stubs
-- Editor scene builder
-- Android test build
+## Deprecated Legacy Concepts
+
+- Mobile-first portrait orientation.
+- Touch joystick as the primary control model.
+- Room-clearing as the main gameplay unit.
+- Chapter maps as the primary run structure.
+- Rewarded-ad-first progression.
+- Android-first store and soft-launch planning.
+
+These concepts may return only as explicitly scoped future options. They are not MVP requirements.

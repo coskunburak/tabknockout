@@ -1,7 +1,9 @@
 {
   "name": "TapKnockout.Camera",
   "rootNamespace": "TapKnockout.Camera",
-  "references": [],
+  "references": [
+    "TapKnockout.Combat"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

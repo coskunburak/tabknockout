@@ -4,9 +4,11 @@
   "references": [
     "TapKnockout.Room",
     "TapKnockout.Level",
+    "TapKnockout.Wave",
     "TapKnockout.Ability",
     "TapKnockout.Player",
-    "TapKnockout.Combat"
+    "TapKnockout.Combat",
+    "TapKnockout.Enemy"
   ],
   "includePlatforms": [
     "Editor"

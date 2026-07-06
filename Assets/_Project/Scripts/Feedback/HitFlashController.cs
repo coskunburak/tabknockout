@@ -1,9 +1,10 @@
+using TapKnockout.Combat;
 using UnityEngine;
 
 namespace TapKnockout.Feedback
 {
     [DisallowMultipleComponent]
-    public sealed class HitFlashController : MonoBehaviour
+    public sealed class HitFlashController : MonoBehaviour, IPoolLifecycle
     {
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int ColorId = Shader.PropertyToID("_Color");
@@ -14,6 +15,7 @@ namespace TapKnockout.Feedback
 
         private Renderer[] cachedRenderers;
         private MaterialPropertyBlock[] originalBlocks;
+        private MaterialPropertyBlock flashBlock;
         private bool hasCapturedOriginalBlocks;
         private bool isFlashing;
         private float remainingDuration;
@@ -24,6 +26,12 @@ namespace TapKnockout.Feedback
         private void Awake()
         {
             CacheRenderers();
+        }
+
+        private void OnEnable()
+        {
+            CacheRenderersIfNeeded();
+            RestoreOriginalBlocks();
         }
 
         private void OnValidate()
@@ -93,6 +101,25 @@ namespace TapKnockout.Feedback
             hasCapturedOriginalBlocks = false;
         }
 
+        public void OnBeforeSpawnFromPool()
+        {
+            RestoreOriginalBlocks();
+        }
+
+        public void OnSpawnedFromPool()
+        {
+        }
+
+        public void OnBeforeDespawnToPool()
+        {
+            RestoreOriginalBlocks();
+        }
+
+        public void ResetForPool()
+        {
+            RestoreOriginalBlocks();
+        }
+
         private void CacheRenderersIfNeeded()
         {
             if (cachedRenderers == null)
@@ -116,7 +143,6 @@ namespace TapKnockout.Feedback
 
         private void ApplyFlashColor(Color color)
         {
-            var flashBlock = new MaterialPropertyBlock();
             for (var i = 0; i < cachedRenderers.Length; i++)
             {
                 var targetRenderer = cachedRenderers[i];
@@ -125,6 +151,7 @@ namespace TapKnockout.Feedback
                     continue;
                 }
 
+                flashBlock ??= new MaterialPropertyBlock();
                 targetRenderer.GetPropertyBlock(flashBlock);
                 flashBlock.SetColor(BaseColorId, color);
                 flashBlock.SetColor(ColorId, color);

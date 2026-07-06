@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 184976bd21a9a4f42b0d215501627ed3, type: 3}
+  m_Name: BossConfig_DashCounterBrute
+  m_EditorClassIdentifier: TapKnockout.Boss::TapKnockout.Boss.BossConfig
+  bossId: boss_dash_counter_brute
+  displayName: Dash-Counter Brute
+  enemyConfig: {fileID: 11400000, guid: b42bc49609da945acb7bcb9b34c7f6ad, type: 2}
+  phases:
+  - phaseState: 1
+    enterAtOrBelowHealthPercent: 1
+    pattern: {fileID: 11400000, guid: 8abf246fc7cb24c648abfc599bfa08f0, type: 2}
+    enrage: 0
+    cooldownDurationMultiplier: 1
+    chargeSpeedMultiplier: 1
+    phaseChangedVfx: 26
+  - phaseState: 2
+    enterAtOrBelowHealthPercent: 0.66
+    pattern: {fileID: 11400000, guid: 8128e645c18304261952c9aee3f3c4df, type: 2}
+    enrage: 0
+    cooldownDurationMultiplier: 0.9
+    chargeSpeedMultiplier: 1.05
+    phaseChangedVfx: 26
+  - phaseState: 3
+    enterAtOrBelowHealthPercent: 0.33
+    pattern: {fileID: 11400000, guid: 68afee80c04af48f6af041043777e9c2, type: 2}
+    enrage: 1
+    cooldownDurationMultiplier: 0.72
+    chargeSpeedMultiplier: 1.18
+    phaseChangedVfx: 26
+  addEnemyConfig: {fileID: 11400000, guid: 3f3a05bee52ab47cbad01ad9a39c9e03, type: 2}
+  addEnemyPrefab: {fileID: 4759724601103265725, guid: 13b56d495fe914172a629cf9222d75ae, type: 3}
+  maxActiveAdds: 4
+  introVfx: 13
+  enrageVfx: 26
+  deathVfx: 15

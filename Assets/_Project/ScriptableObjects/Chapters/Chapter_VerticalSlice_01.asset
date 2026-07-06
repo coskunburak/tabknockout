@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a262eb3fdab04b59b00822c38961675, type: 3}
+  m_Name: Chapter_VerticalSlice_01
+  m_EditorClassIdentifier: TapKnockout.Level::TapKnockout.Level.ChapterConfig
+  chapterId: chapter_vertical_slice_01
+  displayName: Vertical Slice 01
+  chapterIndex: 1
+  rooms:
+  - {fileID: 11400000, guid: 1f38ab78a828949c08e2dae97ef73b1f, type: 2}
+  - {fileID: 11400000, guid: 69b4e31c14cce421ebffd9e7af7c4b76, type: 2}
+  - {fileID: 11400000, guid: df6ad2a2667894c66b430096f06d22ce, type: 2}
+  - {fileID: 11400000, guid: 60208ba5f1f524897ab5cdbe7dd63e6a, type: 2}
+  - {fileID: 11400000, guid: e0cd6b532d83f40bf85bed95f15820a3, type: 2}
+  - {fileID: 11400000, guid: d3537b98787894407be9ba62c0945f82, type: 2}
+  - {fileID: 11400000, guid: e3ade4d9d24f14ad3ae1fa22cfd05ae0, type: 2}
+  - {fileID: 11400000, guid: 70048f2d5731c448eb141d251dd72146, type: 2}
+  - {fileID: 11400000, guid: 9662af4b8e0564e8bb70dd38abbc938a, type: 2}
+  - {fileID: 11400000, guid: 7bef406f11eb94d03bb8904e67b2a41c, type: 2}
+  recommendedPower: 3

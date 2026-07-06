@@ -4,7 +4,7 @@ using UnityEngine;
 namespace TapKnockout.Combat
 {
     [DisallowMultipleComponent]
-    public sealed class StatusEffectController : MonoBehaviour, IStatusEffectReceiver
+    public sealed class StatusEffectController : MonoBehaviour, IStatusEffectReceiver, IPoolLifecycle
     {
         private readonly List<ActiveStatusEffect> activeEffects = new List<ActiveStatusEffect>(4);
         private IDamageable damageable;
@@ -57,6 +57,25 @@ namespace TapKnockout.Combat
             activeEffects.Clear();
         }
 
+        public void OnBeforeSpawnFromPool()
+        {
+            ClearAll();
+        }
+
+        public void OnSpawnedFromPool()
+        {
+        }
+
+        public void OnBeforeDespawnToPool()
+        {
+            ClearAll();
+        }
+
+        public void ResetForPool()
+        {
+            ClearAll();
+        }
+
         private void TickActiveEffects(float deltaTime)
         {
             for (var i = activeEffects.Count - 1; i >= 0; i--)
@@ -89,10 +108,12 @@ namespace TapKnockout.Combat
 
             var hitContext = new HitContext(request.Source, damageable.GameObject, request.TickDamage, ResolveDamageType(request.EffectType))
             {
-                IsAbilityHit = true
+                IsAbilityHit = true,
+                HitPoint = transform.position
             };
 
             damageable.ReceiveHit(hitContext);
+            RaiseDamageEvents(hitContext);
         }
 
         private float ResolveMoveSpeedMultiplier()
@@ -120,6 +141,24 @@ namespace TapKnockout.Combat
                 StatusEffectType.LightningShock => DamageType.Lightning,
                 _ => DamageType.Physical
             };
+        }
+
+        private static void RaiseDamageEvents(HitContext hitContext)
+        {
+            CombatEvents.RaiseHitResolved(hitContext);
+            if (hitContext.WasIgnored)
+            {
+                return;
+            }
+
+            var damageEvent = new DamageEvent(
+                hitContext.Source,
+                hitContext.Target,
+                hitContext.DamageAmount,
+                hitContext.DamageType,
+                hitContext);
+            CombatEvents.RaiseDamageDealt(damageEvent);
+            CombatEvents.RaiseDamageReceived(damageEvent);
         }
 
         private struct ActiveStatusEffect

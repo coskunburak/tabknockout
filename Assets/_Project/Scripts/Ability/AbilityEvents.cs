@@ -8,6 +8,8 @@ namespace TapKnockout.Ability
         public static event Action<AbilitySelectedEventArgs> OnAbilitySelected;
         public static event Action<AbilityOfferEventArgs> OnAbilityOfferCleared;
 
+        public static bool HasOfferGeneratedListeners => OnAbilityOfferGenerated != null;
+
         public static void RaiseAbilityOfferGenerated(AbilityOfferEventArgs eventArgs)
         {
             OnAbilityOfferGenerated?.Invoke(eventArgs);

@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a262eb3fdab04b59b00822c38961675, type: 3}
+  m_Name: Chapter_01
+  m_EditorClassIdentifier: TapKnockout.Level::TapKnockout.Level.ChapterConfig
+  chapterId: chapter_001
+  displayName: Chapter 1
+  chapterIndex: 1
+  rooms:
+  - {fileID: 11400000, guid: f48ad978ad91f471dabe60293c626b57, type: 2}
+  - {fileID: 11400000, guid: fc4c7095a67be41229dfadf81710e340, type: 2}
+  - {fileID: 11400000, guid: 47f23279c3ba34b6889ea986893995a6, type: 2}
+  - {fileID: 11400000, guid: 5b5e13352b7e24159beaf8d75a91a9bd, type: 2}
+  - {fileID: 11400000, guid: 156549d534cbc4355aea21f5e465e160, type: 2}
+  - {fileID: 11400000, guid: e2c9d4daa675c4b63b9ec7c23f65b210, type: 2}
+  - {fileID: 11400000, guid: 083d23dc5b1fe4b29b10c9c8a7469cd1, type: 2}
+  - {fileID: 11400000, guid: c9cdc6f7f865e487180b6c2916faee36, type: 2}
+  - {fileID: 11400000, guid: b0dfc185c7ac243f7bef5da3109943b8, type: 2}
+  - {fileID: 11400000, guid: e2fc5cb31236c49c2aefcc0d3152816b, type: 2}
+  - {fileID: 11400000, guid: 5edf062e8781d4e8fa3cbe180410c015, type: 2}
+  - {fileID: 11400000, guid: 314c61c93cb4b4b8c8634b7c26773a70, type: 2}
+  - {fileID: 11400000, guid: 4d10b9f3e2d934276adfa249834c1e95, type: 2}
+  - {fileID: 11400000, guid: 405917043de6247c5810c895dfeb03bd, type: 2}
+  - {fileID: 11400000, guid: 05b229e23eb60449eb63af3e946d280b, type: 2}
+  - {fileID: 11400000, guid: 6f605077898764a8d851ce46ef29c82f, type: 2}
+  - {fileID: 11400000, guid: 73f7c595b3099436ab85c59737d7bc0a, type: 2}
+  - {fileID: 11400000, guid: 7a16b09af99d74f9f9373579bedaaa31, type: 2}
+  - {fileID: 11400000, guid: 7bacfb3b135474f47918eef355a1f647, type: 2}
+  - {fileID: 11400000, guid: ed32a639b11bd4d199edff0af16d2213, type: 2}
+  - {fileID: 11400000, guid: 56c611234d17c4aa7a78c27d611b68e9, type: 2}
+  - {fileID: 11400000, guid: fd6566fe112f948fa8f6a024a0528a0b, type: 2}
+  - {fileID: 11400000, guid: ec7cbeb84d49c421dad52d05bf9bf6c5, type: 2}
+  - {fileID: 11400000, guid: d83b9061d0ec64a63bd6ff73e36dcdcb, type: 2}
+  - {fileID: 11400000, guid: 118c915a59dc6446b846c9984a0c438a, type: 2}
+  - {fileID: 11400000, guid: ca6afdb83c86948d68c0f3840446fd51, type: 2}
+  - {fileID: 11400000, guid: 45cafa633d953469ea86c2be0221ca97, type: 2}
+  - {fileID: 11400000, guid: 3ce7f6150a7534d0bb3c7c868e9dfde7, type: 2}
+  - {fileID: 11400000, guid: 9a746b74f656440b0b7371c262cf05c3, type: 2}
+  - {fileID: 11400000, guid: 9f69de914eac34f4ab0ae8c9fd1a724c, type: 2}
+  recommendedPower: 3

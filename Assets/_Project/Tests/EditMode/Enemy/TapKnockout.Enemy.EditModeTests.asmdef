@@ -3,7 +3,9 @@
   "rootNamespace": "TapKnockout.Enemy.Tests",
   "references": [
     "TapKnockout.Combat",
-    "TapKnockout.Enemy"
+    "TapKnockout.Enemy",
+    "TapKnockout.Projectile",
+    "TapKnockout.VFX"
   ],
   "includePlatforms": [
     "Editor"

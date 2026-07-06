@@ -3,7 +3,11 @@
   "rootNamespace": "TapKnockout.Boss.Tests",
   "references": [
     "TapKnockout.Boss",
-    "TapKnockout.Combat"
+    "TapKnockout.Combat",
+    "TapKnockout.Enemy",
+    "TapKnockout.Room",
+    "TapKnockout.VFX",
+    "TapKnockout.Wave"
   ],
   "includePlatforms": [
     "Editor"

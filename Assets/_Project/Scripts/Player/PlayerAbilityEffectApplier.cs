@@ -70,6 +70,9 @@ namespace TapKnockout.Player
                 case AbilityEffectType.DamageReductionUp:
                     runtimeStats.AddDamageReduction(ability.Value);
                     break;
+                case AbilityEffectType.DodgeChanceUp:
+                    runtimeStats.AddDodgeChance(ability.Value);
+                    break;
                 case AbilityEffectType.DashCooldownDown:
                     runtimeStats.AddDashCooldownReduction(ability.Value);
                     break;
@@ -87,6 +90,12 @@ namespace TapKnockout.Player
                     break;
                 case AbilityEffectType.DashShockwave:
                     runtimeStats.AddDashShockwaveRadius(ability.Value);
+                    break;
+                case AbilityEffectType.ChargedShot:
+                case AbilityEffectType.EnergyBeam:
+                case AbilityEffectType.EnergyRing:
+                case AbilityEffectType.DashBeam:
+                    // ActiveSkillController equips and resolves these as hotkey-cast skills.
                     break;
                 case AbilityEffectType.DashShieldAfterHit:
                     runtimeStats.EnableDashShieldAfterHit();
@@ -144,16 +153,20 @@ namespace TapKnockout.Player
                     break;
                 case AbilityEffectType.BurningHits:
                 case AbilityEffectType.BurnOnHit:
+                case AbilityEffectType.SuperBurn:
                     runtimeStats.AddBurnOnHit(ResolveProcChanceOrValue(ability));
                     break;
                 case AbilityEffectType.PoisonOnHit:
+                case AbilityEffectType.SuperPoison:
                     runtimeStats.AddPoisonOnHit(ResolveProcChanceOrValue(ability));
                     break;
                 case AbilityEffectType.FreezeOnHit:
+                case AbilityEffectType.SuperFreeze:
                     runtimeStats.AddFreezeOnHit(ResolveProcChanceOrValue(ability));
                     break;
                 case AbilityEffectType.ChainLightning:
                 case AbilityEffectType.LightningOnHit:
+                case AbilityEffectType.SuperLightning:
                     runtimeStats.AddLightningOnHit(ResolveProcChanceOrValue(ability));
                     break;
                 case AbilityEffectType.OrbitingBlade:
@@ -162,6 +175,7 @@ namespace TapKnockout.Player
                 case AbilityEffectType.OrbitalPoison:
                 case AbilityEffectType.OrbitalLightning:
                 case AbilityEffectType.OrbitalIce:
+                case AbilityEffectType.OrbitalWeb:
                     runtimeStats.AddOrbitalCount(Mathf.Max(1, Mathf.RoundToInt(ability.Value)));
                     break;
                 case AbilityEffectType.DroneBasic:
@@ -202,10 +216,16 @@ namespace TapKnockout.Player
                     runtimeStats.EnableReviveOnce();
                     break;
                 case AbilityEffectType.InvulnerabilityAfterHit:
-                    runtimeStats.EnableInvulnerabilityAfterHit();
+                    runtimeStats.EnableInvulnerabilityAfterHit(ResolveDurationOrValue(ability));
                     break;
                 case AbilityEffectType.HealOnKill:
                     runtimeStats.AddHealOnKill(ability.Value);
+                    break;
+                case AbilityEffectType.HeartMaxHealthChance:
+                    ApplyMaxHealthUp(ability.Value);
+                    break;
+                case AbilityEffectType.PreBossHeal:
+                    playerHealth?.Heal(ability.Value);
                     break;
                 case AbilityEffectType.BossDamageUp:
                     runtimeStats.AddBossDamageMultiplier(ability.Value);

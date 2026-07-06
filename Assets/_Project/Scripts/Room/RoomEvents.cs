@@ -29,10 +29,25 @@ namespace TapKnockout.Room
         public int CompletedWaveCount { get; }
     }
 
+    public readonly struct RoomExitUnlockedEventArgs
+    {
+        public RoomExitUnlockedEventArgs(RoomManager source, RoomTemplateConfig roomConfig, RoomRewardType rewardType)
+        {
+            Source = source;
+            RoomConfig = roomConfig;
+            RewardType = rewardType;
+        }
+
+        public RoomManager Source { get; }
+        public RoomTemplateConfig RoomConfig { get; }
+        public RoomRewardType RewardType { get; }
+    }
+
     public static class RoomEvents
     {
         public static event Action<RoomStartedEventArgs> OnRoomStarted;
         public static event Action<RoomCompletedEventArgs> OnRoomCompleted;
+        public static event Action<RoomExitUnlockedEventArgs> OnRoomExitUnlocked;
 
         public static void RaiseRoomStarted(RoomStartedEventArgs eventArgs)
         {
@@ -42,6 +57,11 @@ namespace TapKnockout.Room
         public static void RaiseRoomCompleted(RoomCompletedEventArgs eventArgs)
         {
             OnRoomCompleted?.Invoke(eventArgs);
+        }
+
+        public static void RaiseRoomExitUnlocked(RoomExitUnlockedEventArgs eventArgs)
+        {
+            OnRoomExitUnlocked?.Invoke(eventArgs);
         }
     }
 }

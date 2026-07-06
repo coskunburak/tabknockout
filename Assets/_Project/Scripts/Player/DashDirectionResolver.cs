@@ -1,3 +1,4 @@
+using TapKnockout.Input;
 using UnityEngine;
 
 namespace TapKnockout.Player
@@ -6,25 +7,56 @@ namespace TapKnockout.Player
     {
         public static Vector3 Resolve(PlayerMovementController movementController, Transform fallbackTransform)
         {
-            var transformForward = fallbackTransform != null ? fallbackTransform.forward : Vector3.forward;
+            return Resolve(movementController, fallbackTransform, null);
+        }
 
-            if (movementController == null)
+        public static Vector3 Resolve(
+            PlayerMovementController movementController,
+            Transform fallbackTransform,
+            MouseAimController mouseAimController)
+        {
+            var transformForward = fallbackTransform != null ? fallbackTransform.forward : Vector3.forward;
+            var currentMoveDirection = Vector3.zero;
+            var lastFacingDirection = Vector3.zero;
+            var mouseAimDirection = Vector3.zero;
+
+            if (movementController != null)
             {
-                return Resolve(Vector3.zero, Vector3.zero, transformForward);
+                currentMoveDirection = movementController.IsMoving
+                    ? movementController.CurrentMoveDirection
+                    : Vector3.zero;
+
+                lastFacingDirection = movementController.LastFacingDirection;
             }
 
-            var currentMoveDirection = movementController.IsMoving
-                ? movementController.CurrentMoveDirection
-                : Vector3.zero;
+            if (mouseAimController != null &&
+                mouseAimController.TryGetAimDirection(out var aimDirection))
+            {
+                mouseAimDirection = aimDirection;
+            }
 
-            return Resolve(currentMoveDirection, movementController.LastFacingDirection, transformForward);
+            return Resolve(currentMoveDirection, mouseAimDirection, lastFacingDirection, transformForward);
         }
 
         public static Vector3 Resolve(Vector3 currentMoveDirection, Vector3 lastFacingDirection, Vector3 transformForward)
         {
+            return Resolve(currentMoveDirection, Vector3.zero, lastFacingDirection, transformForward);
+        }
+
+        public static Vector3 Resolve(
+            Vector3 currentMoveDirection,
+            Vector3 mouseAimDirection,
+            Vector3 lastFacingDirection,
+            Vector3 transformForward)
+        {
             if (TryFlattenNormalize(currentMoveDirection, out var current))
             {
                 return current;
+            }
+
+            if (TryFlattenNormalize(mouseAimDirection, out var aim))
+            {
+                return aim;
             }
 
             if (TryFlattenNormalize(lastFacingDirection, out var lastFacing))

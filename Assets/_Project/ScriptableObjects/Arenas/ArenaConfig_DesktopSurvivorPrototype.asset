@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba8e052bc67040c18bd5a0bfc028ba9, type: 3}
+  m_Name: ArenaConfig_DesktopSurvivorPrototype
+  m_EditorClassIdentifier: TapKnockout.Survivor::TapKnockout.Survivor.ArenaConfig
+  arenaId: arena_prototype_01
+  arenaCenter: {x: 0, y: 0, z: 0}
+  arenaRadius: 23
+  playerSafeSpawnRadius: 4.5
+  enemySpawnMinRadiusFromPlayer: 8
+  enemySpawnMaxRadiusFromPlayer: 19
+  maxLiveEnemies: 100
+  spawnPressureMode: 2
+  playerAvoidSpawnRadius: 7
+  edgeSpawnInnerRadiusFactor: 0.82
+  mixedEdgePressureChance: 0.45
+  spawnPositionRetries: 18
+  spawnClearanceRadius: 0.55
+  spawnBlockerLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  fallbackToArenaEdgeWhenInvalid: 1

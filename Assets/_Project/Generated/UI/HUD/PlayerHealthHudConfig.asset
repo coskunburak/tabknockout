@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 877067a6ab32d4b27b5647dcbd9210ef, type: 3}
+  m_Name: PlayerHealthHudConfig
+  m_EditorClassIdentifier: TapKnockout.UI::TapKnockout.UI.HUD.PlayerHealthHudConfig
+  frameSprite: {fileID: 21300000, guid: 3db78df50054b41d9af8198cdccfdf6f, type: 3}
+  fillSprite: {fileID: 21300000, guid: a22130ad3890c4ad98f3823a695e010d, type: 3}
+  secondaryFrameSprite: {fileID: 21300000, guid: ffba854d8c9b244139617c37dfc4eafb, type: 3}
+  portraitFrameSprite: {fileID: 21300000, guid: 971044eb7ef9042d095b72a706801ef9, type: 3}
+  defaultPortraitSprite: {fileID: 0}
+  buffSlotFrameSprite: {fileID: 0}
+  hpFillColor: {r: 0.8, g: 0.1, b: 0.08, a: 1}
+  damageDelayColor: {r: 0.55, g: 0.18, b: 0.05, a: 0.9}
+  secondaryBarColor: {r: 0.18, g: 0.72, b: 0.22, a: 1}
+  lowHealthWarningColor: {r: 1, g: 0.22, b: 0.1, a: 0.8}
+  healGlowColor: {r: 0.4, g: 1, b: 0.5, a: 0.55}
+  hpFillAnimDuration: 0.15
+  damageDelayHoldDuration: 0.45
+  damageDelayCatchDuration: 0.55
+  damagePulseScale: 1.045
+  damagePulseDuration: 0.18
+  healPulseDuration: 0.4
+  lowHealthThreshold: 0.25
+  lowHealthPulseSpeed: 1.4
+  lowHealthPulseMinAlpha: 0.2
+  hpTextFormat: '{0} / {1}'
+  hpTextFallback: -- / --
+  maxBarWidth: 380

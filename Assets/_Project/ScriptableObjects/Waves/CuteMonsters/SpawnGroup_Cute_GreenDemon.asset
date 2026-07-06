@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf944abd76904ed9aec37b5ddc69402, type: 3}
+  m_Name: SpawnGroup_Cute_GreenDemon
+  m_EditorClassIdentifier: TapKnockout.Survivor::TapKnockout.Survivor.SpawnGroupConfig
+  groupId: cute_green_demon_group
+  enemyConfig: {fileID: 11400000, guid: 343f6c79d0c59497f9cd9e27540e7839, type: 2}
+  enemyPrefab: {fileID: 3753429165916156335, guid: 2faf504e4abf44a8fa816ebdde3eda38, type: 3}
+  elite: 0
+  weight: 1.1
+  minCount: 1
+  maxCount: 2
+  spawnBurstCount: 1
+  budgetCost: 2

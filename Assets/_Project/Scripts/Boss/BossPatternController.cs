@@ -9,17 +9,28 @@ namespace TapKnockout.Boss
         [SerializeField] private BossPatternConfig config;
         [SerializeField] private Transform target;
         [SerializeField] private bool playOnEnable = true;
+        [SerializeField] private BossSlamAttack slamAttack;
+        [SerializeField] private BossChargeAttack chargeAttack;
+        [SerializeField] private BossAddSpawnAction addSpawnAction;
 
         private readonly List<BossAttackStep> runtimeSteps = new List<BossAttackStep>();
         private BossPatternPhase currentPhase = BossPatternPhase.Idle;
         private float phaseRemaining;
         private int currentStepIndex;
         private bool isRunning;
+        private float windupDurationMultiplier = 1f;
+        private float activeDurationMultiplier = 1f;
+        private float cooldownDurationMultiplier = 1f;
 
         public BossPatternPhase CurrentPhase => currentPhase;
         public int CurrentStepIndex => currentStepIndex;
         public float PhaseRemaining => phaseRemaining;
         public bool IsRunning => isRunning;
+
+        private void Awake()
+        {
+            ResolveAttackComponents();
+        }
 
         private void OnEnable()
         {
@@ -43,6 +54,14 @@ namespace TapKnockout.Boss
         public void SetTarget(Transform patternTarget)
         {
             target = patternTarget;
+            chargeAttack?.SetTarget(patternTarget);
+        }
+
+        public void SetDurationMultipliers(float windupMultiplier, float activeMultiplier, float cooldownMultiplier)
+        {
+            windupDurationMultiplier = Mathf.Max(0.1f, windupMultiplier);
+            activeDurationMultiplier = Mathf.Max(0.1f, activeMultiplier);
+            cooldownDurationMultiplier = Mathf.Max(0.1f, cooldownMultiplier);
         }
 
         public bool StartPattern()
@@ -74,6 +93,8 @@ namespace TapKnockout.Boss
             isRunning = false;
             currentPhase = BossPatternPhase.Idle;
             phaseRemaining = 0f;
+            slamAttack?.EndTelegraph();
+            chargeAttack?.EndTelegraph();
         }
 
         public void Advance(float deltaTime)
@@ -159,6 +180,8 @@ namespace TapKnockout.Boss
                 phase,
                 currentStepIndex,
                 phaseRemaining));
+
+            ExecutePhase(step, phase);
         }
 
         private void RebuildRuntimeSteps()
@@ -175,18 +198,89 @@ namespace TapKnockout.Boss
             }
         }
 
-        private static float ResolvePhaseDuration(BossAttackStep step, BossPatternPhase phase)
+        private float ResolvePhaseDuration(BossAttackStep step, BossPatternPhase phase)
         {
             switch (phase)
             {
                 case BossPatternPhase.Windup:
-                    return step.WindupDuration;
+                    return step.WindupDuration * windupDurationMultiplier;
                 case BossPatternPhase.Active:
-                    return step.ActiveDuration;
+                    return step.ActiveDuration * activeDurationMultiplier;
                 case BossPatternPhase.Cooldown:
-                    return step.CooldownDuration;
+                    return step.CooldownDuration * cooldownDurationMultiplier;
                 default:
                     return 0f;
+            }
+        }
+
+        private void ResolveAttackComponents()
+        {
+            if (slamAttack == null)
+            {
+                slamAttack = GetComponent<BossSlamAttack>();
+            }
+
+            if (chargeAttack == null)
+            {
+                chargeAttack = GetComponent<BossChargeAttack>();
+            }
+
+            if (addSpawnAction == null)
+            {
+                addSpawnAction = GetComponent<BossAddSpawnAction>();
+            }
+        }
+
+        private void ExecutePhase(BossAttackStep step, BossPatternPhase phase)
+        {
+            ResolveAttackComponents();
+
+            if (phase == BossPatternPhase.Windup)
+            {
+                switch (step.AttackType)
+                {
+                    case BossAttackType.MeleeSlam:
+                    case BossAttackType.BossSlam:
+                    case BossAttackType.RadialBurst:
+                        slamAttack?.BeginTelegraph(step);
+                        break;
+                    case BossAttackType.DashCharge:
+                    case BossAttackType.BossCharge:
+                        chargeAttack?.BeginTelegraph(step, target);
+                        break;
+                }
+
+                return;
+            }
+
+            if (phase == BossPatternPhase.Active)
+            {
+                switch (step.AttackType)
+                {
+                    case BossAttackType.MeleeSlam:
+                    case BossAttackType.BossSlam:
+                    case BossAttackType.RadialBurst:
+                        slamAttack?.Execute(step);
+                        break;
+                    case BossAttackType.DashCharge:
+                    case BossAttackType.BossCharge:
+                        chargeAttack?.Execute(step, target);
+                        break;
+                    case BossAttackType.SummonAdds:
+                        addSpawnAction?.Execute(step);
+                        break;
+                    case BossAttackType.EnragePulse:
+                        BossEvents.RaiseBossEnraged(new BossEventArgs(gameObject, null, BossPhaseState.Phase3, "boss_enrage_pulse"));
+                        break;
+                }
+
+                return;
+            }
+
+            if (phase == BossPatternPhase.Cooldown)
+            {
+                slamAttack?.EndTelegraph();
+                chargeAttack?.EndTelegraph();
             }
         }
     }

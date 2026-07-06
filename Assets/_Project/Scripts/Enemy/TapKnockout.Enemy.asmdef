@@ -2,7 +2,9 @@
   "name": "TapKnockout.Enemy",
   "rootNamespace": "TapKnockout.Enemy",
   "references": [
-    "TapKnockout.Combat"
+    "TapKnockout.Combat",
+    "TapKnockout.Projectile",
+    "TapKnockout.VFX"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

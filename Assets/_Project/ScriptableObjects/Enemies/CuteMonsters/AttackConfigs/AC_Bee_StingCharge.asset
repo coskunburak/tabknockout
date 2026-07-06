@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1759b4f88fe9e439786425bea191dccd, type: 3}
+  m_Name: AC_Bee_StingCharge
+  m_EditorClassIdentifier: TapKnockout.Enemy::TapKnockout.Enemy.EnemyAttackConfig
+  attackId: bee_sting_charge
+  displayName: Bee Sting Charge
+  attackType: 2
+  triggerRange: 6
+  preferredMinRange: 0
+  preferredMaxRange: 8
+  cooldown: 2
+  initialCooldownOffset: 0
+  windupTime: 0.45
+  activeTime: 0.4
+  recoveryTime: 0.6
+  canMoveDuringWindup: 1
+  commitLocksMovement: 1
+  canMoveDuringRecovery: 1
+  commitLocksRotation: 1
+  damage: 7
+  knockbackForce: 5
+  knockbackDuration: 0.15
+  hitboxShape: 3
+  hitboxRadius: 0.9
+  hitboxLength: 3
+  hitboxArcHalfAngle: 60
+  hitLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 10
+  projectileLifetime: 4
+  homingStrength: 0
+  homingMaxTurnDegreesPerSecond: 45
+  areaZonePrefab: {fileID: 0}
+  areaZoneRadius: 2
+  areaZoneDuration: 4
+  areaZoneTickInterval: 1
+  areaZoneTickDamage: 0
+  maxActiveZones: 3
+  statusEffectType: 0
+  statusEffectDuration: 2
+  statusEffectSlowMultiplier: 0.6
+  animationTrigger: Attack
+  useAnimationTrigger: 1
+  telegraphPrefab: {fileID: 8537503059492134657, guid: 9e628990df7ba4912b67dd1f4a3f8c19, type: 3}
+  activeVfxPrefab: {fileID: 4122404933354293624, guid: e35f63e634e7a41e7ae9242c756baac9, type: 3}
+  impactVfxPrefab: {fileID: 8430874676323777875, guid: 3a691b31ec0d446b2aa320c3443dee48, type: 3}
+  vfxLifetime: 1.25
+  telegraphType: 5
+  debugColor: {r: 1, g: 0.85, b: 0.1, a: 1}
+  diveSpeedMultiplier: 4.5
+  overshootDistance: 3
+  beamLength: 8
+  beamWidth: 0.35

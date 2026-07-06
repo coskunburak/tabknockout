@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29669ae84e77844729fc0dd258bb07d7, type: 3}
+  m_Name: TapKnockoutVisualQuality_PrototypeLow
+  m_EditorClassIdentifier: TapKnockout.Visuals::TapKnockout.Visuals.TapKnockoutVisualQualityPreset
+  presetId: prototype_low
+  displayName: Prototype Low
+  qualityLevel: 0
+  renderProfile:
+    hdrEnabled: 1
+    msaaSampleCount: 1
+    renderScale: 0.85
+    depthTextureEnabled: 1
+    opaqueTextureEnabled: 0
+    srpBatcherEnabled: 1
+    mainLightShadowsEnabled: 1
+    softShadowsEnabled: 0
+    mainLightShadowResolution: 1024
+    shadowDistance: 34
+    shadowCascadeCount: 1
+    additionalLightShadowsEnabled: 0
+    additionalLightsPerObjectLimit: 2
+    bloomIntensity: 0.2
+    bloomThreshold: 1.45
+    bloomScatter: 0.42
+    ambientOcclusionIntensity: 0.18
+    ambientOcclusionRadius: 0.45
+    postExposure: -0.22
+    contrast: 12
+    saturation: -2
+    vignetteIntensity: 0.18
+    vignetteSmoothness: 0.52
+    radialDarknessOverlayEnabled: 1
+    radialDarknessColor: {r: 0.008, g: 0.014, b: 0.014, a: 1}
+    radialDarknessEdgeOpacity: 0.5
+    radialDarknessClearRadius: 0.3
+    radialDarknessFullRadius: 1.35
+    radialDarknessFollowSharpness: 24
+    filmGrainIntensity: 0
+    motionBlurEnabled: 0
+    depthOfFieldEnabled: 0

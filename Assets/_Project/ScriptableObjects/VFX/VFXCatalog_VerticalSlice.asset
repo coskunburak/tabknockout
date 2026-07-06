@@ -1,0 +1,841 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95efb9fc68888473f9f16775223ba7ce, type: 3}
+  m_Name: VFXCatalog_VerticalSlice
+  m_EditorClassIdentifier: TapKnockout.VFX::TapKnockout.VFX.VFXCatalog
+  definitions:
+  - eventType: 70
+    prefab: {fileID: 6980259576133684760, guid: 1f58a1dea6bbd9347843e4935585e6a2, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.45
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.42
+    allowColorOverride: 1
+  - eventType: 4
+    prefab: {fileID: 6980259576133684760, guid: 1f58a1dea6bbd9347843e4935585e6a2, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.45
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.42
+    allowColorOverride: 1
+  - eventType: 71
+    prefab: {fileID: 3473529909581181512, guid: bc142210df3ec4545a4e3e1f21e00da7, type: 3}
+    initialPoolSize: 12
+    defaultLifetime: 0.75
+    parentToRequestParent: 1
+    useRequestRotation: 1
+    useRequestScale: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.28
+    allowColorOverride: 1
+  - eventType: 5
+    prefab: {fileID: 3473529909581181512, guid: bc142210df3ec4545a4e3e1f21e00da7, type: 3}
+    initialPoolSize: 12
+    defaultLifetime: 0.75
+    parentToRequestParent: 1
+    useRequestRotation: 1
+    useRequestScale: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.28
+    allowColorOverride: 1
+  - eventType: 72
+    prefab: {fileID: 7856939199014537196, guid: 212ef1a41838ce044a9ac54994866708, type: 3}
+    initialPoolSize: 16
+    defaultLifetime: 0.8
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.65
+    allowColorOverride: 1
+  - eventType: 73
+    prefab: {fileID: 6982263153641847612, guid: 36a3ddd9e9258474aa29a08939eeda45, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 1.05
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.95
+    allowColorOverride: 1
+  - eventType: 74
+    prefab: {fileID: 6547965365630005983, guid: a5f2e1a561eda814091741bf454dd28c, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.75
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.7
+    allowColorOverride: 1
+  - eventType: 75
+    prefab: {fileID: 8525990746615576120, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.9
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.68
+    allowColorOverride: 1
+  - eventType: 76
+    prefab: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.85
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.8
+    allowColorOverride: 1
+  - eventType: 77
+    prefab: {fileID: 3280519133390621005, guid: a71be3e7990efb040a07565c43cbb198, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.72
+    allowColorOverride: 1
+  - eventType: 78
+    prefab: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
+    initialPoolSize: 6
+    defaultLifetime: 0.95
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.95
+    allowColorOverride: 1
+  - eventType: 0
+    prefab: {fileID: 7177991128484655659, guid: 59a35ab9f68edff40b6e5332bed330f5, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.55
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.68
+    allowColorOverride: 1
+  - eventType: 1
+    prefab: {fileID: 3696007233179127096, guid: c248f95ffea8b8543bc7ad0fffe0216d, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.55
+    parentToRequestParent: 1
+    useRequestRotation: 1
+    useRequestScale: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.42
+    allowColorOverride: 1
+  - eventType: 79
+    prefab: {fileID: 7177991128484655659, guid: 59a35ab9f68edff40b6e5332bed330f5, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.55
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.58
+    allowColorOverride: 1
+  - eventType: 80
+    prefab: {fileID: 1902839626373450777, guid: 377bd8e4df08cc444b8742609e5ebd73, type: 3}
+    initialPoolSize: 12
+    defaultLifetime: 1
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.62
+    allowColorOverride: 1
+  - eventType: 82
+    prefab: {fileID: 9157105887711914197, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
+    initialPoolSize: 16
+    defaultLifetime: 0.8
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.45
+    allowColorOverride: 1
+  - eventType: 83
+    prefab: {fileID: 1902839626373450777, guid: 377bd8e4df08cc444b8742609e5ebd73, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1.05
+    allowColorOverride: 1
+  - eventType: 81
+    prefab: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.5
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.9
+    allowColorOverride: 1
+  - eventType: 84
+    prefab: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.5
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1.05
+    allowColorOverride: 1
+  - eventType: 85
+    prefab: {fileID: 1902839626373450777, guid: 377bd8e4df08cc444b8742609e5ebd73, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1.5
+    allowColorOverride: 1
+  - eventType: 86
+    prefab: {fileID: 4115455537270748339, guid: 6555300494081614fa6b6a823cca9f64, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.35
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1.05
+    allowColorOverride: 1
+  - eventType: 87
+    prefab: {fileID: 1902839626373450777, guid: 377bd8e4df08cc444b8742609e5ebd73, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1.25
+    allowColorOverride: 1
+  - eventType: 88
+    prefab: {fileID: 6982263153641847612, guid: 36a3ddd9e9258474aa29a08939eeda45, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 1.35
+    allowColorOverride: 1
+  - eventType: 89
+    prefab: {fileID: 3621047873860463696, guid: fb3b9b0b33d48c64c8c11e01dbe71caa, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 1
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.32
+    allowColorOverride: 1
+  - eventType: 90
+    prefab: {fileID: 5631927496442371602, guid: 6c52ee79710704a4dab242c5ba8e0408, type: 3}
+    initialPoolSize: 12
+    defaultLifetime: 0.75
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.42
+    allowColorOverride: 1
+  - eventType: 91
+    prefab: {fileID: 4115455537270748339, guid: 6555300494081614fa6b6a823cca9f64, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.3
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.82
+    allowColorOverride: 1
+  - eventType: 92
+    prefab: {fileID: 8078720523478869859, guid: 4f5fc4bbd01b03a4499a6ed77f175fc7, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.35
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.28
+    allowColorOverride: 1
+  - eventType: 2
+    prefab: {fileID: 8762405910555896786, guid: fcb74f28d107e284e80af037bfec14ca, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 1.1
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0.05, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 1.15
+    allowColorOverride: 1
+  - eventType: 7
+    prefab: {fileID: 7856939199014537196, guid: 212ef1a41838ce044a9ac54994866708, type: 3}
+    initialPoolSize: 16
+    defaultLifetime: 0.8
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0.05, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.75
+    allowColorOverride: 1
+  - eventType: 6
+    prefab: {fileID: 7856939199014537196, guid: 212ef1a41838ce044a9ac54994866708, type: 3}
+    initialPoolSize: 16
+    defaultLifetime: 0.8
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.65
+    allowColorOverride: 1
+  - eventType: 9
+    prefab: {fileID: 447409866740539227, guid: da34d66431c8cd04aa98411a543a83bf, type: 3}
+    initialPoolSize: 10
+    defaultLifetime: 0.8
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.45
+    allowColorOverride: 1
+  - eventType: 8
+    prefab: {fileID: 447409866740539227, guid: da34d66431c8cd04aa98411a543a83bf, type: 3}
+    initialPoolSize: 12
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.85
+    allowColorOverride: 1
+  - eventType: 10
+    prefab: {fileID: 4230533699123781479, guid: 86e6c7d81766295418601bcd9d9ae6b9, type: 3}
+    initialPoolSize: 2
+    defaultLifetime: 2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.85
+    allowColorOverride: 1
+  - eventType: 11
+    prefab: {fileID: 5631927496442371602, guid: 6c52ee79710704a4dab242c5ba8e0408, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.65
+    allowColorOverride: 1
+  - eventType: 12
+    prefab: {fileID: 5631927496442371602, guid: 6c52ee79710704a4dab242c5ba8e0408, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.85
+    allowColorOverride: 1
+  - eventType: 13
+    prefab: {fileID: 1902839626373450777, guid: 377bd8e4df08cc444b8742609e5ebd73, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 2
+    allowColorOverride: 1
+  - eventType: 14
+    prefab: {fileID: 6982263153641847612, guid: 36a3ddd9e9258474aa29a08939eeda45, type: 3}
+    initialPoolSize: 6
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 1.25
+    allowColorOverride: 1
+  - eventType: 15
+    prefab: {fileID: 6982263153641847612, guid: 36a3ddd9e9258474aa29a08939eeda45, type: 3}
+    initialPoolSize: 2
+    defaultLifetime: 2.2
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 1.8
+    allowColorOverride: 1
+  - eventType: 16
+    prefab: {fileID: 5631927496442371602, guid: 6c52ee79710704a4dab242c5ba8e0408, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 1
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.55
+    allowColorOverride: 1
+  - eventType: 17
+    prefab: {fileID: 5631927496442371602, guid: 6c52ee79710704a4dab242c5ba8e0408, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.8
+    allowColorOverride: 1
+  - eventType: 18
+    prefab: {fileID: 362261158077530393, guid: 20fda529c996a334da7fd65b48ea40df, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.9
+    allowColorOverride: 1
+  - eventType: 30
+    prefab: {fileID: 6547965365630005983, guid: a5f2e1a561eda814091741bf454dd28c, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.15
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.75
+    allowColorOverride: 1
+  - eventType: 31
+    prefab: {fileID: 3696007233179127096, guid: c248f95ffea8b8543bc7ad0fffe0216d, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.85
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.55
+    allowColorOverride: 1
+  - eventType: 32
+    prefab: {fileID: 4115455537270748339, guid: 6555300494081614fa6b6a823cca9f64, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.1
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.72
+    allowColorOverride: 1
+  - eventType: 33
+    prefab: {fileID: 3696007233179127096, guid: c248f95ffea8b8543bc7ad0fffe0216d, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.85
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.65
+    allowColorOverride: 1
+  - eventType: 34
+    prefab: {fileID: 5631927496442371602, guid: 6c52ee79710704a4dab242c5ba8e0408, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.1
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.9
+    allowColorOverride: 1
+  - eventType: 35
+    prefab: {fileID: 8762405910555896786, guid: fcb74f28d107e284e80af037bfec14ca, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.95
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.72
+    allowColorOverride: 1
+  - eventType: 36
+    prefab: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
+    initialPoolSize: 6
+    defaultLifetime: 0.95
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.95
+    allowColorOverride: 1
+  - eventType: 37
+    prefab: {fileID: 7177991128484655659, guid: 59a35ab9f68edff40b6e5332bed330f5, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.6
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.8
+    allowColorOverride: 1
+  - eventType: 38
+    prefab: {fileID: 5880797563127281583, guid: 265d3a5ba69981a4698ceabcedf368b0, type: 3}
+    initialPoolSize: 6
+    defaultLifetime: 0.75
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.65
+    allowColorOverride: 1
+  - eventType: 39
+    prefab: {fileID: 2708598583397607911, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
+    initialPoolSize: 6
+    defaultLifetime: 0.8
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.55
+    allowColorOverride: 1
+  - eventType: 40
+    prefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.95
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.55
+    allowColorOverride: 1
+  - eventType: 41
+    prefab: {fileID: 2708598583397607911, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
+    initialPoolSize: 6
+    defaultLifetime: 0.75
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.62
+    allowColorOverride: 1
+  - eventType: 42
+    prefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.9
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.62
+    allowColorOverride: 1
+  - eventType: 43
+    prefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.9
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.58
+    allowColorOverride: 1
+  - eventType: 44
+    prefab: {fileID: 362261158077530393, guid: 20fda529c996a334da7fd65b48ea40df, type: 3}
+    initialPoolSize: 6
+    defaultLifetime: 0.85
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.8
+    allowColorOverride: 1
+  - eventType: 45
+    prefab: {fileID: 162584487599433031, guid: 39f852c28f9c3fd45a427c24f3564ba7, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.9
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.8
+    allowColorOverride: 1
+  - eventType: 46
+    prefab: {fileID: 4425129568585013132, guid: bbeeb0ddc21369746aaaae5c5c1c09cf, type: 3}
+    initialPoolSize: 5
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.52
+    allowColorOverride: 1
+  - eventType: 47
+    prefab: {fileID: 7275548786892498063, guid: 5bc9a0bf98f67d240a936bf476ba2082, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.9
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.8
+    allowColorOverride: 1
+  - eventType: 48
+    prefab: {fileID: 8762405910555896786, guid: fcb74f28d107e284e80af037bfec14ca, type: 3}
+    initialPoolSize: 8
+    defaultLifetime: 0.9
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.82
+    allowColorOverride: 1
+  - eventType: 49
+    prefab: {fileID: 4772634663576830964, guid: e1385af346f4e624eb313ec1ea4fcd7e, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.75
+    allowColorOverride: 1
+  - eventType: 50
+    prefab: {fileID: 5631927496442371602, guid: 6c52ee79710704a4dab242c5ba8e0408, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.1
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.82
+    allowColorOverride: 1
+  - eventType: 51
+    prefab: {fileID: 6982263153641847612, guid: 36a3ddd9e9258474aa29a08939eeda45, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 1.1
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 1.1
+    allowColorOverride: 1
+  - eventType: 52
+    prefab: {fileID: 7904898002847524615, guid: a2ccf81a1d5b163448ebdf66b5e746d6, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.1
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.78
+    allowColorOverride: 1
+  - eventType: 53
+    prefab: {fileID: 4230533699123781479, guid: 86e6c7d81766295418601bcd9d9ae6b9, type: 3}
+    initialPoolSize: 2
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.55
+    allowColorOverride: 1
+  - eventType: 54
+    prefab: {fileID: 3621047873860463696, guid: fb3b9b0b33d48c64c8c11e01dbe71caa, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.62
+    allowColorOverride: 1
+  - eventType: 55
+    prefab: {fileID: 6703250321131892297, guid: 2b987d41506d172419fa18578f6ac380, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.2
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.62
+    allowColorOverride: 1
+  - eventType: 56
+    prefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.1
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.68
+    allowColorOverride: 1
+  - eventType: 57
+    prefab: {fileID: 8525990746615576120, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.9
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.7
+    allowColorOverride: 1
+  - eventType: 58
+    prefab: {fileID: 7305185502956871417, guid: 85b062a5517cf8345bb6784ffbed4877, type: 3}
+    initialPoolSize: 2
+    defaultLifetime: 1.35
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.7
+    allowColorOverride: 1
+  - eventType: 59
+    prefab: {fileID: 4115455537270748339, guid: 6555300494081614fa6b6a823cca9f64, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.05
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.82
+    allowColorOverride: 1
+  - eventType: 60
+    prefab: {fileID: 3280519133390621005, guid: a71be3e7990efb040a07565c43cbb198, type: 3}
+    initialPoolSize: 3
+    defaultLifetime: 1.25
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.72
+    allowColorOverride: 1
+  - eventType: 61
+    prefab: {fileID: 4115455537270748339, guid: 6555300494081614fa6b6a823cca9f64, type: 3}
+    initialPoolSize: 2
+    defaultLifetime: 1.35
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 1
+    allowColorOverride: 1
+  - eventType: 62
+    prefab: {fileID: 1590415177872986601, guid: acdb90624a404aa438447006f1026065, type: 3}
+    initialPoolSize: 2
+    defaultLifetime: 1.25
+    parentToRequestParent: 0
+    useRequestRotation: 0
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: 0, y: 0, z: 0}
+    scaleMultiplier: 0.7
+    allowColorOverride: 1
+  - eventType: 63
+    prefab: {fileID: 362261158077530393, guid: 20fda529c996a334da7fd65b48ea40df, type: 3}
+    initialPoolSize: 4
+    defaultLifetime: 0.95
+    parentToRequestParent: 0
+    useRequestRotation: 1
+    useRequestScale: 1
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffsetEuler: {x: -90, y: 0, z: 0}
+    scaleMultiplier: 0.82
+    allowColorOverride: 1
+  logDuplicateDefinitions: 1

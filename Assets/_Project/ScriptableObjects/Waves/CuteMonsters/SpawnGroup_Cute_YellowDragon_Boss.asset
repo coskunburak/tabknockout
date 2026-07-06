@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf944abd76904ed9aec37b5ddc69402, type: 3}
+  m_Name: SpawnGroup_Cute_YellowDragon_Boss
+  m_EditorClassIdentifier: TapKnockout.Survivor::TapKnockout.Survivor.SpawnGroupConfig
+  groupId: cute_yellow_dragon_boss_group
+  enemyConfig: {fileID: 11400000, guid: ee1d2f55658904d0997c457aed58a5bb, type: 2}
+  enemyPrefab: {fileID: 2680244886952107862, guid: 24f6d98f023c8414c92793cf03d56c01, type: 3}
+  elite: 1
+  weight: 1
+  minCount: 1
+  maxCount: 1
+  spawnBurstCount: 1
+  budgetCost: 18

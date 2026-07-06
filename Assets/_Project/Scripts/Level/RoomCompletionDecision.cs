@@ -61,7 +61,21 @@ namespace TapKnockout.Level
                 return roomConfig.RewardType;
             }
 
-            return roomConfig.IsBossRoom ? RoomRewardType.BossClear : RoomRewardType.None;
+            switch (roomConfig.RoomType)
+            {
+                case RoomType.AbilityReward:
+                    return RoomRewardType.Ability;
+                case RoomType.Heal:
+                    return RoomRewardType.Heal;
+                case RoomType.Shop:
+                    return RoomRewardType.Shop;
+                case RoomType.Reward:
+                    return RoomRewardType.Currency;
+                case RoomType.Boss:
+                    return RoomRewardType.BossClear;
+                default:
+                    return roomConfig.IsBossRoom ? RoomRewardType.BossClear : RoomRewardType.None;
+            }
         }
     }
 }

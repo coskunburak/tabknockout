@@ -1,0 +1,19 @@
+{
+  "name": "TapKnockout.Visuals",
+  "rootNamespace": "TapKnockout.Visuals",
+  "references": [
+    "TapKnockout.Combat",
+    "TapKnockout.Input",
+    "TapKnockout.Player",
+    "UnityEngine.UI"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

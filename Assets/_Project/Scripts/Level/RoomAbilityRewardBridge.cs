@@ -16,6 +16,8 @@ namespace TapKnockout.Level
         [SerializeField] private bool pauseGameWhileSelecting = true;
         [Tooltip("Legacy bridge. Keep disabled when ChapterRoomRewardFlowController is present.")]
         [SerializeField] private bool generateOfferWhenRoomCompletes;
+        [Tooltip("Prevents the legacy bridge from competing with the chapter reward flow on the same room root.")]
+        [SerializeField] private bool disableWhenChapterRewardFlowControllerExists = true;
 
         [Header("Debug")]
         [SerializeField] private bool logDebug;
@@ -29,10 +31,21 @@ namespace TapKnockout.Level
         private void Reset()
         {
             roomManager = GetComponent<RoomManager>();
+            DisableForChapterRewardFlowControllerIfNeeded();
+        }
+
+        private void Awake()
+        {
+            DisableForChapterRewardFlowControllerIfNeeded();
         }
 
         private void OnEnable()
         {
+            if (DisableForChapterRewardFlowControllerIfNeeded())
+            {
+                return;
+            }
+
             Subscribe();
             ConfigurePanel();
         }
@@ -146,6 +159,30 @@ namespace TapKnockout.Level
 
             panelView.SetAbilitySelectionController(abilitySelectionController);
             panelView.SetPauseGameWhileOpen(!pauseGameWhileSelecting);
+        }
+
+        private bool ShouldDisableForChapterRewardFlowController()
+        {
+            return disableWhenChapterRewardFlowControllerExists
+                && TryGetComponent<ChapterRoomRewardFlowController>(out var rewardFlowController)
+                && rewardFlowController != null
+                && rewardFlowController.enabled;
+        }
+
+        private bool DisableForChapterRewardFlowControllerIfNeeded()
+        {
+            if (!ShouldDisableForChapterRewardFlowController())
+            {
+                return false;
+            }
+
+            if (logDebug)
+            {
+                Debug.Log($"{nameof(RoomAbilityRewardBridge)} on {name} disabled because {nameof(ChapterRoomRewardFlowController)} is handling chapter rewards.", this);
+            }
+
+            enabled = false;
+            return true;
         }
 
         private void HandleRoomCompleted(RoomCompletedEventArgs eventArgs)
