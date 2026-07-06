@@ -30,10 +30,10 @@ namespace TapKnockout.Editor
         private const string PlayerPrefabPath = "Assets/_Project/Prefabs/Player/Player.prefab";
         private const string ArcBlastAbilityId = "skill_arc_blast";
         private const string GroundSlamAbilityId = "skill_ground_slam";
-        private static readonly Vector3 SurvivorCameraOffset = new Vector3(0f, 32f, -6f);
-        private static readonly Vector3 SurvivorCameraLookAtOffset = new Vector3(0f, 0.35f, 0f);
-        private const float SurvivorCameraOrthographicSize = 14f;
-        private const float SurvivorCameraFieldOfView = 38f;
+        private static readonly Vector3 SurvivorCameraOffset = new Vector3(0f, 14f, -12f);
+        private static readonly Vector3 SurvivorCameraLookAtOffset = new Vector3(0f, 0.6f, 0f);
+        private const float SurvivorCameraOrthographicSize = 11.5f;
+        private const float SurvivorCameraFieldOfView = 40f;
         private const float SurvivorCameraNearClip = 0.1f;
         private const float SurvivorCameraFarClip = 220f;
         private const float SurvivorAimMinDirectionDistance = 0.35f;

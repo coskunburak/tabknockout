@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: TapKnockout.Survivor::TapKnockout.Survivor.SpawnGroupConfig
   groupId: cute_green_demon_group
   enemyConfig: {fileID: 11400000, guid: 343f6c79d0c59497f9cd9e27540e7839, type: 2}
-  enemyPrefab: {fileID: 8547916412023053555, guid: 3204a32ee1d7542c6809649027b95bc6, type: 3}
+  enemyPrefab: {fileID: 3753429165916156335, guid: 2faf504e4abf44a8fa816ebdde3eda38, type: 3}
   elite: 0
   weight: 1.1
   minCount: 1

@@ -12,10 +12,10 @@ namespace TapKnockout.Camera
         [SerializeField] private CameraBounds cameraBounds;
 
         [Header("Follow")]
-        [SerializeField] private Vector3 offset = new Vector3(0f, 32f, -6f);
-        [SerializeField] private Vector3 lookAtOffset = new Vector3(0f, 0.35f, 0f);
-        [SerializeField] private bool snapFollowToTarget = true;
-        [SerializeField, Min(0f)] private float followSharpness;
+        [SerializeField] private Vector3 offset = new Vector3(0f, 14f, -12f);
+        [SerializeField] private Vector3 lookAtOffset = new Vector3(0f, 0.6f, 0f);
+        [SerializeField] private bool snapFollowToTarget;
+        [SerializeField, Min(0f)] private float followSharpness = 14f;
         [SerializeField, Min(0f)] private float snapDistance = 0.08f;
         [SerializeField] private bool snapOnEnable = true;
 
@@ -26,8 +26,8 @@ namespace TapKnockout.Camera
 
         [Header("Projection")]
         [SerializeField] private bool useOrthographic = true;
-        [SerializeField, Range(30f, 70f)] private float fieldOfView = 38f;
-        [SerializeField, Min(1f)] private float orthographicSize = 14f;
+        [SerializeField, Range(30f, 70f)] private float fieldOfView = 40f;
+        [SerializeField, Min(1f)] private float orthographicSize = 11.5f;
         [SerializeField, Min(0.01f)] private float nearClipPlane = 0.1f;
         [SerializeField, Min(1f)] private float farClipPlane = 220f;
 
@@ -161,12 +161,12 @@ namespace TapKnockout.Camera
                 target = followTarget;
             }
 
-            followSharpness = 0f;
+            followSharpness = 14f;
             snapDistance = 0.08f;
-            snapFollowToTarget = true;
+            snapFollowToTarget = false;
             lockRotationToOffset = true;
-            SetComposition(new Vector3(0f, 32f, -6f), new Vector3(0f, 0.35f, 0f), false);
-            ConfigureProjection(true, 14f, 38f, 0.1f, 220f);
+            SetComposition(new Vector3(0f, 14f, -12f), new Vector3(0f, 0.6f, 0f), false);
+            ConfigureProjection(true, 11.5f, 40f, 0.1f, 220f);
 
             if (snap)
             {

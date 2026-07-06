@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TapKnockout.Ability;
 using TapKnockout.Combat;
 using TapKnockout.Player;
@@ -406,14 +407,25 @@ namespace TapKnockout.Feedback
                 return true;
             }
 
-            if (!TryResolveFallbackEvent(request.EventType, out var fallbackEventType) || fallbackEventType == request.EventType)
+            var originalEventType = request.EventType;
+            var fallbackCandidates = ResolveFallbackCandidates(originalEventType);
+            for (var i = 0; i < fallbackCandidates.Count; i++)
             {
-                return false;
+                var fallbackEventType = fallbackCandidates[i];
+                if (fallbackEventType == originalEventType)
+                {
+                    continue;
+                }
+
+                request.EventType = fallbackEventType;
+                OnVFXRequested?.Invoke(request);
+                if (vfxService.TrySpawn(request))
+                {
+                    return true;
+                }
             }
 
-            request.EventType = fallbackEventType;
-            OnVFXRequested?.Invoke(request);
-            return vfxService.TrySpawn(request);
+            return false;
         }
 
         private void ResolveReferences()
@@ -505,48 +517,116 @@ namespace TapKnockout.Feedback
                 : Quaternion.identity;
         }
 
-        private static bool TryResolveFallbackEvent(VFXEventType eventType, out VFXEventType fallbackEventType)
+        private static IReadOnlyList<VFXEventType> ResolveFallbackCandidates(VFXEventType eventType)
         {
-            fallbackEventType = eventType switch
+            return eventType switch
             {
-                VFXEventType.AbilityAttackBuff => VFXEventType.AbilitySelected,
-                VFXEventType.AbilityAttackSpeedBuff => VFXEventType.AbilitySelected,
-                VFXEventType.AbilityDefenseBuff => VFXEventType.AbilitySelected,
-                VFXEventType.AbilityMoveSpeedBuff => VFXEventType.AbilitySelected,
-                VFXEventType.AbilityHealthBuff => VFXEventType.Heal,
-                VFXEventType.AbilityDashBuff => VFXEventType.DashImpact,
-                VFXEventType.AbilityDashShockwave => VFXEventType.DashImpact,
-                VFXEventType.AbilityDashPhase => VFXEventType.GenericBurst,
-                VFXEventType.AbilityDashStagger => VFXEventType.ProjectileHit,
-                VFXEventType.AbilityProjectileBuff => VFXEventType.ProjectileHit,
-                VFXEventType.AbilityProjectileSplit => VFXEventType.ProjectileHit,
-                VFXEventType.AbilityProjectilePierce => VFXEventType.ProjectileHit,
-                VFXEventType.AbilityProjectileRicochet => VFXEventType.ProjectileHit,
-                VFXEventType.AbilityProjectileHoming => VFXEventType.ProjectileHit,
-                VFXEventType.AbilityProjectileSize => VFXEventType.ProjectileHit,
-                VFXEventType.AbilityFireProc => VFXEventType.GenericBurst,
-                VFXEventType.AbilityPoisonProc => VFXEventType.GenericBurst,
-                VFXEventType.AbilityIceProc => VFXEventType.ProjectileHit,
-                VFXEventType.AbilityLightningProc => VFXEventType.DashImpact,
-                VFXEventType.AbilityShield => VFXEventType.AbilitySelected,
-                VFXEventType.AbilitySoulHeal => VFXEventType.Heal,
-                VFXEventType.AbilityBossBreaker => VFXEventType.BossHit,
-                VFXEventType.AbilityLowHealthSurge => VFXEventType.GenericBurst,
-                VFXEventType.AbilityRewardLuck => VFXEventType.RoomClear,
-                VFXEventType.AbilityPickupFrenzy => VFXEventType.Pickup,
-                VFXEventType.AbilityOrbital => VFXEventType.GenericBurst,
-                VFXEventType.AbilityDrone => VFXEventType.GenericBurst,
-                VFXEventType.AbilityBladeStrike => VFXEventType.ProjectileHit,
-                VFXEventType.AbilityMeteor => VFXEventType.BossHit,
-                VFXEventType.AbilityEnergyBeam => VFXEventType.GenericBurst,
-                VFXEventType.AbilityEnergyRing => VFXEventType.BossWarning,
-                VFXEventType.AbilityRevive => VFXEventType.Heal,
-                VFXEventType.AbilityInvulnerability => VFXEventType.AbilitySelected,
-                VFXEventType.AbilityGenericUpgrade => VFXEventType.GenericBurst,
-                _ => eventType
+                VFXEventType.AbilityAttackBuff => SelectionFallbacks,
+                VFXEventType.AbilityAttackSpeedBuff => SelectionFallbacks,
+                VFXEventType.AbilityDefenseBuff => SelectionFallbacks,
+                VFXEventType.AbilityMoveSpeedBuff => SelectionFallbacks,
+                VFXEventType.AbilityGenericUpgrade => SelectionFallbacks,
+                VFXEventType.AbilityHealthBuff => HealFallbacks,
+                VFXEventType.AbilitySoulHeal => HealFallbacks,
+                VFXEventType.AbilityRevive => HealFallbacks,
+                VFXEventType.AbilityDashBuff => DashFallbacks,
+                VFXEventType.AbilityDashShockwave => DashFallbacks,
+                VFXEventType.AbilityDashPhase => DashFallbacks,
+                VFXEventType.AbilityDashStagger => DashFallbacks,
+                VFXEventType.AbilityProjectileBuff => ProjectileFallbacks,
+                VFXEventType.AbilityProjectileSplit => ProjectileFallbacks,
+                VFXEventType.AbilityProjectilePierce => ProjectileFallbacks,
+                VFXEventType.AbilityProjectileRicochet => ProjectileFallbacks,
+                VFXEventType.AbilityProjectileHoming => ProjectileFallbacks,
+                VFXEventType.AbilityProjectileSize => ProjectileFallbacks,
+                VFXEventType.AbilityFireProc => ElementalFallbacks,
+                VFXEventType.AbilityPoisonProc => ElementalFallbacks,
+                VFXEventType.AbilityIceProc => ElementalFallbacks,
+                VFXEventType.AbilityLightningProc => ElementalFallbacks,
+                VFXEventType.AbilityShield => ShieldFallbacks,
+                VFXEventType.AbilityBossBreaker => BossFallbacks,
+                VFXEventType.AbilityLowHealthSurge => SelectionFallbacks,
+                VFXEventType.AbilityRewardLuck => RewardFallbacks,
+                VFXEventType.AbilityPickupFrenzy => RewardFallbacks,
+                VFXEventType.AbilityOrbital => ProjectileFallbacks,
+                VFXEventType.AbilityDrone => ProjectileFallbacks,
+                VFXEventType.AbilityBladeStrike => ProjectileFallbacks,
+                VFXEventType.AbilityMeteor => BossFallbacks,
+                VFXEventType.AbilityEnergyBeam => ElementalFallbacks,
+                VFXEventType.AbilityEnergyRing => BossFallbacks,
+                VFXEventType.GenericBurst => GenericFallbacks,
+                _ => System.Array.Empty<VFXEventType>()
             };
-
-            return fallbackEventType != eventType;
         }
+
+        private static readonly VFXEventType[] SelectionFallbacks =
+        {
+            VFXEventType.AbilitySelected,
+            VFXEventType.LevelUpBurst,
+            VFXEventType.GenericBurst,
+            VFXEventType.ProjectileHit
+        };
+
+        private static readonly VFXEventType[] DashFallbacks =
+        {
+            VFXEventType.DashImpact,
+            VFXEventType.DashEnd,
+            VFXEventType.ProjectileHit,
+            VFXEventType.LevelUpBurst
+        };
+
+        private static readonly VFXEventType[] ProjectileFallbacks =
+        {
+            VFXEventType.ProjectileHit,
+            VFXEventType.PrimaryProjectileImpact,
+            VFXEventType.EnemyHit,
+            VFXEventType.LevelUpBurst
+        };
+
+        private static readonly VFXEventType[] ElementalFallbacks =
+        {
+            VFXEventType.ProjectileHit,
+            VFXEventType.EnemyHit,
+            VFXEventType.DashImpact,
+            VFXEventType.LevelUpBurst
+        };
+
+        private static readonly VFXEventType[] HealFallbacks =
+        {
+            VFXEventType.Heal,
+            VFXEventType.XPOrbCollect,
+            VFXEventType.LevelUpBurst,
+            VFXEventType.AbilitySelected
+        };
+
+        private static readonly VFXEventType[] ShieldFallbacks =
+        {
+            VFXEventType.AbilitySelected,
+            VFXEventType.DashImpact,
+            VFXEventType.LevelUpBurst
+        };
+
+        private static readonly VFXEventType[] BossFallbacks =
+        {
+            VFXEventType.BossHit,
+            VFXEventType.BossWarning,
+            VFXEventType.ProjectileHit,
+            VFXEventType.LevelUpBurst
+        };
+
+        private static readonly VFXEventType[] RewardFallbacks =
+        {
+            VFXEventType.RoomClear,
+            VFXEventType.Pickup,
+            VFXEventType.XPOrbCollect,
+            VFXEventType.LevelUpBurst
+        };
+
+        private static readonly VFXEventType[] GenericFallbacks =
+        {
+            VFXEventType.LevelUpBurst,
+            VFXEventType.ProjectileHit,
+            VFXEventType.DashImpact
+        };
     }
 }

@@ -8,6 +8,7 @@
     "TapKnockout.Input",
     "TapKnockout.Pickups",
     "TapKnockout.Player",
+    "TapKnockout.Projectile",
     "TapKnockout.Survivor"
   ],
   "includePlatforms": [

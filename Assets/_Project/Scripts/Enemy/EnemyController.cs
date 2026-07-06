@@ -213,6 +213,15 @@ namespace TapKnockout.Enemy
             {
                 attackController.enabled = false;
             }
+
+            var distinctAttackControllers = GetComponentsInChildren<EnemyDistinctAttackController>(true);
+            for (var i = 0; i < distinctAttackControllers.Length; i++)
+            {
+                if (distinctAttackControllers[i] != null)
+                {
+                    distinctAttackControllers[i].enabled = false;
+                }
+            }
         }
     }
 }

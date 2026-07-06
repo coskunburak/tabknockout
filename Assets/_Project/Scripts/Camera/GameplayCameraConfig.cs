@@ -6,13 +6,19 @@ namespace TapKnockout.Camera
     public sealed class GameplayCameraConfig : ScriptableObject
     {
         [Header("Composition")]
-        [SerializeField, Range(35f, 75f)] private float pitchDegrees = 58f;
+        [SerializeField, Range(35f, 75f)] private float pitchDegrees = 52f;
         [SerializeField, Range(-35f, 35f)] private float yawDegrees;
-        [SerializeField, Min(1f)] private float cameraDistance = 24f;
+        [SerializeField, Min(1f)] private float cameraDistance = 18f;
         [SerializeField] private Vector3 followOffset = Vector3.zero;
-        [SerializeField] private Vector3 lookAtOffset = new Vector3(0f, 0.85f, 0f);
-        [SerializeField] private Vector2 playerViewportAnchor = new Vector2(0.5f, 0.44f);
-        [SerializeField, Min(0f)] private float forwardLookAhead = 0.25f;
+        [SerializeField] private Vector3 lookAtOffset = new Vector3(0f, 0.65f, 0f);
+        [SerializeField] private Vector2 playerViewportAnchor = new Vector2(0.5f, 0.49f);
+        [SerializeField, Min(0f)] private float forwardLookAhead = 0.65f;
+        [SerializeField] private bool enableMovementLookAhead = true;
+        [SerializeField, Min(0f)] private float movementLookAheadStrength = 0.9f;
+        [SerializeField, Min(0f)] private float maxMovementLookAhead = 1.4f;
+        [SerializeField] private bool enableDashLookAhead = true;
+        [SerializeField, Min(0f)] private float dashLookAheadMultiplier = 1.45f;
+        [SerializeField, Range(0.03f, 0.4f)] private float dashLookAheadDuration = 0.14f;
 
         [Header("Motion")]
         [SerializeField, Min(0.01f)] private float positionSmoothTime = 0.08f;
@@ -22,13 +28,13 @@ namespace TapKnockout.Camera
         [Header("Projection")]
         [SerializeField] private bool useOrthographic = true;
         [SerializeField, Range(30f, 70f)] private float fieldOfView = 42f;
-        [SerializeField, Min(1f)] private float orthographicSize = 16.5f;
+        [SerializeField, Min(1f)] private float orthographicSize = 11.25f;
         [SerializeField, Min(0.01f)] private float nearClipPlane = 0.1f;
-        [SerializeField, Min(1f)] private float farClipPlane = 180f;
+        [SerializeField, Min(1f)] private float farClipPlane = 220f;
 
-        [Header("Portrait Framing")]
-        [SerializeField, Range(0.4f, 1.2f)] private float minimumSupportedAspect = 0.46f;
-        [SerializeField, Range(0.4f, 1.2f)] private float maximumSupportedAspect = 0.75f;
+        [Header("Desktop Framing")]
+        [SerializeField, Range(0.4f, 3f)] private float minimumSupportedAspect = 1.33f;
+        [SerializeField, Range(0.4f, 3f)] private float maximumSupportedAspect = 2.4f;
 
         public float PitchDegrees => pitchDegrees;
         public float YawDegrees => yawDegrees;
@@ -37,6 +43,12 @@ namespace TapKnockout.Camera
         public Vector3 LookAtOffset => lookAtOffset;
         public Vector2 PlayerViewportAnchor => playerViewportAnchor;
         public float ForwardLookAhead => forwardLookAhead;
+        public bool EnableMovementLookAhead => enableMovementLookAhead;
+        public float MovementLookAheadStrength => movementLookAheadStrength;
+        public float MaxMovementLookAhead => maxMovementLookAhead;
+        public bool EnableDashLookAhead => enableDashLookAhead;
+        public float DashLookAheadMultiplier => dashLookAheadMultiplier;
+        public float DashLookAheadDuration => dashLookAheadDuration;
         public float PositionSmoothTime => positionSmoothTime;
         public float RotationSharpness => rotationSharpness;
         public bool SnapOnEnable => snapOnEnable;
@@ -55,8 +67,12 @@ namespace TapKnockout.Camera
             cameraDistance = Mathf.Max(1f, cameraDistance);
             playerViewportAnchor = new Vector2(
                 Mathf.Clamp(playerViewportAnchor.x, 0.35f, 0.65f),
-                Mathf.Clamp(playerViewportAnchor.y, 0.25f, 0.55f));
+                Mathf.Clamp(playerViewportAnchor.y, 0.35f, 0.6f));
             forwardLookAhead = Mathf.Max(0f, forwardLookAhead);
+            movementLookAheadStrength = Mathf.Max(0f, movementLookAheadStrength);
+            maxMovementLookAhead = Mathf.Max(0f, maxMovementLookAhead);
+            dashLookAheadMultiplier = Mathf.Max(0f, dashLookAheadMultiplier);
+            dashLookAheadDuration = Mathf.Clamp(dashLookAheadDuration, 0.03f, 0.4f);
             positionSmoothTime = Mathf.Max(0.01f, positionSmoothTime);
             rotationSharpness = Mathf.Max(0.01f, rotationSharpness);
             fieldOfView = Mathf.Clamp(fieldOfView, 30f, 70f);
@@ -64,7 +80,7 @@ namespace TapKnockout.Camera
             nearClipPlane = Mathf.Max(0.01f, nearClipPlane);
             farClipPlane = Mathf.Max(nearClipPlane + 1f, farClipPlane);
             minimumSupportedAspect = Mathf.Clamp(minimumSupportedAspect, 0.4f, maximumSupportedAspect);
-            maximumSupportedAspect = Mathf.Clamp(maximumSupportedAspect, minimumSupportedAspect, 1.2f);
+            maximumSupportedAspect = Mathf.Clamp(maximumSupportedAspect, minimumSupportedAspect, 3f);
         }
     }
 }

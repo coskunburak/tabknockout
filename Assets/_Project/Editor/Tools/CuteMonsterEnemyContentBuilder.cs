@@ -38,6 +38,9 @@ namespace TapKnockout.Editor.Tools
         private const string RunConfigPath = "Assets/_Project/ScriptableObjects/Runs/RunConfig_DesktopSurvivorPrototype.asset";
         private const string ForestRunConfigPath = "Assets/_Project/ScriptableObjects/Runs/RunConfig_ForestSurvivorArena.asset";
         private const string ExistingGeneratedGreenDemonPrefabPath = "Assets/_Project/Prefabs/Enemies/Generated/PF_Enemy_BasicMelee_GreenDemon_Generated.prefab";
+        private const string CombatHurtboxName = "CombatHurtbox";
+        private const float CombatHurtboxVerticalPadding = 0.24f;
+        private const float CombatHurtboxHorizontalPadding = 0.12f;
 
         private static readonly string[] ControllerParameters =
         {
@@ -154,6 +157,7 @@ namespace TapKnockout.Editor.Tools
                 ColliderRadius = 0.35f,
                 ColliderHeight = 0.9f,
                 ColliderCenterY = 0.48f,
+                CombatHurtboxBodyTopPadding = 0.75f,
                 SelectedFirstPass = true
             },
             new MonsterSpec
@@ -188,6 +192,7 @@ namespace TapKnockout.Editor.Tools
                 ColliderRadius = 0.36f,
                 ColliderHeight = 0.95f,
                 ColliderCenterY = 0.5f,
+                CombatHurtboxBodyTopPadding = 0.75f,
                 SelectedFirstPass = true
             },
             new MonsterSpec
@@ -360,6 +365,7 @@ namespace TapKnockout.Editor.Tools
                 ColliderRadius = 0.42f,
                 ColliderHeight = 1.45f,
                 ColliderCenterY = 0.75f,
+                CombatHurtboxBodyTopPadding = 0.85f,
                 SelectedFirstPass = true
             },
             new MonsterSpec
@@ -395,6 +401,7 @@ namespace TapKnockout.Editor.Tools
                 ColliderRadius = 0.62f,
                 ColliderHeight = 2.05f,
                 ColliderCenterY = 1.02f,
+                CombatHurtboxBodyTopPadding = 0.75f,
                 RequiresProjectileSpawnPoint = true,
                 AddRangedShooterController = true,
                 SelectedFirstPass = true,
@@ -432,6 +439,7 @@ namespace TapKnockout.Editor.Tools
                 ColliderRadius = 1.05f,
                 ColliderHeight = 2.75f,
                 ColliderCenterY = 1.38f,
+                CombatHurtboxBodyTopPadding = 0.85f,
                 Boss = true,
                 SelectedFirstPass = true
             },
@@ -466,6 +474,56 @@ namespace TapKnockout.Editor.Tools
         public static void BuildCuteMonsterEnemyContentBatch()
         {
             BuildCuteMonsterEnemyContent(wirePrototypeRun: true, logToConsole: true);
+        }
+
+        [MenuItem("Tools/Tap Knockout/Enemies/Repair Cute Monster Animator Clip References")]
+        public static void RepairCuteMonsterAnimatorClipReferencesMenu()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                EditorUtility.DisplayDialog("Cute Monster Content", "Exit Play Mode before repairing cute monster animator clips.", "OK");
+                return;
+            }
+
+            var repairedCount = RepairCuteMonsterAnimatorClipReferences(logToConsole: true);
+            EditorUtility.DisplayDialog(
+                "Cute Monster Content",
+                $"Animator controllers repaired: {repairedCount}",
+                "OK");
+        }
+
+        public static void RepairCuteMonsterAnimatorClipReferencesBatch()
+        {
+            RepairCuteMonsterAnimatorClipReferences(logToConsole: true);
+        }
+
+        public static int RepairCuteMonsterAnimatorClipReferences(bool logToConsole = false)
+        {
+            var repairedCount = 0;
+            foreach (var spec in MonsterSpecs)
+            {
+                if (!spec.SelectedFirstPass || string.IsNullOrEmpty(spec.ControllerPath))
+                {
+                    continue;
+                }
+
+                if (RepairAnimatorControllerClipReferences(spec))
+                {
+                    repairedCount++;
+                }
+            }
+
+            if (repairedCount > 0)
+            {
+                AssetDatabase.SaveAssets();
+            }
+
+            if (logToConsole)
+            {
+                Debug.Log($"{nameof(CuteMonsterEnemyContentBuilder)} repaired {repairedCount} cute monster animator controller clip reference set(s).");
+            }
+
+            return repairedCount;
         }
 
         public static BuildSummary BuildCuteMonsterEnemyContent(bool wirePrototypeRun = true, bool logToConsole = false)
@@ -740,6 +798,58 @@ namespace TapKnockout.Editor.Tools
             return controller;
         }
 
+        private static bool RepairAnimatorControllerClipReferences(MonsterSpec spec)
+        {
+            var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(spec.ControllerPath);
+            if (controller == null)
+            {
+                return false;
+            }
+
+            var clips = FindAnimationClips(spec);
+            if (clips.Count == 0)
+            {
+                return false;
+            }
+
+            var idle = SelectClip(clips, "idle", "default") ?? SelectClip(clips, "flying", "fly", "hover") ?? FirstClip(clips);
+            var move = SelectClip(clips, "walk", "run", "move", "flying", "fly") ?? idle;
+            var attack = SelectClip(clips, "attack", "bite", "slam") ?? move ?? idle;
+            var hit = SelectClip(clips, "hitrecieve", "hitreceive", "recievehit", "receivehit", "hit", "damage") ?? attack ?? idle;
+            var death = SelectClip(clips, "death", "die", "dead") ?? hit ?? idle;
+
+            var changed = false;
+            changed |= AssignStateMotion(controller, CharacterAnimationDriver.IdleState, idle);
+            changed |= AssignStateMotion(controller, CharacterAnimationDriver.MoveState, move);
+            changed |= AssignStateMotion(controller, CharacterAnimationDriver.AttackState, attack);
+            changed |= AssignStateMotion(controller, CharacterAnimationDriver.HitState, hit);
+            changed |= AssignStateMotion(controller, CharacterAnimationDriver.DeathState, death);
+
+            if (changed)
+            {
+                EditorUtility.SetDirty(controller);
+            }
+
+            return changed;
+        }
+
+        private static bool AssignStateMotion(AnimatorController controller, string stateName, Motion motion)
+        {
+            if (motion == null)
+            {
+                return false;
+            }
+
+            var state = FindAnimatorState(controller, stateName);
+            if (state == null || state.motion == motion)
+            {
+                return false;
+            }
+
+            state.motion = motion;
+            return true;
+        }
+
         private static GameObject CreateOrUpdateEnemyPrefab(
             MonsterSpec spec,
             GameObject visualAsset,
@@ -779,6 +889,7 @@ namespace TapKnockout.Editor.Tools
                 visualInstance.transform.localScale = Vector3.one * Mathf.Max(0.01f, spec.VisualScale);
                 RemoveRuntimeComponentsFromVisual(visualInstance);
                 var animator = EnsureAnimator(visualInstance, spec, controller);
+                EnsureCombatHurtbox(root.transform, visualRoot, spec);
 
                 EnsureSocket(root.transform, "AttackOrigin", new Vector3(0f, spec.ColliderCenterY + 0.1f, Mathf.Max(0.5f, spec.ColliderRadius + 0.25f)));
                 EnsureSocket(root.transform, "HitReactionRoot", new Vector3(0f, Mathf.Max(0.65f, spec.ColliderCenterY), 0f));
@@ -801,6 +912,7 @@ namespace TapKnockout.Editor.Tools
                 EnsureComponent<PooledEnemy>(root);
                 EnsureComponent<HitFlashController>(root);
                 WireBaseEnemyComponents(root, controllerComponent, health, movement, knockback, attack, telegraph, telegraphRoot, config, spec);
+                ApplyEnemyLayer(root);
 
                 if (spec.AddRangedShooterController)
                 {
@@ -1667,6 +1779,11 @@ namespace TapKnockout.Editor.Tools
             SetBool(serializedHealth, "targetableWhenAlive", true);
             SetBool(serializedHealth, "deactivateOnDeath", false);
             SetBool(serializedHealth, "disableCollidersOnDeath", true);
+            SetBool(serializedHealth, "autoConfigureCombatHurtbox", true);
+            SetFloat(serializedHealth, "combatHurtboxVerticalPadding", CombatHurtboxVerticalPadding);
+            SetFloat(serializedHealth, "combatHurtboxHorizontalPadding", CombatHurtboxHorizontalPadding);
+            SetFloat(serializedHealth, "combatHurtboxBodyTopPadding", spec.CombatHurtboxBodyTopPadding);
+            SetFloat(serializedHealth, "minimumCombatHurtboxRadius", spec.MinimumCombatHurtboxRadius);
             SetBool(serializedHealth, "logHits", false);
             SetBool(serializedHealth, "logDeath", false);
             serializedHealth.ApplyModifiedPropertiesWithoutUndo();
@@ -1776,6 +1893,96 @@ namespace TapKnockout.Editor.Tools
             {
                 Object.DestroyImmediate(rigidbodies[i]);
             }
+        }
+
+        private static void EnsureCombatHurtbox(Transform root, Transform visualRoot, MonsterSpec spec)
+        {
+            var hurtbox = EnsureChild(root, CombatHurtboxName);
+            hurtbox.localPosition = Vector3.zero;
+            hurtbox.localRotation = Quaternion.identity;
+            hurtbox.localScale = Vector3.one;
+
+            var collider = EnsureComponent<CapsuleCollider>(hurtbox.gameObject);
+            var bodyBounds = new Bounds(
+                new Vector3(0f, spec.ColliderCenterY, 0f),
+                new Vector3(spec.ColliderRadius * 2f, spec.ColliderHeight, spec.ColliderRadius * 2f));
+            var localBounds = bodyBounds;
+            if (TryCalculateLocalRendererBounds(root, visualRoot, out var rendererBounds))
+            {
+                localBounds.Encapsulate(rendererBounds);
+            }
+
+            var horizontalRadius = Mathf.Max(
+                spec.MinimumCombatHurtboxRadius,
+                Mathf.Max(spec.ColliderRadius, localBounds.extents.x, localBounds.extents.z) + CombatHurtboxHorizontalPadding);
+            var bottom = Mathf.Min(0f, bodyBounds.min.y, localBounds.min.y - CombatHurtboxVerticalPadding * 0.5f);
+            var top = Mathf.Max(
+                bodyBounds.max.y + spec.CombatHurtboxBodyTopPadding,
+                localBounds.max.y + CombatHurtboxVerticalPadding * 0.5f);
+            var height = Mathf.Max(
+                horizontalRadius * 2f,
+                spec.ColliderHeight,
+                localBounds.size.y + CombatHurtboxVerticalPadding,
+                top - bottom);
+            top = Mathf.Max(top, bottom + height);
+
+            collider.isTrigger = true;
+            collider.direction = 1;
+            collider.radius = Mathf.Max(0.1f, horizontalRadius);
+            collider.height = Mathf.Max(collider.radius * 2f, height);
+            collider.center = new Vector3(0f, (bottom + top) * 0.5f, 0f);
+            collider.enabled = true;
+        }
+
+        private static bool TryCalculateLocalRendererBounds(Transform root, Transform visualRoot, out Bounds bounds)
+        {
+            bounds = default;
+            if (root == null || visualRoot == null)
+            {
+                return false;
+            }
+
+            var renderers = visualRoot.GetComponentsInChildren<Renderer>(true);
+            var hasBounds = false;
+            for (var i = 0; i < renderers.Length; i++)
+            {
+                var renderer = renderers[i];
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                var rendererBounds = renderer.bounds;
+                var min = rendererBounds.min;
+                var max = rendererBounds.max;
+                var corners = new[]
+                {
+                    new Vector3(min.x, min.y, min.z),
+                    new Vector3(min.x, min.y, max.z),
+                    new Vector3(min.x, max.y, min.z),
+                    new Vector3(min.x, max.y, max.z),
+                    new Vector3(max.x, min.y, min.z),
+                    new Vector3(max.x, min.y, max.z),
+                    new Vector3(max.x, max.y, min.z),
+                    new Vector3(max.x, max.y, max.z)
+                };
+
+                for (var cornerIndex = 0; cornerIndex < corners.Length; cornerIndex++)
+                {
+                    var localPoint = root.InverseTransformPoint(corners[cornerIndex]);
+                    if (hasBounds)
+                    {
+                        bounds.Encapsulate(localPoint);
+                    }
+                    else
+                    {
+                        bounds = new Bounds(localPoint, Vector3.zero);
+                        hasBounds = true;
+                    }
+                }
+            }
+
+            return hasBounds;
         }
 
         private static void RemoveChildAnimationDrivers(GameObject root)
@@ -2381,6 +2588,8 @@ namespace TapKnockout.Editor.Tools
             public float ColliderRadius = 0.5f;
             public float ColliderHeight = 1.8f;
             public float ColliderCenterY = 0.9f;
+            public float CombatHurtboxBodyTopPadding = 0.6f;
+            public float MinimumCombatHurtboxRadius = 0.42f;
             public bool RequiresProjectileSpawnPoint;
             public bool AddRangedShooterController;
             public bool Boss;

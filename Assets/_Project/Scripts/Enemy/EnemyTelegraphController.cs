@@ -9,6 +9,7 @@ namespace TapKnockout.Enemy
         [SerializeField] private EnemyTelegraphConfig config;
         [SerializeField] private Transform telegraphRoot;
         [SerializeField] private Renderer telegraphRenderer;
+        [SerializeField] private LineRenderer telegraphLineRenderer;
         [SerializeField] private Color windupColor = new Color(1f, 0.35f, 0.12f, 0.75f);
         [SerializeField] private Vector3 minScale = new Vector3(0.35f, 0.02f, 0.35f);
         [SerializeField] private Vector3 maxScale = new Vector3(1.15f, 0.02f, 1.15f);
@@ -29,6 +30,7 @@ namespace TapKnockout.Enemy
         {
             telegraphRoot = transform;
             telegraphRenderer = GetComponentInChildren<Renderer>(true);
+            telegraphLineRenderer = GetComponentInChildren<LineRenderer>(true);
         }
 
         private void Awake()
@@ -36,6 +38,18 @@ namespace TapKnockout.Enemy
             if (telegraphRoot == null)
             {
                 telegraphRoot = transform;
+            }
+
+            if (telegraphLineRenderer == null)
+            {
+                telegraphLineRenderer = telegraphRoot.GetComponentInChildren<LineRenderer>(true);
+            }
+
+            if (telegraphRenderer == null)
+            {
+                telegraphRenderer = telegraphLineRenderer != null
+                    ? telegraphLineRenderer
+                    : telegraphRoot.GetComponentInChildren<Renderer>(true);
             }
 
             SetVisible(false);
@@ -153,6 +167,14 @@ namespace TapKnockout.Enemy
             {
                 telegraphRenderer.material.color = runtimeConfig != null ? runtimeConfig.Color : windupColor;
             }
+
+            if (telegraphLineRenderer != null)
+            {
+                var color = runtimeConfig != null ? runtimeConfig.Color : windupColor;
+                telegraphLineRenderer.startColor = color;
+                telegraphLineRenderer.endColor = color;
+                ApplyLineRendererShape(runtimeTelegraphType);
+            }
         }
 
         private void SetVisible(bool visible)
@@ -232,6 +254,65 @@ namespace TapKnockout.Enemy
         public static bool IsValidTelegraphShape(float radius, float width, float length, float duration)
         {
             return radius >= 0f && width >= 0f && length >= 0f && duration >= 0f;
+        }
+
+        private void ApplyLineRendererShape(EnemyTelegraphType telegraphType)
+        {
+            switch (telegraphType)
+            {
+                case EnemyTelegraphType.Line:
+                case EnemyTelegraphType.ChargePath:
+                    ApplyLineShape();
+                    break;
+                case EnemyTelegraphType.Cone:
+                    ApplyArcShape();
+                    break;
+                default:
+                    ApplyCircleShape();
+                    break;
+            }
+        }
+
+        private void ApplyLineShape()
+        {
+            telegraphLineRenderer.loop = false;
+            telegraphLineRenderer.positionCount = 2;
+            telegraphLineRenderer.useWorldSpace = false;
+            telegraphLineRenderer.widthMultiplier = 0.12f;
+            telegraphLineRenderer.SetPosition(0, new Vector3(0f, 0f, 0f));
+            telegraphLineRenderer.SetPosition(1, new Vector3(0f, 0f, 1f));
+        }
+
+        private void ApplyArcShape()
+        {
+            const int segmentCount = 24;
+            const float arcDegrees = 130f;
+            telegraphLineRenderer.loop = false;
+            telegraphLineRenderer.positionCount = segmentCount + 1;
+            telegraphLineRenderer.useWorldSpace = false;
+            telegraphLineRenderer.widthMultiplier = 0.09f;
+
+            var start = -arcDegrees * 0.5f;
+            for (var i = 0; i <= segmentCount; i++)
+            {
+                var angle = (start + arcDegrees * (i / (float)segmentCount)) * Mathf.Deg2Rad;
+                telegraphLineRenderer.SetPosition(i, new Vector3(Mathf.Sin(angle) * 0.5f, 0f, Mathf.Cos(angle) * 0.5f));
+            }
+        }
+
+        private void ApplyCircleShape()
+        {
+            const int segmentCount = 48;
+            telegraphLineRenderer.loop = true;
+            telegraphLineRenderer.positionCount = segmentCount;
+            telegraphLineRenderer.useWorldSpace = false;
+            telegraphLineRenderer.widthMultiplier = 0.08f;
+
+            for (var i = 0; i < segmentCount; i++)
+            {
+                var angle = Mathf.PI * 2f * (i / (float)segmentCount);
+                telegraphLineRenderer.SetPosition(i, new Vector3(Mathf.Cos(angle) * 0.5f, 0f, Mathf.Sin(angle) * 0.5f));
+            }
         }
     }
 }

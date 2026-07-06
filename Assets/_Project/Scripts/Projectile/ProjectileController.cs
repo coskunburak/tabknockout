@@ -18,6 +18,7 @@ namespace TapKnockout.Projectile
         [SerializeField, Min(0.1f)] private float ricochetSearchRadius = 7f;
         [SerializeField, Min(0.1f)] private float homingSearchRadius = 10f;
 
+        private const float HardMinimumSweepRadius = 0.18f;
         private static readonly RaycastHit[] HitBuffer = new RaycastHit[64];
         private static readonly Collider[] OverlapBuffer = new Collider[64];
         private static readonly IComparer<RaycastHit> HitDistanceComparer =
@@ -94,14 +95,8 @@ namespace TapKnockout.Projectile
                 return;
             }
 
-            remainingLifetime -= Time.deltaTime;
-            if (remainingLifetime <= 0f)
-            {
-                DisposeProjectile();
-                return;
-            }
-
-            UpdateHoming(Time.deltaTime);
+            var deltaTime = Time.deltaTime;
+            UpdateHoming(deltaTime);
 
             var currentPosition = transform.position;
             if (TryResolveOverlaps(currentPosition))
@@ -114,12 +109,24 @@ namespace TapKnockout.Projectile
                 return;
             }
 
-            previousPosition = currentPosition;
-            hasPreviousPosition = true;
-
             if (cachedRigidbody == null)
             {
-                transform.position += moveDirection * (speed * Time.deltaTime);
+                if (TryAdvanceTransformMotion(currentPosition, deltaTime))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                previousPosition = currentPosition;
+            }
+
+            hasPreviousPosition = true;
+
+            remainingLifetime -= deltaTime;
+            if (remainingLifetime <= 0f)
+            {
+                DisposeProjectile();
             }
         }
 
@@ -137,7 +144,12 @@ namespace TapKnockout.Projectile
             }
 
             var predictedPosition = currentPosition + moveDirection * (speed * Time.fixedDeltaTime);
-            TryResolveSweep(currentPosition, predictedPosition);
+            if (TryResolveSweep(currentPosition, predictedPosition))
+            {
+                return;
+            }
+
+            TryResolveOverlaps(predictedPosition);
         }
 
         public void Initialize(
@@ -186,7 +198,7 @@ namespace TapKnockout.Projectile
                 return;
             }
 
-            TryResolveHit(other);
+            TryResolveHit(other, ResolveClosestPoint(other, transform.position));
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -196,7 +208,7 @@ namespace TapKnockout.Projectile
                 return;
             }
 
-            if (!TryResolveHit(collision.collider))
+            if (!TryResolveHit(collision.collider, ResolveCollisionPoint(collision)))
             {
                 TryResolveWallBounce(collision);
             }
@@ -240,6 +252,11 @@ namespace TapKnockout.Projectile
 
         private bool TryResolveHit(Collider other)
         {
+            return TryResolveHit(other, ResolveClosestPoint(other, transform.position));
+        }
+
+        private bool TryResolveHit(Collider other, Vector3 hitPoint)
+        {
             if (other == null || IsProjectileCollider(other) || IsOwnerCollider(other))
             {
                 return false;
@@ -257,7 +274,7 @@ namespace TapKnockout.Projectile
                 return false;
             }
 
-            var resolvedHitContext = CreateResolvedHitContext(targetObject, other);
+            var resolvedHitContext = CreateResolvedHitContext(targetObject, other, hitPoint);
             CombatHitModifierUtility.ApplySourceModifiers(resolvedHitContext);
 
             damageable.ReceiveHit(resolvedHitContext);
@@ -281,7 +298,7 @@ namespace TapKnockout.Projectile
             return true;
         }
 
-        private HitContext CreateResolvedHitContext(GameObject targetObject, Collider other)
+        private HitContext CreateResolvedHitContext(GameObject targetObject, Collider other, Vector3 hitPoint)
         {
             var sourceContext = hitContext ?? new HitContext(owner, targetObject, 0f);
             return new HitContext(sourceContext.Source, targetObject, sourceContext.DamageAmount, sourceContext.DamageType)
@@ -293,7 +310,7 @@ namespace TapKnockout.Projectile
                 AbilityId = sourceContext.AbilityId,
                 Knockback = sourceContext.Knockback,
                 HitDirection = moveDirection,
-                HitPoint = other != null ? other.ClosestPoint(transform.position) : transform.position
+                HitPoint = hitPoint != Vector3.zero ? hitPoint : ResolveClosestPoint(other, transform.position)
             };
         }
 
@@ -349,7 +366,8 @@ namespace TapKnockout.Projectile
 
             for (var i = 0; i < hitCount; i++)
             {
-                if (TryResolveHit(HitBuffer[i].collider))
+                var hit = HitBuffer[i];
+                if (TryResolveHit(hit.collider, hit.point != Vector3.zero ? hit.point : ResolveClosestPoint(hit.collider, startPosition)))
                 {
                     if (!initialized || redirectedAfterHit)
                     {
@@ -379,7 +397,8 @@ namespace TapKnockout.Projectile
 
             for (var i = 0; i < hitCount; i++)
             {
-                if (TryResolveHit(OverlapBuffer[i]))
+                var candidate = OverlapBuffer[i];
+                if (TryResolveHit(candidate, ResolveClosestPoint(candidate, position)))
                 {
                     if (!initialized || redirectedAfterHit)
                     {
@@ -531,6 +550,34 @@ namespace TapKnockout.Projectile
             return true;
         }
 
+        private Vector3 PredictTransformPosition(Vector3 currentPosition, float deltaTime)
+        {
+            if (speed <= 0f || deltaTime <= 0f)
+            {
+                return currentPosition;
+            }
+
+            return currentPosition + moveDirection * (speed * deltaTime);
+        }
+
+        private bool TryAdvanceTransformMotion(Vector3 currentPosition, float deltaTime)
+        {
+            var targetPosition = PredictTransformPosition(currentPosition, deltaTime);
+            if (TryResolveSweep(currentPosition, targetPosition))
+            {
+                return true;
+            }
+
+            if (TryResolveOverlaps(targetPosition))
+            {
+                return true;
+            }
+
+            transform.position = targetPosition;
+            previousPosition = targetPosition;
+            return false;
+        }
+
         private float ResolveSweepRadius()
         {
             if (sweepRadiusOverride > 0f)
@@ -538,7 +585,7 @@ namespace TapKnockout.Projectile
                 return sweepRadiusOverride;
             }
 
-            var radius = Mathf.Max(0f, minimumSweepRadius);
+            var radius = Mathf.Max(HardMinimumSweepRadius, minimumSweepRadius);
             if (cachedCollider == null)
             {
                 return radius;
@@ -547,6 +594,18 @@ namespace TapKnockout.Projectile
             var extents = cachedCollider.bounds.extents;
             var colliderRadius = Mathf.Min(Mathf.Abs(extents.x), Mathf.Abs(extents.z));
             return Mathf.Max(radius, colliderRadius);
+        }
+
+        private static Vector3 ResolveClosestPoint(Collider targetCollider, Vector3 queryPosition)
+        {
+            return targetCollider != null ? targetCollider.ClosestPoint(queryPosition) : queryPosition;
+        }
+
+        private static Vector3 ResolveCollisionPoint(Collision collision)
+        {
+            return collision != null && collision.contactCount > 0
+                ? collision.GetContact(0).point
+                : Vector3.zero;
         }
 
         private int ResolveHitLayerMask()

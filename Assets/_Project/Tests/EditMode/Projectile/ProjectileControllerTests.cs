@@ -127,6 +127,118 @@ namespace TapKnockout.Projectile.Tests
         }
 
         [Test]
+        public void Update_TransformProjectilePredictsCurrentFrameMovementBeforeMoving()
+        {
+            var projectile = new GameObject("Projectile");
+            var target = new GameObject("Target");
+
+            try
+            {
+                projectile.transform.position = Vector3.zero;
+                target.transform.position = new Vector3(0f, 0f, 5f);
+
+                var projectileCollider = projectile.AddComponent<SphereCollider>();
+                projectileCollider.radius = 0.15f;
+                var controller = projectile.AddComponent<ProjectileController>();
+                SetDeactivateInsteadOfDestroy(controller);
+
+                target.AddComponent<SphereCollider>().radius = 0.5f;
+                var damageable = target.AddComponent<TestDamageable>();
+
+                Physics.SyncTransforms();
+
+                controller.Initialize(new HitContext(null, null, 7f), Vector3.forward, 360f, 3f, null);
+                InvokeAdvanceTransformMotion(controller, projectile.transform.position, 1f / 60f);
+
+                Assert.That(damageable.HitCount, Is.EqualTo(1));
+                Assert.That(projectile.activeSelf, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(target);
+                Object.DestroyImmediate(projectile);
+            }
+        }
+
+        [Test]
+        public void Update_TransformProjectileUsesSafeSweepRadiusForNarrowProjectiles()
+        {
+            var projectile = new GameObject("NarrowProjectile");
+            var target = new GameObject("OffsetTarget");
+
+            try
+            {
+                projectile.transform.position = Vector3.zero;
+                target.transform.position = new Vector3(0.16f, 0f, 5f);
+
+                var projectileCollider = projectile.AddComponent<SphereCollider>();
+                projectileCollider.radius = 0.02f;
+                var controller = projectile.AddComponent<ProjectileController>();
+                SetDeactivateInsteadOfDestroy(controller);
+
+                target.AddComponent<SphereCollider>().radius = 0.05f;
+                var damageable = target.AddComponent<TestDamageable>();
+
+                Physics.SyncTransforms();
+
+                controller.Initialize(new HitContext(null, null, 7f), Vector3.forward, 360f, 3f, null);
+                InvokeAdvanceTransformMotion(controller, projectile.transform.position, 1f / 60f);
+
+                Assert.That(damageable.HitCount, Is.EqualTo(1));
+                Assert.That(projectile.activeSelf, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(target);
+                Object.DestroyImmediate(projectile);
+            }
+        }
+
+        [Test]
+        public void EnemyProjectile_UpdatePredictsCurrentFrameMovementBeforeMoving()
+        {
+            var projectile = new GameObject("EnemyProjectile");
+            var owner = new GameObject("EnemyOwner");
+            var target = new GameObject("Target");
+
+            try
+            {
+                projectile.transform.position = Vector3.zero;
+                target.transform.position = new Vector3(0f, 0f, 5f);
+
+                var projectileCollider = projectile.AddComponent<SphereCollider>();
+                projectileCollider.radius = 0.15f;
+                var controller = projectile.AddComponent<EnemyProjectileController>();
+                SetDeactivateInsteadOfDestroy(controller);
+
+                target.AddComponent<SphereCollider>().radius = 0.5f;
+                var damageable = target.AddComponent<TestDamageable>();
+
+                Physics.SyncTransforms();
+
+                var request = new EnemyProjectileRequest(
+                    owner,
+                    target,
+                    projectile.transform.position,
+                    Vector3.forward,
+                    7f,
+                    360f,
+                    3f);
+                controller.Initialize(request);
+                InvokeAdvanceTransformMotion(controller, projectile.transform.position, 1f / 60f);
+
+                Assert.That(damageable.HitCount, Is.EqualTo(1));
+                Assert.That(projectile.activeSelf, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(target);
+                Object.DestroyImmediate(owner);
+                Object.DestroyImmediate(projectile);
+            }
+        }
+
+        [Test]
         public void Update_PiercingProjectileHitsMultipleTargetsInSameSweep()
         {
             var projectile = new GameObject("Projectile");
@@ -204,18 +316,25 @@ namespace TapKnockout.Projectile.Tests
             }
         }
 
-        private static void SetDeactivateInsteadOfDestroy(ProjectileController controller)
+        private static void SetDeactivateInsteadOfDestroy(MonoBehaviour controller)
         {
-            typeof(ProjectileController)
+            controller.GetType()
                 .GetField("deactivateInsteadOfDestroy", BindingFlags.Instance | BindingFlags.NonPublic)
                 ?.SetValue(controller, true);
         }
 
-        private static void InvokeUpdate(ProjectileController controller)
+        private static void InvokeUpdate(MonoBehaviour controller)
         {
-            typeof(ProjectileController)
+            controller.GetType()
                 .GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic)
                 ?.Invoke(controller, null);
+        }
+
+        private static void InvokeAdvanceTransformMotion(MonoBehaviour controller, Vector3 currentPosition, float deltaTime)
+        {
+            controller.GetType()
+                .GetMethod("TryAdvanceTransformMotion", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.Invoke(controller, new object[] { currentPosition, deltaTime });
         }
 
         private static void InvokeFixedUpdate(ProjectileController controller)

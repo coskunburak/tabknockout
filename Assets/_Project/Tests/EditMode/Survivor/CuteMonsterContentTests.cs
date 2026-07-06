@@ -1,5 +1,8 @@
+using System.Reflection;
+using TapKnockout.Combat;
 using NUnit.Framework;
 using TapKnockout.Enemy;
+using TapKnockout.Projectile;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -25,17 +28,17 @@ namespace TapKnockout.Survivor.Tests
 
         private static readonly ExpectedEnemy[] ExpectedEnemies =
         {
-            new ExpectedEnemy("GreenDemon", "EnemyConfig_GreenDemon", "PF_Enemy_GreenDemon", EnemyArchetype.MeleeChaser, contactDamageEnabled: true),
-            new ExpectedEnemy("Demon", "EnemyConfig_Demon", "PF_Enemy_Demon", EnemyArchetype.MeleeChaser, contactDamageEnabled: true),
-            new ExpectedEnemy("Bat", "EnemyConfig_Bat", "PF_Enemy_Bat", EnemyArchetype.FastCharger, contactDamageEnabled: true, usesFlyingLocomotion: true),
-            new ExpectedEnemy("Bee", "EnemyConfig_Bee", "PF_Enemy_Bee", EnemyArchetype.FastCharger, contactDamageEnabled: true, usesFlyingLocomotion: true),
-            new ExpectedEnemy("Mushroom", "EnemyConfig_Mushroom", "PF_Enemy_Mushroom", EnemyArchetype.MeleeChaser, contactDamageEnabled: true),
-            new ExpectedEnemy("Cyclops", "EnemyConfig_Cyclops", "PF_Enemy_Cyclops", EnemyArchetype.ShieldEnemy, contactDamageEnabled: true, usesContactWindup: true),
-            new ExpectedEnemy("Yeti", "EnemyConfig_Yeti", "PF_Enemy_Yeti", EnemyArchetype.ShieldEnemy, contactDamageEnabled: true, usesContactWindup: true),
-            new ExpectedEnemy("Cactus", "EnemyConfig_Cactus", "PF_Enemy_Cactus", EnemyArchetype.ShieldEnemy, contactDamageEnabled: true, usesContactWindup: true),
-            new ExpectedEnemy("Ghost", "EnemyConfig_Ghost", "PF_Enemy_Ghost", EnemyArchetype.FastCharger, contactDamageEnabled: true),
+            new ExpectedEnemy("GreenDemon", "EnemyConfig_GreenDemon", "PF_Enemy_BasicMelee_GreenDemon_Generated", EnemyArchetype.MeleeChaser, contactDamageEnabled: false),
+            new ExpectedEnemy("Demon", "EnemyConfig_Demon", "PF_Enemy_Demon", EnemyArchetype.MeleeChaser, contactDamageEnabled: false),
+            new ExpectedEnemy("Bat", "EnemyConfig_Bat", "PF_Enemy_Bat", EnemyArchetype.FastCharger, contactDamageEnabled: false, usesFlyingLocomotion: true),
+            new ExpectedEnemy("Bee", "EnemyConfig_Bee", "PF_Enemy_Bee", EnemyArchetype.FastCharger, contactDamageEnabled: false, usesFlyingLocomotion: true),
+            new ExpectedEnemy("Mushroom", "EnemyConfig_Mushroom", "PF_Enemy_Mushroom", EnemyArchetype.MeleeChaser, contactDamageEnabled: false),
+            new ExpectedEnemy("Cyclops", "EnemyConfig_Cyclops", "PF_Enemy_Cyclops", EnemyArchetype.ShieldEnemy, contactDamageEnabled: false, usesContactWindup: true),
+            new ExpectedEnemy("Yeti", "EnemyConfig_Yeti", "PF_Enemy_Yeti", EnemyArchetype.ShieldEnemy, contactDamageEnabled: false, usesContactWindup: true),
+            new ExpectedEnemy("Cactus", "EnemyConfig_Cactus", "PF_Enemy_Cactus", EnemyArchetype.ShieldEnemy, contactDamageEnabled: false, usesContactWindup: true),
+            new ExpectedEnemy("Ghost", "EnemyConfig_Ghost", "PF_Enemy_Ghost", EnemyArchetype.FastCharger, contactDamageEnabled: false, usesFlyingLocomotion: true),
             new ExpectedEnemy("Cthulhu", "EnemyConfig_Cthulhu", "PF_Enemy_Cthulhu", EnemyArchetype.RangedShooter, contactDamageEnabled: false, isRanged: true, usesFlyingLocomotion: true),
-            new ExpectedEnemy("YellowDragon", "EnemyConfig_YellowDragon_Boss", "PF_Boss_YellowDragon", EnemyArchetype.Boss, contactDamageEnabled: true, usesContactWindup: true, isBoss: true, usesFlyingLocomotion: true)
+            new ExpectedEnemy("YellowDragon", "EnemyConfig_YellowDragon_Boss", "PF_Boss_YellowDragon", EnemyArchetype.Boss, contactDamageEnabled: false, usesContactWindup: true, isBoss: true, usesFlyingLocomotion: true)
         };
 
         [Test]
@@ -108,8 +111,18 @@ namespace TapKnockout.Survivor.Tests
                 Assert.That(FindChild(prefab.transform, "HitReactionRoot"), Is.Not.Null, expected.PrefabName);
                 Assert.That(FindChild(prefab.transform, "HitVFXSocket"), Is.Not.Null, expected.PrefabName);
                 Assert.That(FindChild(prefab.transform, "DeathVFXSocket"), Is.Not.Null, expected.PrefabName);
+                AssertCombatHurtbox(prefab, expected);
                 Assert.That(FindChild(prefab.transform, "TelegraphRoot"), Is.Not.Null, expected.PrefabName);
                 Assert.That(prefab.GetComponentInChildren<Animator>(true), Is.Not.Null, expected.PrefabName);
+            }
+        }
+
+        [Test]
+        public void CuteMonsterCombatHurtboxes_CatchProjectileLinesAboveSmallPhysicalCapsules()
+        {
+            foreach (var expected in ExpectedEnemies)
+            {
+                AssertProjectileHitsCombatHurtbox(expected.PrefabName);
             }
         }
 
@@ -288,6 +301,106 @@ namespace TapKnockout.Survivor.Tests
         {
             var property = new SerializedObject(component).FindProperty(propertyName);
             return property != null ? property.boolValue : fallback;
+        }
+
+        private static void AssertCombatHurtbox(GameObject prefab, ExpectedEnemy expected)
+        {
+            var instance = Object.Instantiate(prefab);
+            try
+            {
+                Physics.SyncTransforms();
+                var bodyCollider = instance.GetComponent<Collider>();
+                var hurtbox = FindChild(instance.transform, "CombatHurtbox");
+                Assert.That(hurtbox, Is.Not.Null, expected.PrefabName);
+
+                var hurtboxCollider = hurtbox.GetComponent<CapsuleCollider>();
+                Assert.That(hurtboxCollider, Is.Not.Null, expected.PrefabName);
+                Assert.That(hurtboxCollider.enabled, Is.True, expected.PrefabName);
+                Assert.That(hurtboxCollider.isTrigger, Is.True, expected.PrefabName);
+                Assert.That(hurtboxCollider.radius, Is.GreaterThan(0.1f), expected.PrefabName);
+                Assert.That(hurtboxCollider.height, Is.GreaterThanOrEqualTo(hurtboxCollider.radius * 2f), expected.PrefabName);
+
+                if (bodyCollider != null)
+                {
+                    Assert.That(
+                        hurtboxCollider.bounds.max.y,
+                        Is.GreaterThan(bodyCollider.bounds.max.y + 0.35f),
+                        $"{expected.PrefabName} combat hurtbox must extend above the physical capsule so projectiles and area skills match the visible enemy.");
+                }
+
+                if (expected.UsesFlyingLocomotion && bodyCollider != null)
+                {
+                    Assert.That(
+                        hurtboxCollider.bounds.max.y,
+                        Is.GreaterThan(bodyCollider.bounds.max.y + 0.2f),
+                        $"{expected.PrefabName} flying visual needs a combat hurtbox above the physical capsule.");
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(instance);
+            }
+        }
+
+        private static void AssertProjectileHitsCombatHurtbox(string prefabName)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{PrefabRoot}/{prefabName}.prefab");
+            Assert.That(prefab, Is.Not.Null, prefabName);
+
+            var enemy = Object.Instantiate(prefab, new Vector3(0f, 0f, 5f), Quaternion.identity);
+            var projectile = new GameObject($"{prefabName}_ProjectileProbe");
+
+            try
+            {
+                Physics.SyncTransforms();
+                var bodyCollider = enemy.GetComponent<Collider>();
+                var hurtbox = FindChild(enemy.transform, "CombatHurtbox")?.GetComponent<CapsuleCollider>();
+                var health = enemy.GetComponent<EnemyHealth>();
+                var hitCount = 0;
+
+                Assert.That(bodyCollider, Is.Not.Null, prefabName);
+                Assert.That(hurtbox, Is.Not.Null, prefabName);
+                Assert.That(health, Is.Not.Null, prefabName);
+
+                health.ResetHealth();
+                health.OnDamaged += _ => hitCount++;
+
+                var projectileY = Mathf.Min(hurtbox.bounds.max.y - 0.06f, bodyCollider.bounds.max.y + 0.35f);
+                Assert.That(projectileY, Is.GreaterThan(bodyCollider.bounds.max.y + 0.05f), prefabName);
+
+                projectile.transform.position = new Vector3(0f, projectileY, 0f);
+                var projectileCollider = projectile.AddComponent<SphereCollider>();
+                projectileCollider.radius = 0.02f;
+                var controller = projectile.AddComponent<ProjectileController>();
+                SetDeactivateInsteadOfDestroy(controller);
+
+                Physics.SyncTransforms();
+
+                controller.Initialize(new HitContext(null, null, 7f), Vector3.forward, 360f, 3f, null);
+                InvokeAdvanceTransformMotion(controller, projectile.transform.position, 1f / 60f);
+
+                Assert.That(hitCount, Is.EqualTo(1), prefabName);
+                Assert.That(projectile.activeSelf, Is.False, prefabName);
+            }
+            finally
+            {
+                Object.DestroyImmediate(projectile);
+                Object.DestroyImmediate(enemy);
+            }
+        }
+
+        private static void SetDeactivateInsteadOfDestroy(MonoBehaviour controller)
+        {
+            controller.GetType()
+                .GetField("deactivateInsteadOfDestroy", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(controller, true);
+        }
+
+        private static void InvokeAdvanceTransformMotion(MonoBehaviour controller, Vector3 currentPosition, float deltaTime)
+        {
+            controller.GetType()
+                .GetMethod("TryAdvanceTransformMotion", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.Invoke(controller, new object[] { currentPosition, deltaTime });
         }
 
         private static bool HasComponentNamed(GameObject prefab, string componentName)

@@ -45555,7 +45555,7 @@ MonoBehaviour:
   usePhysicsRaycast: 0
   groundLayers:
     serializedVersion: 2
-    m_Bits: 4294967291
+    m_Bits: 59
   maxRaycastDistance: 500
   fallbackGroundPlaneY: 0
   minAimDirectionDistance: 0.35
@@ -45635,10 +45635,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.44495118
-  m_Height: 2.8347068
+  m_Radius: 0.5286858
+  m_Height: 3.1750185
   m_Direction: 1
-  m_Center: {x: 0.27582237, y: 2.3459198, z: 0.58476496}
+  m_Center: {x: 0.068804145, y: 1.1701559, z: 0.15253878}
 --- !u!1001 &1547354720
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51304,6 +51304,124 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e2384878daf374336bb1ab1e0110f160, type: 3}
   m_PrefabInstance: {fileID: 1724103335}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1724155923
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1919742017}
+    m_Modifications:
+    - target: {fileID: 3962183902679821751, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -56.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3962183902679821751, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 6.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6990493475118284413, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: m_Name
+      value: PF_PlayerHealthHUD_TopLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 7720284566824560713, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: playerHealth
+      value: 
+      objectReference: {fileID: 1546029806}
+    - target: {fileID: 7720284566824560713, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+      propertyPath: xpController
+      value: 
+      objectReference: {fileID: 1546029813}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+--- !u!224 &1724155924 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6724208402348441773, guid: 09f76eb55deba4898826e46660b2574b, type: 3}
+  m_PrefabInstance: {fileID: 1724155923}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1725310037
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55003,6 +55121,7 @@ GameObject:
   - component: {fileID: 1845053898}
   - component: {fileID: 1845053904}
   - component: {fileID: 1845053905}
+  - component: {fileID: 1845053906}
   m_Layer: 0
   m_Name: VFXFeedbackRoot
   m_TagString: Untagged
@@ -55123,7 +55242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad879e81cba4f44ea93ddb0b29149492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: TapKnockout.VFX::TapKnockout.VFX.VFXService
-  catalog: {fileID: 11400000, guid: f36cc50b76264120acb179d00abf44a2, type: 2}
+  catalog: {fileID: 11400000, guid: fe7b8ffd7fc114299b480fae0d8e677a, type: 2}
   poolRoot: {fileID: 48467376}
   prewarmOnAwake: 1
   debugLogging: 0
@@ -55283,6 +55402,22 @@ MonoBehaviour:
   levelUpBurstVfx: 91
   groundLift: 0.05
   playerAnchorLift: 0.75
+--- !u!114 &1845053906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845053897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29f47dbffb0b49a89a6f8eda20fd771, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TapKnockout.Survivor::TapKnockout.Survivor.SurvivorFeedbackPlayer
+  vfxPoolRoot: {fileID: 48467376}
+  cameraShakeReceiver: {fileID: 1911288738}
+  defaultVFXLifetime: 1.5
+  masterVolumeScale: 1
 --- !u!1001 &1846482513
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -57496,6 +57631,8 @@ GameObject:
   - component: {fileID: 1911288734}
   - component: {fileID: 1911288737}
   - component: {fileID: 1911288738}
+  - component: {fileID: 1911288740}
+  - component: {fileID: 1911288741}
   m_Layer: 0
   m_Name: CameraRig
   m_TagString: MainCamera
@@ -57511,8 +57648,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1911288732}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.6378651, y: -0, z: -0, w: 0.7701481}
-  m_LocalPosition: {x: 0, y: 32, z: -6}
+  m_LocalRotation: {x: 0.40797073, y: -0, z: -0, w: 0.91299504}
+  m_LocalPosition: {x: 0, y: 14, z: -12}
   m_LocalScale: {x: 1, y: 1, z: -0.11661}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -57533,18 +57670,18 @@ MonoBehaviour:
   target: {fileID: 1546029808}
   cameraTransform: {fileID: 1911288733}
   cameraBounds: {fileID: 0}
-  offset: {x: 0, y: 32, z: -6}
-  lookAtOffset: {x: 0, y: 0.35, z: 0}
-  snapFollowToTarget: 1
-  followSharpness: 0
+  offset: {x: 0, y: 14, z: -12}
+  lookAtOffset: {x: 0, y: 0.6, z: 0}
+  snapFollowToTarget: 0
+  followSharpness: 14
   snapDistance: 0.08
   snapOnEnable: 1
   lookAtTarget: 1
   lockRotationToOffset: 1
   clampToCameraBounds: 1
   useOrthographic: 1
-  fieldOfView: 38
-  orthographicSize: 14
+  fieldOfView: 40
+  orthographicSize: 11.5
   nearClipPlane: 0.1
   farClipPlane: 220
 --- !u!81 &1911288735
@@ -57588,9 +57725,9 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 220
-  field of view: 38
+  field of view: 40
   orthographic: 1
-  orthographic size: 14
+  orthographic size: 11.5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -57667,6 +57804,61 @@ MonoBehaviour:
   useUnscaledTime: 1
   maxAmplitude: 0.12
   maxDuration: 0.18
+--- !u!114 &1911288740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911288732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fb6ae013f43743fa8c2467aa2f8925c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TapKnockout.Camera::TapKnockout.Camera.GameplayCameraController
+  config: {fileID: 11400000, guid: 05081138aee9f4c17bc858318ebdbc0d, type: 2}
+  followTarget: {fileID: 1546029808}
+  targetOverride: {fileID: 0}
+  cameraBounds: {fileID: 0}
+  fallbackPitchDegrees: 52
+  fallbackYawDegrees: 0
+  fallbackCameraDistance: 18
+  fallbackFollowOffset: {x: 0, y: 0, z: 0}
+  fallbackLookAtOffset: {x: 0, y: 0.65, z: 0}
+  fallbackPlayerViewportAnchor: {x: 0.5, y: 0.49}
+  fallbackForwardLookAhead: 0.65
+  fallbackEnableMovementLookAhead: 1
+  fallbackMovementLookAheadStrength: 0.9
+  fallbackMaxMovementLookAhead: 1.4
+  fallbackEnableDashLookAhead: 1
+  fallbackDashLookAheadMultiplier: 1.45
+  fallbackDashLookAheadDuration: 0.14
+  fallbackPositionSmoothTime: 0.08
+  fallbackRotationSharpness: 18
+  fallbackSnapOnEnable: 1
+  fallbackUseOrthographic: 1
+  fallbackFieldOfView: 42
+  fallbackOrthographicSize: 11.25
+  fallbackNearClipPlane: 0.1
+  fallbackFarClipPlane: 220
+  fallbackMinimumSupportedAspect: 1.33
+  fallbackMaximumSupportedAspect: 2.4
+  logSetupWarnings: 1
+--- !u!114 &1911288741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911288732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9cc7f746057043d3b62d8bed67130c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TapKnockout.Camera::TapKnockout.Camera.TapKnockoutCameraDashLookAhead
+  cameraController: {fileID: 1911288740}
+  target: {fileID: 1546029808}
+  listenToDashEvents: 1
 --- !u!1001 &1915565843
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58032,6 +58224,7 @@ RectTransform:
   - {fileID: 1273040116}
   - {fileID: 1210608295}
   - {fileID: 1877019868}
+  - {fileID: 1724155924}
   m_Father: {fileID: 687320934}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -65976,6 +66169,10 @@ PrefabInstance:
     - target: {fileID: 7429526350798645122, guid: 91d48edd6b3d64911b5f2f4136876e80, type: 3}
       propertyPath: m_Name
       value: ForestSurvivorArena
+      objectReference: {fileID: 0}
+    - target: {fileID: 7429526350798645122, guid: 91d48edd6b3d64911b5f2f4136876e80, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824723013750371708, guid: 91d48edd6b3d64911b5f2f4136876e80, type: 3}
       propertyPath: m_LocalPosition.x

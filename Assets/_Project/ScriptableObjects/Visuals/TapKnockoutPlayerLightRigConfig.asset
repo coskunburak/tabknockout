@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a11d3ed91e9c140ecacb1bf356a412f5, type: 3}
+  m_Name: TapKnockoutPlayerLightRigConfig
+  m_EditorClassIdentifier: TapKnockout.Visuals::TapKnockout.Visuals.TapKnockoutPlayerLightRigConfig
+  followSharpness: 28
+  forwardDirectionSharpness: 18
+  movementDirectionDeadZone: 0.05
+  localHeroLightEnabled: 0
+  localHeroLightColor: {r: 0.72, g: 1, b: 0.84, a: 1}
+  localHeroLightIntensity: 0.35
+  localHeroLightRange: 4.5
+  localHeroLightOffset: {x: 0, y: 2.65, z: 0}
+  forwardLightEnabled: 0
+  forwardLightColor: {r: 0.5, g: 1, b: 0.76, a: 1}
+  forwardLightIntensity: 0.16
+  forwardLightIdleIntensityMultiplier: 0
+  forwardLightRange: 5.5
+  forwardLightSpotAngle: 80
+  forwardLightDownAngle: 48
+  forwardLightOffset: {x: 0, y: 2.15, z: 0.9}
+  dashPulseEnabled: 1
+  dashPulseColor: {r: 0.78, g: 0.92, b: 0.9, a: 1}
+  dashPulseIntensity: 2.4
+  dashPulseRange: 8.5
+  dashPulseDuration: 0.18
+  dashPulseOffset: {x: 0, y: 2.35, z: 1.25}
+  visibleGlowEnabled: 1
+  groundGlowColor: {r: 0.74, g: 0.92, b: 0.9, a: 0.18}
+  groundGlowRadius: 1.45
+  coreGlowColor: {r: 0.86, g: 0.96, b: 0.92, a: 0.48}
+  coreGlowSize: {x: 0.92, y: 1.45}
+  coreGlowOffset: {x: 0, y: 0.92, z: 0}
+  glowPulseAmplitude: 0.045
+  glowPulseFrequency: 0.85
+  lanternFieldEnabled: 1
+  lanternFieldColor: {r: 0.66, g: 0.82, b: 0.84, a: 0.08}
+  lanternFieldRadius: 4.6
+  lanternFieldOffset: {x: 0, y: 0.045, z: 0}
+  forwardLanternEnabled: 0
+  forwardLanternColor: {r: 0.78, g: 1, b: 0.66, a: 0.12}
+  forwardLanternRange: 5.2
+  forwardLanternWidth: 3.4
+  forwardLanternOffset: {x: 0, y: 0.055, z: 0.25}
+  forwardLanternIdleAlphaMultiplier: 0.35

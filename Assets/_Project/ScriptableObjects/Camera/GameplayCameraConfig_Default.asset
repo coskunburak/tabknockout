@@ -12,20 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b4ae095f71e547d2aa22171ab54e471, type: 3}
   m_Name: GameplayCameraConfig_Default
   m_EditorClassIdentifier: TapKnockout.Camera::TapKnockout.Camera.GameplayCameraConfig
-  pitchDegrees: 58
+  pitchDegrees: 52
   yawDegrees: 0
-  cameraDistance: 24
+  cameraDistance: 18
   followOffset: {x: 0, y: 0, z: 0}
-  lookAtOffset: {x: 0, y: 0.85, z: 0}
-  playerViewportAnchor: {x: 0.5, y: 0.44}
-  forwardLookAhead: 0.25
-  positionSmoothTime: 0.08
+  lookAtOffset: {x: 0, y: 0.65, z: 0}
+  playerViewportAnchor: {x: 0.5, y: 0.49}
+  forwardLookAhead: 0.65
+  enableMovementLookAhead: 1
+  movementLookAheadStrength: 0.9
+  maxMovementLookAhead: 1.4
+  positionSmoothTime: 0.1
   rotationSharpness: 18
   snapOnEnable: 1
   useOrthographic: 1
-  fieldOfView: 42
-  orthographicSize: 16.5
+  fieldOfView: 40
+  orthographicSize: 11.25
   nearClipPlane: 0.1
-  farClipPlane: 180
-  minimumSupportedAspect: 0.46
-  maximumSupportedAspect: 0.75
+  farClipPlane: 220
+  minimumSupportedAspect: 1.33
+  maximumSupportedAspect: 2.4

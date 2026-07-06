@@ -1245,6 +1245,7 @@ Transform:
   - {fileID: 7960418041775927713}
   - {fileID: 5825052886652664382}
   - {fileID: 8008208370124334730}
+  - {fileID: 1403559405429776030}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &8988375265844827084
@@ -1420,6 +1421,9 @@ MonoBehaviour:
   fallbackLowHealthDashDamageThreshold: 0.35
   fallbackPerfectDashCooldownRefundSeconds: 0.35
   hitBufferSize: 24
+  dashCollisionSuppressionGrace: 0.25
+  embeddedDashKnockbackForceMultiplier: 0.25
+  embeddedDashKnockbackMaxDuration: 0.08
   logSetupWarnings: 1
 --- !u!114 &897141810371686167
 MonoBehaviour:
@@ -1827,6 +1831,61 @@ Transform:
   - {fileID: 4753694173665546018}
   m_Father: {fileID: 1962055422842900612}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5100045147033665933
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1403559405429776030}
+  - component: {fileID: 4320449015525135975}
+  m_Layer: 0
+  m_Name: CombatHurtbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1403559405429776030
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5100045147033665933}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.9, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2266316661218627085}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &4320449015525135975
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5100045147033665933}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.55
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5188283636507185243
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using TapKnockout.VFX;
+using UnityEditor;
 using UnityEngine;
 
 namespace TapKnockout.VFX.Tests
@@ -88,6 +89,87 @@ namespace TapKnockout.VFX.Tests
             finally
             {
                 Object.DestroyImmediate(catalog);
+            }
+        }
+
+        [Test]
+        public void ProductionVisualFoundationCatalog_CoversAbilityAndActiveSkillEvents()
+        {
+            const string catalogPath = "Assets/_Project/ScriptableObjects/VFX/VFXCatalog_ProductionVisualFoundation.asset";
+            var catalog = AssetDatabase.LoadAssetAtPath<VFXCatalog>(catalogPath);
+
+            Assert.That(catalog, Is.Not.Null, catalogPath);
+
+            var requiredEvents = new[]
+            {
+                VFXEventType.RoomClear,
+                VFXEventType.AbilityOffered,
+                VFXEventType.AbilitySelected,
+                VFXEventType.BossWarning,
+                VFXEventType.Pickup,
+                VFXEventType.Heal,
+                VFXEventType.GenericBurst,
+                VFXEventType.AbilityAttackBuff,
+                VFXEventType.AbilityAttackSpeedBuff,
+                VFXEventType.AbilityDefenseBuff,
+                VFXEventType.AbilityMoveSpeedBuff,
+                VFXEventType.AbilityHealthBuff,
+                VFXEventType.AbilityDashBuff,
+                VFXEventType.AbilityDashShockwave,
+                VFXEventType.AbilityDashPhase,
+                VFXEventType.AbilityDashStagger,
+                VFXEventType.AbilityProjectileBuff,
+                VFXEventType.AbilityProjectileSplit,
+                VFXEventType.AbilityProjectilePierce,
+                VFXEventType.AbilityProjectileRicochet,
+                VFXEventType.AbilityProjectileHoming,
+                VFXEventType.AbilityProjectileSize,
+                VFXEventType.AbilityFireProc,
+                VFXEventType.AbilityPoisonProc,
+                VFXEventType.AbilityIceProc,
+                VFXEventType.AbilityLightningProc,
+                VFXEventType.AbilityShield,
+                VFXEventType.AbilitySoulHeal,
+                VFXEventType.AbilityBossBreaker,
+                VFXEventType.AbilityLowHealthSurge,
+                VFXEventType.AbilityRewardLuck,
+                VFXEventType.AbilityPickupFrenzy,
+                VFXEventType.AbilityOrbital,
+                VFXEventType.AbilityDrone,
+                VFXEventType.AbilityBladeStrike,
+                VFXEventType.AbilityMeteor,
+                VFXEventType.AbilityEnergyBeam,
+                VFXEventType.AbilityEnergyRing,
+                VFXEventType.AbilityRevive,
+                VFXEventType.AbilityInvulnerability,
+                VFXEventType.AbilityGenericUpgrade,
+                VFXEventType.PrimaryProjectileImpact,
+                VFXEventType.ForwardCleaveCast,
+                VFXEventType.ForwardCleaveHit,
+                VFXEventType.GroundImpactCast,
+                VFXEventType.GroundImpactArea,
+                VFXEventType.GroundImpactHit,
+                VFXEventType.SpawnTelegraph,
+                VFXEventType.EnemyDeathLarge,
+                VFXEventType.EliteSpawn,
+                VFXEventType.EliteDeath,
+                VFXEventType.BossPhaseTransition,
+                VFXEventType.BossHeavyAttackTelegraph,
+                VFXEventType.BossHeavyAttackImpact,
+                VFXEventType.XPOrbIdle,
+                VFXEventType.ReticleFirePulse
+            };
+
+            var seen = new HashSet<VFXEventType>();
+            var definitions = catalog.Definitions;
+            for (var i = 0; i < definitions.Count; i++)
+            {
+                Assert.That(seen.Add(definitions[i].EventType), Is.True, definitions[i].EventType.ToString());
+            }
+
+            for (var i = 0; i < requiredEvents.Length; i++)
+            {
+                Assert.That(catalog.TryGetDefinition(requiredEvents[i], out _), Is.True, requiredEvents[i].ToString());
             }
         }
 

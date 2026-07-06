@@ -14,10 +14,12 @@ namespace TapKnockout.VFX
         private readonly Dictionary<GameObject, Vector3> baseScales = new Dictionary<GameObject, Vector3>();
         private readonly Dictionary<GameObject, Renderer[]> renderersByInstance = new Dictionary<GameObject, Renderer[]>();
         private readonly Dictionary<GameObject, ParticleSystem[]> particleSystemsByInstance = new Dictionary<GameObject, ParticleSystem[]>();
+        private readonly Dictionary<GameObject, TrailRenderer[]> trailRenderersByInstance = new Dictionary<GameObject, TrailRenderer[]>();
         private readonly Dictionary<GameObject, Component[]> visualEffectsByInstance = new Dictionary<GameObject, Component[]>();
         private readonly HashSet<VFXEventType> missingDefinitionWarnings = new HashSet<VFXEventType>();
         private readonly HashSet<VFXEventType> missingPrefabWarnings = new HashSet<VFXEventType>();
         private readonly List<ActiveVFXInstance> activeInstances = new List<ActiveVFXInstance>();
+        private MaterialPropertyBlock colorOverrideBlock;
         private readonly Transform poolRoot;
 
         public PooledVFXSpawner(Transform poolRoot, bool debugLogging = false)
@@ -78,6 +80,7 @@ namespace TapKnockout.VFX
             var instance = GetOrCreateInstance(definition);
             PrepareInstance(instance, definition, request);
             RestartParticles(instance);
+            RestartTrails(instance);
 
             var lifetime = ResolveLifetime(instance, definition, request);
             var parent = definition.ParentToRequestParent && request.Parent != null ? instance.transform.parent : null;
@@ -142,6 +145,7 @@ namespace TapKnockout.VFX
             baseScales.Clear();
             renderersByInstance.Clear();
             particleSystemsByInstance.Clear();
+            trailRenderersByInstance.Clear();
             visualEffectsByInstance.Clear();
             missingDefinitionWarnings.Clear();
             missingPrefabWarnings.Clear();
@@ -169,6 +173,7 @@ namespace TapKnockout.VFX
             baseScales[instance] = instance.transform.localScale;
             renderersByInstance[instance] = instance.GetComponentsInChildren<Renderer>(true);
             particleSystemsByInstance[instance] = instance.GetComponentsInChildren<ParticleSystem>(true);
+            trailRenderersByInstance[instance] = instance.GetComponentsInChildren<TrailRenderer>(true);
             visualEffectsByInstance[instance] = FindVisualEffectLikeComponents(instance);
             return instance;
         }
@@ -204,7 +209,6 @@ namespace TapKnockout.VFX
             }
 
             var renderers = GetCachedRenderers(instance);
-            var block = new MaterialPropertyBlock();
             for (var i = 0; i < renderers.Length; i++)
             {
                 var targetRenderer = renderers[i];
@@ -219,11 +223,12 @@ namespace TapKnockout.VFX
                     continue;
                 }
 
-                targetRenderer.GetPropertyBlock(block);
-                block.SetColor(BaseColorId, request.ColorOverride);
-                block.SetColor(ColorId, request.ColorOverride);
-                targetRenderer.SetPropertyBlock(block);
-                block.Clear();
+                colorOverrideBlock ??= new MaterialPropertyBlock();
+                targetRenderer.GetPropertyBlock(colorOverrideBlock);
+                colorOverrideBlock.SetColor(BaseColorId, request.ColorOverride);
+                colorOverrideBlock.SetColor(ColorId, request.ColorOverride);
+                targetRenderer.SetPropertyBlock(colorOverrideBlock);
+                colorOverrideBlock.Clear();
             }
         }
 
@@ -258,6 +263,38 @@ namespace TapKnockout.VFX
 
                 particleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                 particleSystem.Clear(true);
+            }
+        }
+
+        private void RestartTrails(GameObject instance)
+        {
+            var trails = GetCachedTrailRenderers(instance);
+            for (var i = 0; i < trails.Length; i++)
+            {
+                var trail = trails[i];
+                if (trail == null)
+                {
+                    continue;
+                }
+
+                trail.Clear();
+                trail.emitting = true;
+            }
+        }
+
+        private void StopTrails(GameObject instance)
+        {
+            var trails = GetCachedTrailRenderers(instance);
+            for (var i = 0; i < trails.Length; i++)
+            {
+                var trail = trails[i];
+                if (trail == null)
+                {
+                    continue;
+                }
+
+                trail.emitting = false;
+                trail.Clear();
             }
         }
 
@@ -353,6 +390,22 @@ namespace TapKnockout.VFX
             return particleSystems;
         }
 
+        private TrailRenderer[] GetCachedTrailRenderers(GameObject instance)
+        {
+            if (instance == null)
+            {
+                return System.Array.Empty<TrailRenderer>();
+            }
+
+            if (!trailRenderersByInstance.TryGetValue(instance, out var trails) || trails == null)
+            {
+                trails = instance.GetComponentsInChildren<TrailRenderer>(true);
+                trailRenderersByInstance[instance] = trails;
+            }
+
+            return trails;
+        }
+
         private Component[] GetCachedVisualEffects(GameObject instance)
         {
             if (instance == null)
@@ -417,6 +470,7 @@ namespace TapKnockout.VFX
             }
 
             StopParticles(instance);
+            StopTrails(instance);
             StopVisualEffects(instance);
             instance.SetActive(false);
             instance.transform.SetParent(poolRoot, false);

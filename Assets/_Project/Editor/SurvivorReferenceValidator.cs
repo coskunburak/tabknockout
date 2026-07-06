@@ -195,14 +195,18 @@ namespace TapKnockout.Editor
                 return;
             }
 
-            if (TryReadBool(cameraRig, "snapFollowToTarget", out var snapFollowToTarget) && !snapFollowToTarget)
+            if (TryReadBool(cameraRig, "snapFollowToTarget", out var snapFollowToTarget) &&
+                TryReadFloat(cameraRig, "followSharpness", out var followSharpness))
             {
-                report.Warn("SurvivorCameraRig.snapFollowToTarget is false. Enable it for the prototype so camera catch-up does not drag mouse-world aim toward the screen center.");
-            }
+                if (!snapFollowToTarget && followSharpness <= 0.001f)
+                {
+                    report.Warn("SurvivorCameraRig has smooth follow enabled but followSharpness is 0. Use the production visual foundation repair tool or set a modest sharpness around 12-18.");
+                }
 
-            if (TryReadFloat(cameraRig, "followSharpness", out var followSharpness) && followSharpness > 0.001f)
-            {
-                report.Warn("SurvivorCameraRig.followSharpness is above 0. The prototype preset snaps follow to avoid reticle drift; run Repair if camera catch-up is visible.");
+                if (!snapFollowToTarget && followSharpness > 30f)
+                {
+                    report.Warn("SurvivorCameraRig.followSharpness is very high. Keep the smooth 2.5D camera subtle so mouse aim and combat readability stay stable.");
+                }
             }
         }
 

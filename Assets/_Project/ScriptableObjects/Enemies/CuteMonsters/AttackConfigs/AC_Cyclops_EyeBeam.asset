@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1759b4f88fe9e439786425bea191dccd, type: 3}
+  m_Name: AC_Cyclops_EyeBeam
+  m_EditorClassIdentifier: TapKnockout.Enemy::TapKnockout.Enemy.EnemyAttackConfig
+  attackId: cyclops_eye_beam
+  displayName: Cyclops Eye Beam
+  attackType: 7
+  triggerRange: 8
+  preferredMinRange: 0
+  preferredMaxRange: 8
+  cooldown: 5
+  initialCooldownOffset: 0
+  windupTime: 1
+  activeTime: 0.4
+  recoveryTime: 1.2
+  canMoveDuringWindup: 0
+  commitLocksMovement: 1
+  canMoveDuringRecovery: 1
+  commitLocksRotation: 1
+  damage: 18
+  knockbackForce: 5
+  knockbackDuration: 0.15
+  hitboxShape: 2
+  hitboxRadius: 1.2
+  hitboxLength: 3
+  hitboxArcHalfAngle: 60
+  hitLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 8
+  projectileLifetime: 4
+  homingStrength: 0
+  homingMaxTurnDegreesPerSecond: 45
+  areaZonePrefab: {fileID: 0}
+  areaZoneRadius: 2
+  areaZoneDuration: 4
+  areaZoneTickInterval: 1
+  areaZoneTickDamage: 0
+  maxActiveZones: 3
+  statusEffectType: 0
+  statusEffectDuration: 2
+  statusEffectSlowMultiplier: 0.6
+  animationTrigger: Attack
+  useAnimationTrigger: 1
+  telegraphPrefab: {fileID: 4285936361210148802, guid: 800aa64f58fcd42f2a706c5b0255c90b, type: 3}
+  activeVfxPrefab: {fileID: 330708246758817982, guid: ebff9a29847aa404fba84069277eb61f, type: 3}
+  impactVfxPrefab: {fileID: 2234436800238657232, guid: d7de750c19a24413f961a1729497852f, type: 3}
+  vfxLifetime: 1.25
+  telegraphType: 5
+  debugColor: {r: 1, g: 0.3, b: 0.1, a: 1}
+  diveSpeedMultiplier: 4
+  overshootDistance: 3
+  beamLength: 8
+  beamWidth: 0.4

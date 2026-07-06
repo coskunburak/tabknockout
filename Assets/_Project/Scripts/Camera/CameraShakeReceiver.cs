@@ -21,6 +21,8 @@ namespace TapKnockout.Camera
 
         public bool IsShaking => remainingDuration > 0f;
         public float RemainingDuration => remainingDuration;
+        public float MaxAmplitude => maxAmplitude;
+        public float MaxDuration => maxDuration;
 
         private void Reset()
         {

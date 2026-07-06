@@ -15,6 +15,7 @@ namespace TapKnockout.Feedback
 
         private Renderer[] cachedRenderers;
         private MaterialPropertyBlock[] originalBlocks;
+        private MaterialPropertyBlock flashBlock;
         private bool hasCapturedOriginalBlocks;
         private bool isFlashing;
         private float remainingDuration;
@@ -142,7 +143,6 @@ namespace TapKnockout.Feedback
 
         private void ApplyFlashColor(Color color)
         {
-            var flashBlock = new MaterialPropertyBlock();
             for (var i = 0; i < cachedRenderers.Length; i++)
             {
                 var targetRenderer = cachedRenderers[i];
@@ -151,6 +151,7 @@ namespace TapKnockout.Feedback
                     continue;
                 }
 
+                flashBlock ??= new MaterialPropertyBlock();
                 targetRenderer.GetPropertyBlock(flashBlock);
                 flashBlock.SetColor(BaseColorId, color);
                 flashBlock.SetColor(ColorId, color);

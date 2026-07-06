@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1759b4f88fe9e439786425bea191dccd, type: 3}
+  m_Name: AC_Ghost_PhaseHomingCurse
+  m_EditorClassIdentifier: TapKnockout.Enemy::TapKnockout.Enemy.EnemyAttackConfig
+  attackId: ghost_homing_curse
+  displayName: Ghost Homing Curse
+  attackType: 9
+  triggerRange: 7
+  preferredMinRange: 4
+  preferredMaxRange: 8
+  cooldown: 3
+  initialCooldownOffset: 0
+  windupTime: 0.7
+  activeTime: 0.1
+  recoveryTime: 0.8
+  canMoveDuringWindup: 1
+  commitLocksMovement: 1
+  canMoveDuringRecovery: 1
+  commitLocksRotation: 1
+  damage: 9
+  knockbackForce: 2
+  knockbackDuration: 0.1
+  hitboxShape: 3
+  hitboxRadius: 1.2
+  hitboxLength: 3
+  hitboxArcHalfAngle: 60
+  hitLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  projectilePrefab: {fileID: 5023394041551929858, guid: 20f043f167282438d9dd570c653ca73c, type: 3}
+  projectileSpeed: 4
+  projectileLifetime: 5
+  homingStrength: 0.3
+  homingMaxTurnDegreesPerSecond: 40
+  areaZonePrefab: {fileID: 0}
+  areaZoneRadius: 2
+  areaZoneDuration: 4
+  areaZoneTickInterval: 1
+  areaZoneTickDamage: 0
+  maxActiveZones: 3
+  statusEffectType: 0
+  statusEffectDuration: 2
+  statusEffectSlowMultiplier: 0.6
+  animationTrigger: Attack
+  useAnimationTrigger: 1
+  telegraphPrefab: {fileID: 6073668019732066505, guid: a2104d1062b91497993e36045c2364a7, type: 3}
+  activeVfxPrefab: {fileID: 6627034377215434206, guid: 40219c84aa1464783b6692dc1cf2167f, type: 3}
+  impactVfxPrefab: {fileID: 178574515865249309, guid: 9ad3351c578f747bfab5fc066a6a7998, type: 3}
+  vfxLifetime: 1.25
+  telegraphType: 3
+  debugColor: {r: 0.6, g: 0.3, b: 0.9, a: 1}
+  diveSpeedMultiplier: 4
+  overshootDistance: 3
+  beamLength: 8
+  beamWidth: 0.35

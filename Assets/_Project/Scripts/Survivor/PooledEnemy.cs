@@ -204,7 +204,9 @@ namespace TapKnockout.Survivor
             var behaviours = GetComponentsInChildren<MonoBehaviour>(true);
             for (var i = 0; i < behaviours.Length; i++)
             {
-                if (behaviours[i] is EnemyMovement || behaviours[i] is EnemyAttackController)
+                if (behaviours[i] is EnemyMovement ||
+                    behaviours[i] is EnemyAttackController ||
+                    behaviours[i] is EnemyDistinctAttackController)
                 {
                     behaviours[i].enabled = enabled;
                 }

@@ -31,6 +31,9 @@ namespace TapKnockout.Player
         public event Action<HitContext> OnDamageIgnored;
         public event Action<HitContext> OnPlayerDied;
 
+        /// <summary>Raised when Heal() succeeds. Arg: amount actually restored.</summary>
+        public event Action<float> OnHealed;
+
         public bool IsAlive => !hasDied && CurrentHealth > 0f;
         public GameObject GameObject => gameObject;
         public float CurrentHealth { get; private set; }
@@ -169,7 +172,13 @@ namespace TapKnockout.Player
 
             var previousHealth = CurrentHealth;
             CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
-            return CurrentHealth > previousHealth;
+            var healed = CurrentHealth > previousHealth;
+            if (healed)
+            {
+                OnHealed?.Invoke(CurrentHealth - previousHealth);
+            }
+
+            return healed;
         }
 
         private bool ShouldIgnoreDamage(HitContext hitContext)

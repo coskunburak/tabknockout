@@ -10,7 +10,7 @@ Generated assets are project-owned content under `Assets/_Project`. Source FBX, 
 - Attack archetype: Basic contact chaser: readable melee/contact pressure
 - VFX/feedback: normal enemy hit/death feedback
 - Wave role: Early/mid baseline pressure
-- Animation mapping: source clips 32; idle `Idle`, move `MonsterArmature|Walk`, attack `Bite_Front`, hit `HitRecieve`, death `Death`
+- Animation mapping: source clips 26; idle `Idle`, move `MonsterArmature|Walk`, attack `Bite_Front`, hit `HitRecieve`, death `Death`
 
 ## Demon
 - Config: `Assets/_Project/ScriptableObjects/Enemies/CuteMonsters/EnemyConfig_Demon.asset`
@@ -19,7 +19,7 @@ Generated assets are project-owned content under `Assets/_Project`. Source FBX, 
 - Attack archetype: Basic contact chaser: readable melee/contact pressure
 - VFX/feedback: normal enemy hit/death feedback
 - Wave role: Early/mid baseline pressure
-- Animation mapping: source clips 32; idle `Idle`, move `MonsterArmature|Walk`, attack `Bite_Front`, hit `HitRecieve`, death `Death`
+- Animation mapping: source clips 26; idle `Idle`, move `MonsterArmature|Walk`, attack `Bite_Front`, hit `HitRecieve`, death `Death`
 
 ## Bat
 - Config: `Assets/_Project/ScriptableObjects/Enemies/CuteMonsters/EnemyConfig_Bat.asset`

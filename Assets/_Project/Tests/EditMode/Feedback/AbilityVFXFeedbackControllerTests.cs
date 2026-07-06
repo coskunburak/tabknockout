@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using TapKnockout.Ability;
 using TapKnockout.Combat;
@@ -87,6 +88,51 @@ namespace TapKnockout.Feedback.Tests
             {
                 UnityEngine.Object.DestroyImmediate(ability);
                 UnityEngine.Object.DestroyImmediate(playerObject);
+                UnityEngine.Object.DestroyImmediate(controllerObject);
+            }
+        }
+
+        [Test]
+        public void TrySpawnSelectionVFX_WithSparseProductionCatalogFallsBackToAvailableEvent()
+        {
+            var controllerObject = new GameObject("AbilityVFXFeedbackController");
+            var serviceObject = new GameObject("VFXService");
+            var playerObject = new GameObject("PlayerRuntimeStats");
+            var prefab = new GameObject("FallbackVFXPrefab");
+            var catalog = ScriptableObject.CreateInstance<VFXCatalog>();
+            var ability = CreateAbility(AbilityEffectType.AttackDamageUp);
+
+            try
+            {
+                catalog.SetDefinitions(new[]
+                {
+                    new VFXDefinition(VFXEventType.LevelUpBurst, prefab, 0, 0.1f)
+                });
+
+                var service = serviceObject.AddComponent<VFXService>();
+                service.SetCatalog(catalog);
+
+                var playerStats = playerObject.AddComponent<PlayerRuntimeStats>();
+                var controller = controllerObject.AddComponent<AbilityVFXFeedbackController>();
+                controller.SetPlayerRuntimeStats(playerStats);
+                controller.SetVFXService(service);
+
+                var requestedEvents = new List<VFXEventType>();
+                controller.OnVFXRequested += request => requestedEvents.Add(request.EventType);
+
+                Assert.That(controller.TrySpawnSelectionVFX(ability, 1), Is.True);
+                Assert.That(requestedEvents, Does.Contain(VFXEventType.AbilityAttackBuff));
+                Assert.That(requestedEvents, Does.Contain(VFXEventType.AbilitySelected));
+                Assert.That(requestedEvents, Does.Contain(VFXEventType.LevelUpBurst));
+                Assert.That(service.ActiveCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(ability);
+                UnityEngine.Object.DestroyImmediate(catalog);
+                UnityEngine.Object.DestroyImmediate(prefab);
+                UnityEngine.Object.DestroyImmediate(playerObject);
+                UnityEngine.Object.DestroyImmediate(serviceObject);
                 UnityEngine.Object.DestroyImmediate(controllerObject);
             }
         }

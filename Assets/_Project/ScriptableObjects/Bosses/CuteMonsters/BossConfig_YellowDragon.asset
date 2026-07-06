@@ -38,7 +38,7 @@ MonoBehaviour:
     chargeSpeedMultiplier: 1.18
     phaseChangedVfx: 26
   addEnemyConfig: {fileID: 11400000, guid: 343f6c79d0c59497f9cd9e27540e7839, type: 2}
-  addEnemyPrefab: {fileID: 8547916412023053555, guid: 3204a32ee1d7542c6809649027b95bc6, type: 3}
+  addEnemyPrefab: {fileID: 3753429165916156335, guid: 2faf504e4abf44a8fa816ebdde3eda38, type: 3}
   maxActiveAdds: 4
   introVfx: 85
   enrageVfx: 86
